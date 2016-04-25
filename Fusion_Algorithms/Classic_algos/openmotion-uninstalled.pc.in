@@ -1,0 +1,9 @@
+
+libdir=@CMAKE_CURRENT_BINARY_DIR@
+includedir=@CMAKE_CURRENT_SOURCE_DIR@/src
+
+Name: @PROJECT_NAME@
+Description: OpenMotion : A library of nonlinear attitude estimation
+Version: @PROJECT_VERSION@
+Libs: -L${libdir} -lopenisf
+Cflags: -I${includedir}

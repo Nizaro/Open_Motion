@@ -1,0 +1,9 @@
+
+libdir=/home/thomas/These/Project/OpenMotion
+includedir=/home/thomas/These/Project/OpenMotion/src
+
+Name: openmotion
+Description: OpenMotion : A library of nonlinear attitude estimation
+Version: 1.0.0
+Libs: -L${libdir} -lopenmotion
+Cflags: -I${includedir}

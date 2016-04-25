@@ -1,0 +1,14 @@
+USER_LOCAL_PATH:=$(LOCAL_PATH)
+
+LOCAL_PATH:=$(call my-dir)
+
+##ADD THE MODULE TO THE PROJECT
+include $(CLEAR_VARS)
+LOCAL_MODULE:= openmotion
+LOCAL_SRC_FILES:=../libs/$(TARGET_ARCH_ABI)/libopenmotion.so
+include $(PREBUILT_SHARED_LIBRARY)
+include $(CLEAR_VARS)
+
+LOCAL_PATH:=$(USER_LOCAL_PATH)
+
+
