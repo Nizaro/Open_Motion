@@ -1,29 +1,10 @@
 
-\documentclass[conference]{IEEEtran}
-% setup page to suit conference specification using fancyhdr
-\usepackage{fancyhdr}
-\setlength{\paperwidth}{215.9mm}
-\setlength{\hoffset}{-9.7mm}
-\setlength{\oddsidemargin}{0mm}
-\setlength{\textwidth}{184.3mm}
-\setlength{\columnsep}{6.3mm}
-\setlength{\marginparsep}{0mm}
-\setlength{\marginparwidth}{0mm}
-
-\setlength{\paperheight}{279.4mm}
-\setlength{\voffset}{-7.4mm}
-\setlength{\topmargin}{0mm}
-\setlength{\headheight}{0mm}
-\setlength{\headsep}{0mm}
-\setlength{\topskip}{0mm}
-\setlength{\textheight}{235.2mm}
-\setlength{\footskip}{12.4mm}
-
-\setlength{\parindent}{1pc}
+\documentclass[twocolumn]{bmcart}
 
 
-% If IEEEtran.cls has not been ins
 
+
+\usepackage[utf8]{inputenc} %unicode support
 
 \usepackage{graphics} % for pdf, bitmapped graphics files
 \usepackage{epsfig} % for postscript graphics files
@@ -32,48 +13,11 @@
 \usepackage{amsmath} % assumes amsmath package installed
 \usepackage{amssymb}  % assumes amsmath package installed
 \usepackage{subcaption}
-\usepackage{multicol}
-
-
-
-\hyphenation{op-tical net-works semi-conduc-tor}
-
-
-
- \setlength{\columnsep}{1.0cm}
- 
 
 
 
 
-\begin{document}
-
- \title{\fontsize{24pt}{10pt}\selectfont\textbf{OpenMotion}: An open source library for attitude estimation.} 
-
-\author{\IEEEauthorblockN{Nizar Ouarti}
-\IEEEauthorblockA{IPAL (Sorbonne UPMC, CNRS, \\Astar, NUS, UJF, IMT)\\
-Singapore\\
-Email: nizar.ouarti@ipal.cnrs.fr}
-\and
-\IEEEauthorblockN{Thomas Braud}
-\IEEEauthorblockA{IPAL (Sorbonne UPMC, CNRS,\\ Astar, NUS, UJF, IMT)\\
-Singapore\\
-Email: braud.thomas@ipal.cnrs.fr }
-\and
-\IEEEauthorblockN{Vivien Billaud}
-\IEEEauthorblockA{IPAL (Sorbonne UPMC, CNRS,\\ Astar, NUS, UJF, IMT)\\
-Singapore }}
-
-\maketitle
-
-\thispagestyle{fancy}
-\fancyhead{}
-\lhead{}
-\lfoot{}
-\cfoot{}
-\rfoot{}
-\renewcommand{\headrulewidth}{0pt}
-\renewcommand{\footrulewidth}{0pt}
+\startlocaldefs
 
 \def\mathbi#1{\textbf{\em #1}}
 \makeatletter
@@ -81,17 +25,81 @@ Singapore }}
 \makeatother
 
 
+\endlocaldefs
 
 
 
 
-\begin{abstract}
+%%% Begin ...
+\begin{document}
+
+%%% Start of article front matter
+\begin{frontmatter}
+
+\begin{fmbox}
+\dochead{Research}
+
+
+\author[
+   addressref={aff1},                   % id's of addresses, e.g. {aff1,aff2}
+   corref={aff1},     
+   noteref={n1},                        % id's of article notes, if any
+   email={nizar.ouarti@ipal.cnrs.fr}   % email address
+]{\inits{NO}\fnm{Nizar} \snm{Ouarti}}
+\author[
+   addressref={aff1},   corref={aff1},  
+   email={braud.thomas@ipal.cnrs.fr}
+]{\inits{TB}\fnm{Thomas} \snm{Braud}}
+\author[
+   addressref={aff1},   corref={aff1},  
+   email={vivien.billaud@ipal.cnrs.fr}
+]{\inits{VB}\fnm{Vivien} \snm{Billaud}}
+
+
+
+\address[id=aff1]{%                           % unique id
+  \orgname{IPAL (Sorbonne UPMC, CNRS, Astar, NUS, UJF, IMT)}, % university, etc
+  \city{Singapore}
+  }
+
+
+\end{fmbox}% comment this for two column layout
+
+ \title{OpenMotion: An open source library for attitude estimation.} 
+
+\maketitle
+
+
+
+
+
+
+
+\begin{abstractbox}
+
+\begin{abstract} % abstract
+
 The abstract goes here
 \end{abstract}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                          %%
+%% The keywords begin here                  %%
+%%                                          %%
+%% Put each keyword in separate \kwd{}.     %%
+%%                                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{keyword}
+\kwd{IMU}
+\kwd{Sensor Fusion}
+\kwd{Sensor Calibration}
+\end{keyword}
+
+\end{abstractbox}
 
 
-\IEEEpeerreviewmaketitle
+\end{frontmatter}
 
 \section{Introduction}
 
@@ -99,7 +107,7 @@ The abstract goes here
 \section{Global Presentation of the Library}
 
 
-
+\texttt{OpenMotion} est une librairie open source qui permet a l'utilisateur d'estimer l'orientation du telephone a partir des donnee de l'IMU. La librairie ne supporte pas encore les translations, nous nous sommes concentre sur l'attitude.
 
 
 
@@ -108,10 +116,10 @@ The abstract goes here
 
 \vspace{0.1cm}
 
-\item The object-fixed reference frame $\{c\}$ is a moving and rotating coordinate frame that is fixed to the device. The $x$-axis points in the forward direction, the $y$-axis to the right side and the $z$-axis upward. 
+\item The object-fixed reference frame $\{c\}$ is a moving and rotating coordinate frame that is fixed to the smartphone device. 
 \end{itemize}
 
-We admit that all the components of the IMU belong to the same reference frame $\{c\}$ (ref figure~\ref{Schema_situation}). It is a cyclopean approximation \cite{ouarti2008multimodal} .
+The library admit admit that all the components of the IMU belong to the same reference frame $\{c\}$ (ref figure~\ref{Schema_situation}). It is a cyclopean approximation \cite{ouarti2008multimodal} .
 
 \begin{figure}[!h]
 \centering
@@ -119,6 +127,10 @@ We admit that all the components of the IMU belong to the same reference frame $
 \caption{Definition of the scene with 2 frame:  a fixed frame NED (North East Down) noted $\{a\}$ and a moving frame object noted $\{c\}$}
 \label{Schema_situation}
 \end{figure}
+
+
+La librairie donne une estimation le quaternion $\mathbi{q}_a^c$
+
 
 
 \section{Calibration and initialization}
@@ -130,8 +142,13 @@ We admit that all the components of the IMU belong to the same reference frame $
 
 \subsection{Kinematic and quaternion representation}
 
+A quaternion is a four-dimensional vector, defined as 
 
-A quaternion is a four-dimensional vector, defined as $ \mathbi{q} = \begin{pmatrix} \textbf{q} \\ q_w \end{pmatrix} $ with $ \textbf{q} =  ( q_x, q_y, q_z)^T $. For attitude representation, the quaternion must satisfies a single constraint given by  $|| \mathbi{q} || = 1$.The quaternion kinematics equation in discrete-time is given by :
+\begin{center}
+$ \mathbi{q} = \begin{pmatrix} \textbf{q} \\ q_w \end{pmatrix} $ with $ \textbf{q} =  ( q_x, q_y, q_z)^T $. 
+\end{center}
+
+For attitude representation, the quaternion must satisfies a single constraint given by  $|| \mathbi{q} || = 1$.The quaternion kinematics equation in discrete-time is given by :
 
 
 \begin{equation}
