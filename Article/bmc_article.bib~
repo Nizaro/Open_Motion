@@ -552,6 +552,8 @@
 
 @phdthesis{choukroun_novel_2003,
 	title = {Novel methods for attitude determination using vector observations},
+	url = {http://tx.technion.ac.il/~oshman/theses/choukroun.pdf},
+	urldate = {2015-09-02},
 	school = {Technion-Israel Institute of Technology, Faculty of Aerospace Engineering},
 	author = {Choukroun, Daniel},
 	year = {2003},
