@@ -684,7 +684,7 @@
 \setattribute{floatcaption}    {size}{\footnotesize\bfseries\mathversion{bold}\raggedright}
 \setattribute{floatcaptionname}{size}{\bfseries}
 
-\setlength\abovecaptionskip{0\p@}
+\setlength\abovecaptionskip{4\p@}
 \setlength\belowcaptionskip{4\p@}
 
 \long\def\@makecaption#1#2{
@@ -707,7 +707,7 @@
 \newbox\bmcfloat@box
 \newif\if@figurestar
 
-\setattribute{figure}{sep}{6.25\p@}
+\setattribute{figure}{sep}{4\p@}
 
 \def\figure{\@figurestarfalse\@ifnextchar[{\@figure}{\@figure[t]}}
 
@@ -741,6 +741,7 @@
   \centering%
   \setlength\abovecaptionskip{6\p@}%
   \setlength\belowcaptionskip{0\p@}%
+
 }
 
 \def\makefigure@float{
