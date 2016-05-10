@@ -707,7 +707,7 @@
 \newbox\bmcfloat@box
 \newif\if@figurestar
 
-\setattribute{figure}{sep}{4\p@}
+\setattribute{figure}{sep}{5.25\p@}
 
 \def\figure{\@figurestarfalse\@ifnextchar[{\@figure}{\@figure[t]}}
 

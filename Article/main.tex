@@ -13,6 +13,9 @@
 \usepackage{amsmath} % assumes amsmath package installed
 \usepackage{amssymb}  % assumes amsmath package installed
 \usepackage{subcaption}
+\usepackage{mathrsfs}
+\usepackage{listings}
+\usepackage{color}
 
 
 
@@ -27,6 +30,13 @@
 
 \startlocaldefs
 
+
+%Definition d un environnement remarque auto-indexe
+
+\newcounter{rmq}[section]
+\setcounter{rmq}{0}
+\newenvironment{remarque}{\addtocounter{rmq}{1}\textbf{Remarque \thermq:}}
+
 % quaternion style
 \def\mathbi#1{\textbf{\em #1}}
 
@@ -34,6 +44,29 @@
 \makeatletter
 \newcommand*{\rom}[1]{\expandafter\@slowromancap\romannumeral #1@}
 \makeatother
+
+% colors
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+% code
+\lstset{frame=tb,
+  language=C++,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
 
 
 \endlocaldefs
@@ -73,7 +106,7 @@
 
 
 \address[id=aff1]{%                           % unique id
-  \orgname{IPAL (Sorbonne UPMC, CNRS, Astar, NUS, UJF, IMT)}, % university, etc
+  \orgname{Image Pervasive Access Lab (Sorbonne UPMC, CNRS, Astar, NUS, UJF, IMT)}, % university, etc
   \city{Singapore}
   }
 
