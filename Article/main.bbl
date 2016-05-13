@@ -1,6 +1,6 @@
 %% BioMed_Central_Bib_Style_v1.01
 
-\begin{thebibliography}{21}
+\begin{thebibliography}{29}
 % BibTex style file: bmc-mathphys.bst (version 2.1), 2014-07-24
 \ifx \bisbn   \undefined \def \bisbn  #1{ISBN #1}\fi
 \ifx \binits  \undefined \def \binits#1{#1}\fi
@@ -80,6 +80,131 @@ University at Buffalo, Department of Computer Science and Engineering, NY
 \endbibitem
 
 %%% 4
+\bibitem{larson1967application}
+\begin{botherref}
+\oauthor{\bsnm{Larson}, \binits{R.E.}},
+\oauthor{\bsnm{Dressler}, \binits{R.M.}},
+\oauthor{\bsnm{Ratner}, \binits{R.S.}}:
+Application of the extended kalman filter to ballistic trajectory estimation.
+Technical report,
+DTIC Document
+(1967)
+\end{botherref}
+\endbibitem
+
+%%% 5
+\bibitem{larson1967precomputation}
+\begin{bchapter}
+\bauthor{\bsnm{Larson}, \binits{R.}},
+\bauthor{\bsnm{Dressler}, \binits{R.}},
+\bauthor{\bsnm{Ratner}, \binits{R.}}:
+\bctitle{Precomputation of the weighting matrix in an extended kalman filter}.
+In: \bbtitle{Joint Automatic Control Conference},
+pp. \bfpage{634}--\blpage{645}
+(\byear{1967})
+\end{bchapter}
+\endbibitem
+
+%%% 6
+\bibitem{terejanu2008extended}
+\begin{botherref}
+\oauthor{\bsnm{Terejanu}, \binits{G.A.}}:
+Extended kalman filter tutorial.
+Online]. Disponible: http://users. ices. utexas. edu/\~{}
+  terejanu/files/tutorialEKF. pdf
+(2008)
+\end{botherref}
+\endbibitem
+
+%%% 7
+\bibitem{vik2009integrated}
+\begin{botherref}
+\oauthor{\bsnm{Vik}, \binits{B.}}:
+Integrated satellite and inertial navigation systems.
+Department of Engineering Cybernetics, NTNU
+(2009)
+\end{botherref}
+\endbibitem
+
+%%% 8
+\bibitem{markley2003attitude}
+\begin{barticle}
+\bauthor{\bsnm{Markley}, \binits{F.L.}}:
+\batitle{Attitude error representations for kalman filtering}.
+\bjtitle{Journal of guidance, control, and dynamics}
+\bvolume{26}(\bissue{2}),
+\bfpage{311}--\blpage{317}
+(\byear{2003})
+\end{barticle}
+\endbibitem
+
+%%% 9
+\bibitem{bar1991quaternion}
+\begin{botherref}
+\oauthor{\bsnm{Bar-Itzhack}, \binits{I.Y.}},
+\oauthor{\bsnm{Deutschmann}, \binits{J.}},
+\oauthor{\bsnm{Markley}, \binits{F.}}:
+Quaternion normalization in additive ekf for spacecraft attitude determination.
+AIAA paper,
+91--2706
+(1991)
+\end{botherref}
+\endbibitem
+
+%%% 10
+\bibitem{markley_multiplicative_2004}
+\begin{bchapter}
+\bauthor{\bsnm{Markley}, \binits{F.L.}}:
+\bctitle{Multiplicative vs. additive filtering for spacecraft attitude
+  determination}.
+In: \bbtitle{Proceedings of the 6th {Conference} on {Dynamics} and {Control} of
+  {Systems} and {Structures} in {Space} ({DCSSS})},
+vol. \bseriesno{22}
+(\byear{2004})
+\end{bchapter}
+\endbibitem
+
+%%% 11
+\bibitem{julier_new_1995}
+\begin{bchapter}
+\bauthor{\bsnm{Julier}, \binits{S.J.}},
+\bauthor{\bsnm{Uhlmann}, \binits{J.K.}},
+\bauthor{\bsnm{Durrant-Whyte}, \binits{H.F.}}:
+\bctitle{A new approach for filtering nonlinear systems}.
+In: \bbtitle{American {Control} {Conference}, {Proceedings} of The 1995},
+vol. \bseriesno{3},
+pp. \bfpage{1628}--\blpage{1632}.
+\bpublisher{IEEE}, \blocation{???}
+(\byear{1995})
+\end{bchapter}
+\endbibitem
+
+%%% 12
+\bibitem{uhlmann1995dynamic}
+\begin{botherref}
+\oauthor{\bsnm{Uhlmann}, \binits{J.K.}}:
+Dynamic map building and localization: New theoretical foundations.
+PhD thesis,
+University of Oxford
+(1995)
+\end{botherref}
+\endbibitem
+
+%%% 13
+\bibitem{crassidis_unscented_2003}
+\begin{barticle}
+\bauthor{\bsnm{Crassidis}, \binits{J.L.}},
+\bauthor{\bsnm{Markley}, \binits{F.L.}}:
+\batitle{Unscented filtering for spacecraft attitude estimation}.
+\bjtitle{Journal of guidance, control, and dynamics}
+\bvolume{26}(\bissue{4}),
+\bfpage{536}--\blpage{542}
+(\byear{2003}).
+Accessed 2015-07-02
+\end{barticle}
+\endbibitem
+
+%%% 14
 \bibitem{david1971introduction}
 \begin{barticle}
 \bauthor{\bsnm{David}, \binits{G.}}:
@@ -91,7 +216,7 @@ University at Buffalo, Department of Computer Science and Engineering, NY
 \end{barticle}
 \endbibitem
 
-%%% 5
+%%% 15
 \bibitem{primbs1996survey}
 \begin{botherref}
 \oauthor{\bsnm{Primbs}, \binits{J.}}:
@@ -101,7 +226,7 @@ Citeseer
 \end{botherref}
 \endbibitem
 
-%%% 6
+%%% 16
 \bibitem{mahony_nonlinear_2008}
 \begin{barticle}
 \bauthor{\bsnm{Mahony}, \binits{R.}},
@@ -116,7 +241,7 @@ Accessed 2015-07-02
 \end{barticle}
 \endbibitem
 
-%%% 7
+%%% 17
 \bibitem{wahba_least_1965}
 \begin{barticle}
 \bauthor{\bsnm{Wahba}, \binits{G.}}:
@@ -129,7 +254,7 @@ Accessed 2015-09-03
 \end{barticle}
 \endbibitem
 
-%%% 8
+%%% 18
 \bibitem{markley1999estimate}
 \begin{bchapter}
 \bauthor{\bsnm{Markley}, \binits{F.L.}},
@@ -142,7 +267,7 @@ pp. \bfpage{1979}--\blpage{1996}
 \end{bchapter}
 \endbibitem
 
-%%% 9
+%%% 19
 \bibitem{choukroun_novel_2003}
 \begin{botherref}
 \oauthor{\bsnm{Choukroun}, \binits{D.}}:
@@ -153,7 +278,7 @@ Technion-Israel Institute of Technology, Faculty of Aerospace Engineering
 \end{botherref}
 \endbibitem
 
-%%% 10
+%%% 20
 \bibitem{weighted1971nasa}
 \begin{botherref}
 \oauthor{\bsnm{Davenport}, \binits{P.B.}}:
@@ -163,7 +288,7 @@ Attitude determination and sensor aligment via weighted least squares affine
 \end{botherref}
 \endbibitem
 
-%%% 11
+%%% 21
 \bibitem{mortari1997esoq}
 \begin{barticle}
 \bauthor{\bsnm{Mortari}, \binits{D.}}:
@@ -175,7 +300,7 @@ Attitude determination and sensor aligment via weighted least squares affine
 \end{barticle}
 \endbibitem
 
-%%% 12
+%%% 22
 \bibitem{metropolis1949monte}
 \begin{barticle}
 \bauthor{\bsnm{Metropolis}, \binits{N.}},
@@ -188,7 +313,7 @@ Attitude determination and sensor aligment via weighted least squares affine
 \end{barticle}
 \endbibitem
 
-%%% 13
+%%% 23
 \bibitem{chen_bayesian_2003}
 \begin{barticle}
 \bauthor{\bsnm{Chen}, \binits{Z.}}:
@@ -202,7 +327,7 @@ Accessed 2015-07-02
 \end{barticle}
 \endbibitem
 
-%%% 14
+%%% 24
 \bibitem{terejanu2009tutorial}
 \begin{botherref}
 \oauthor{\bsnm{Terejanu}, \binits{G.A.}}:
@@ -214,7 +339,7 @@ Department of Computer Science and Engineering. University at Buffalo, Buffalo,
 \end{botherref}
 \endbibitem
 
-%%% 15
+%%% 25
 \bibitem{douc2005comparison}
 \begin{bchapter}
 \bauthor{\bsnm{Douc}, \binits{R.}},
@@ -228,7 +353,7 @@ pp. \bfpage{64}--\blpage{69}
 \end{bchapter}
 \endbibitem
 
-%%% 16
+%%% 26
 \bibitem{arulampalam2002tutorial}
 \begin{barticle}
 \bauthor{\bsnm{Arulampalam}, \binits{M.S.}},
@@ -244,7 +369,7 @@ pp. \bfpage{64}--\blpage{69}
 \end{barticle}
 \endbibitem
 
-%%% 17
+%%% 27
 \bibitem{cheng_particle_2010}
 \begin{barticle}
 \bauthor{\bsnm{Cheng}, \binits{Y.}},
@@ -259,7 +384,7 @@ Accessed 2015-07-02
 \end{barticle}
 \endbibitem
 
-%%% 18
+%%% 28
 \bibitem{chang_particle_2014}
 \begin{botherref}
 \oauthor{\bsnm{Chang}, \binits{L.}}:
@@ -271,7 +396,7 @@ Accessed 2015-07-02
 \end{botherref}
 \endbibitem
 
-%%% 19
+%%% 29
 \bibitem{gordon1993novel}
 \begin{bchapter}
 \bauthor{\bsnm{Gordon}, \binits{N.J.}},
@@ -284,32 +409,6 @@ pp. \bfpage{107}--\blpage{113}
 (\byear{1993}).
 \bcomment{IET}
 \end{bchapter}
-\endbibitem
-
-%%% 20
-\bibitem{crassidis_unscented_2003}
-\begin{barticle}
-\bauthor{\bsnm{Crassidis}, \binits{J.L.}},
-\bauthor{\bsnm{Markley}, \binits{F.L.}}:
-\batitle{Unscented filtering for spacecraft attitude estimation}.
-\bjtitle{Journal of guidance, control, and dynamics}
-\bvolume{26}(\bissue{4}),
-\bfpage{536}--\blpage{542}
-(\byear{2003}).
-Accessed 2015-07-02
-\end{barticle}
-\endbibitem
-
-%%% 21
-\bibitem{markley2003attitude}
-\begin{barticle}
-\bauthor{\bsnm{Markley}, \binits{F.L.}}:
-\batitle{Attitude error representations for kalman filtering}.
-\bjtitle{Journal of guidance, control, and dynamics}
-\bvolume{26}(\bissue{2}),
-\bfpage{311}--\blpage{317}
-(\byear{2003})
-\end{barticle}
 \endbibitem
 
 \end{thebibliography}
@@ -359,6 +458,131 @@ Accessed 2015-07-02
 </bibl>
 
 <bibl id="B4">
+  <title><p>APPLICATION OF THE EXTENDED KALMAN FILTER TO BALLISTIC TRAJECTORY
+  ESTIMATION.</p></title>
+  <aug>
+    <au><snm>Larson</snm><fnm>RE</fnm></au>
+    <au><snm>Dressler</snm><fnm>RM</fnm></au>
+    <au><snm>Ratner</snm><fnm>RS</fnm></au>
+  </aug>
+  <pubdate>1967</pubdate>
+</bibl>
+
+<bibl id="B5">
+  <title><p>Precomputation of the weighting matrix in an extended Kalman
+  filter</p></title>
+  <aug>
+    <au><snm>Larson</snm><fnm>RE</fnm></au>
+    <au><snm>Dressler</snm><fnm>RM</fnm></au>
+    <au><snm>Ratner</snm><fnm>RS</fnm></au>
+  </aug>
+  <source>Joint Automatic Control Conference</source>
+  <pubdate>1967</pubdate>
+  <issue>5</issue>
+  <fpage>634</fpage>
+  <lpage>-645</lpage>
+</bibl>
+
+<bibl id="B6">
+  <title><p>Extended kalman filter tutorial</p></title>
+  <aug>
+    <au><snm>Terejanu</snm><fnm>GA</fnm></au>
+  </aug>
+  <source>Online]. Disponible: http://users. ices. utexas. edu/\~{}
+  terejanu/files/tutorialEKF. pdf</source>
+  <pubdate>2008</pubdate>
+</bibl>
+
+<bibl id="B7">
+  <title><p>Integrated satellite and inertial navigation systems</p></title>
+  <aug>
+    <au><snm>Vik</snm><fnm>B</fnm></au>
+  </aug>
+  <source>Department of Engineering Cybernetics, NTNU</source>
+  <pubdate>2009</pubdate>
+</bibl>
+
+<bibl id="B8">
+  <title><p>Attitude error representations for Kalman filtering</p></title>
+  <aug>
+    <au><snm>Markley</snm><fnm>FL</fnm></au>
+  </aug>
+  <source>Journal of guidance, control, and dynamics</source>
+  <pubdate>2003</pubdate>
+  <volume>26</volume>
+  <issue>2</issue>
+  <fpage>311</fpage>
+  <lpage>-317</lpage>
+</bibl>
+
+<bibl id="B9">
+  <title><p>Quaternion normalization in additive EKF for spacecraft attitude
+  determination</p></title>
+  <aug>
+    <au><snm>Bar Itzhack</snm><fnm>IY</fnm></au>
+    <au><snm>Deutschmann</snm><fnm>J</fnm></au>
+    <au><snm>Markley</snm><fnm>FL</fnm></au>
+  </aug>
+  <source>AIAA paper</source>
+  <pubdate>1991</pubdate>
+  <fpage>91</fpage>
+  <lpage>-2706</lpage>
+</bibl>
+
+<bibl id="B10">
+  <title><p>Multiplicative vs. additive filtering for spacecraft attitude
+  determination</p></title>
+  <aug>
+    <au><snm>Markley</snm><fnm>FL</fnm></au>
+  </aug>
+  <source>Proceedings of the 6th {Conference} on {Dynamics} and {Control} of
+  {Systems} and {Structures} in {Space} ({DCSSS})</source>
+  <pubdate>2004</pubdate>
+  <volume>22</volume>
+</bibl>
+
+<bibl id="B11">
+  <title><p>A new approach for filtering nonlinear systems</p></title>
+  <aug>
+    <au><snm>Julier</snm><fnm>SJ</fnm></au>
+    <au><snm>Uhlmann</snm><fnm>JK</fnm></au>
+    <au><snm>Durrant Whyte</snm><fnm>HF</fnm></au>
+  </aug>
+  <source>American {Control} {Conference}, {Proceedings} of the 1995</source>
+  <publisher>IEEE</publisher>
+  <pubdate>1995</pubdate>
+  <volume>3</volume>
+  <fpage>1628</fpage>
+  <lpage>-1632</lpage>
+</bibl>
+
+<bibl id="B12">
+  <title><p>Dynamic map building and localization: New theoretical
+  foundations</p></title>
+  <aug>
+    <au><snm>Uhlmann</snm><fnm>JK</fnm></au>
+  </aug>
+  <source>PhD thesis</source>
+  <publisher>University of Oxford</publisher>
+  <pubdate>1995</pubdate>
+</bibl>
+
+<bibl id="B13">
+  <title><p>Unscented filtering for spacecraft attitude estimation</p></title>
+  <aug>
+    <au><snm>Crassidis</snm><fnm>JL</fnm></au>
+    <au><snm>Markley</snm><fnm>FL</fnm></au>
+  </aug>
+  <source>Journal of guidance, control, and dynamics</source>
+  <pubdate>2003</pubdate>
+  <volume>26</volume>
+  <issue>4</issue>
+  <fpage>536</fpage>
+  <lpage>-542</lpage>
+  <url>http://arc.aiaa.org/doi/abs/10.2514/2.5102</url>
+</bibl>
+
+<bibl id="B14">
   <title><p>An introduction to observers</p></title>
   <aug>
     <au><snm>David</snm><fnm>G</fnm></au>
@@ -371,7 +595,7 @@ Accessed 2015-07-02
   <lpage>-602</lpage>
 </bibl>
 
-<bibl id="B5">
+<bibl id="B15">
   <title><p>Survey of nonlinear observer design techniques</p></title>
   <aug>
     <au><snm>Primbs</snm><fnm>J</fnm></au>
@@ -380,7 +604,7 @@ Accessed 2015-07-02
   <pubdate>1996</pubdate>
 </bibl>
 
-<bibl id="B6">
+<bibl id="B16">
   <title><p>Nonlinear complementary filters on the special orthogonal
   group</p></title>
   <aug>
@@ -397,7 +621,7 @@ Accessed 2015-07-02
   <url>http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=4608934</url>
 </bibl>
 
-<bibl id="B7">
+<bibl id="B17">
   <title><p>A least squares estimate of satellite attitude</p></title>
   <aug>
     <au><snm>Wahba</snm><fnm>G</fnm></au>
@@ -411,7 +635,7 @@ Accessed 2015-07-02
   <url>http://epubs.siam.org/doi/abs/10.1137/1007077</url>
 </bibl>
 
-<bibl id="B8">
+<bibl id="B18">
   <title><p>How to estimate attitude from vector observations</p></title>
   <aug>
     <au><snm>Markley</snm><fnm>FL</fnm></au>
@@ -426,7 +650,7 @@ Accessed 2015-07-02
   <lpage>-1996</lpage>
 </bibl>
 
-<bibl id="B9">
+<bibl id="B19">
   <title><p>Novel methods for attitude determination using vector
   observations</p></title>
   <aug>
@@ -438,7 +662,7 @@ Accessed 2015-07-02
   <pubdate>2003</pubdate>
 </bibl>
 
-<bibl id="B10">
+<bibl id="B20">
   <title><p>Attitude determination and sensor aligment via weighted least
   squares affine transformations</p></title>
   <aug>
@@ -447,7 +671,7 @@ Accessed 2015-07-02
   <pubdate>1971</pubdate>
 </bibl>
 
-<bibl id="B11">
+<bibl id="B21">
   <title><p>ESOQ: A closed-form solution to the Wahba problem</p></title>
   <aug>
     <au><snm>Mortari</snm><fnm>D</fnm></au>
@@ -461,7 +685,7 @@ Accessed 2015-07-02
   <lpage>-204</lpage>
 </bibl>
 
-<bibl id="B12">
+<bibl id="B22">
   <title><p>The monte carlo method</p></title>
   <aug>
     <au><snm>Metropolis</snm><fnm>N</fnm></au>
@@ -476,7 +700,7 @@ Accessed 2015-07-02
   <lpage>-341</lpage>
 </bibl>
 
-<bibl id="B13">
+<bibl id="B23">
   <title><p>Bayesian filtering: {From} {Kalman} filters to particle filters,
   and beyond</p></title>
   <aug>
@@ -491,7 +715,7 @@ Accessed 2015-07-02
   <url>http://www2.ee.kuas.edu.tw/~lwang/WWW/BayesianFilteringFromKalmanFiltersToParticleFiltersAndBeyond.pdf</url>
 </bibl>
 
-<bibl id="B14">
+<bibl id="B24">
   <title><p>Tutorial on Monte Carlo Techniques</p></title>
   <aug>
     <au><snm>Terejanu</snm><fnm>GA</fnm></au>
@@ -502,7 +726,7 @@ Accessed 2015-07-02
   <volume>14260</volume>
 </bibl>
 
-<bibl id="B15">
+<bibl id="B25">
   <title><p>Comparison of resampling schemes for particle filtering</p></title>
   <aug>
     <au><snm>Douc</snm><fnm>R</fnm></au>
@@ -515,7 +739,7 @@ Accessed 2015-07-02
   <lpage>-69</lpage>
 </bibl>
 
-<bibl id="B16">
+<bibl id="B26">
   <title><p>A tutorial on particle filters for online nonlinear/non-Gaussian
   Bayesian tracking</p></title>
   <aug>
@@ -533,7 +757,7 @@ Accessed 2015-07-02
   <lpage>-188</lpage>
 </bibl>
 
-<bibl id="B17">
+<bibl id="B27">
   <title><p>Particle filtering for attitude estimation using a minimal
   local-error representation</p></title>
   <aug>
@@ -549,7 +773,7 @@ Accessed 2015-07-02
   <url>http://arc.aiaa.org/doi/pdf/10.2514/1.47236</url>
 </bibl>
 
-<bibl id="B18">
+<bibl id="B28">
   <title><p>Particle {Filtering} for {Attitude} {Estimation} {Using} a
   {Minimal} {Local}-{Error} {Representation}: {A} {Revisit}</p></title>
   <aug>
@@ -560,7 +784,7 @@ Accessed 2015-07-02
   <url>http://arxiv.org/abs/1411.6127</url>
 </bibl>
 
-<bibl id="B19">
+<bibl id="B29">
   <title><p>Novel approach to nonlinear/non-Gaussian Bayesian state
   estimation</p></title>
   <aug>
@@ -574,34 +798,6 @@ Accessed 2015-07-02
   <issue>2</issue>
   <fpage>107</fpage>
   <lpage>-113</lpage>
-</bibl>
-
-<bibl id="B20">
-  <title><p>Unscented filtering for spacecraft attitude estimation</p></title>
-  <aug>
-    <au><snm>Crassidis</snm><fnm>JL</fnm></au>
-    <au><snm>Markley</snm><fnm>FL</fnm></au>
-  </aug>
-  <source>Journal of guidance, control, and dynamics</source>
-  <pubdate>2003</pubdate>
-  <volume>26</volume>
-  <issue>4</issue>
-  <fpage>536</fpage>
-  <lpage>-542</lpage>
-  <url>http://arc.aiaa.org/doi/abs/10.2514/2.5102</url>
-</bibl>
-
-<bibl id="B21">
-  <title><p>Attitude error representations for Kalman filtering</p></title>
-  <aug>
-    <au><snm>Markley</snm><fnm>FL</fnm></au>
-  </aug>
-  <source>Journal of guidance, control, and dynamics</source>
-  <pubdate>2003</pubdate>
-  <volume>26</volume>
-  <issue>2</issue>
-  <fpage>311</fpage>
-  <lpage>-317</lpage>
 </bibl>
 
 </refgrp>

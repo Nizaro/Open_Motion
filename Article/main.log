@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2016.1.28)  10 MAY 2016 14:32
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2016.1.28)  13 MAY 2016 14:54
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -413,7 +413,11 @@ em #2\par }\vskip \belowcaptionskip .
 )
 \c@subfigure=\count105
 \c@subtable=\count106
-) (/usr/share/texlive/texmf-dist/tex/latex/listings/listings.sty
+) (/usr/share/texlive/texmf-dist/tex/latex/jknapltx/mathrsfs.sty
+Package: mathrsfs 1996/01/01 Math RSFS package v1.0 (jk)
+\symrsfs=\mathgroup6
+)
+(/usr/share/texlive/texmf-dist/tex/latex/listings/listings.sty
 \lst@mode=\count107
 \lst@gtempboxa=\box32
 \lst@token=\toks24
@@ -450,18 +454,18 @@ File: lstmisc.sty 2013/08/26 1.5b (Carsten Heinz)
 ) (./main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 78.
-LaTeX Font Info:    ... okay on input line 78.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 78.
-LaTeX Font Info:    ... okay on input line 78.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 78.
-LaTeX Font Info:    ... okay on input line 78.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 78.
-LaTeX Font Info:    ... okay on input line 78.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 78.
-LaTeX Font Info:    ... okay on input line 78.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 78.
-LaTeX Font Info:    ... okay on input line 78.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
 
 (/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -483,7 +487,7 @@ Package lastpage Info: Please have a look at the pageslts package at
 (lastpage)             or
 (lastpage)             http://www.ctan.org/tex-archive/ 
 (lastpage)             install/macros/latex/contrib/pageslts.tds.zip
-(lastpage)             ! on input line 78.
+(lastpage)             ! on input line 79.
  (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
 Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
 )
@@ -539,232 +543,271 @@ Package caption Info: End \AtBeginDocument code.
 
 
 LaTeX Font Warning: Font shape `OT1/cmss/bx/n' in size <13> not available
-(Font)              size <12> substituted on input line 88.
+(Font)              size <12> substituted on input line 89.
 
-LaTeX Font Info:    Calculating math sizes for size <11> on input line 96.
+LaTeX Font Info:    Calculating math sizes for size <11> on input line 97.
 
 LaTeX Font Warning: Font shape `OT1/cmr/m/n' in size <5.5> not available
-(Font)              size <5> substituted on input line 96.
+(Font)              size <5> substituted on input line 97.
 
 
 LaTeX Font Warning: Font shape `OML/cmm/m/it' in size <5.5> not available
-(Font)              size <5> substituted on input line 96.
+(Font)              size <5> substituted on input line 97.
 
 
 LaTeX Font Warning: Font shape `OMS/cmsy/m/n' in size <5.5> not available
-(Font)              size <5> substituted on input line 96.
+(Font)              size <5> substituted on input line 97.
 
-LaTeX Font Info:    Try loading font information for U+msa on input line 96.
+LaTeX Font Info:    Try loading font information for U+msa on input line 97.
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 96.
+LaTeX Font Info:    Try loading font information for U+msb on input line 97.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
+LaTeX Font Info:    Try loading font information for U+rsfs on input line 97.
 
-LaTeX Warning: Reference `n1thanks' on page 1 undefined on input line 96.
+(/usr/share/texlive/texmf-dist/tex/latex/jknapltx/ursfs.fd
+File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
+)
+
+LaTeX Font Warning: Font shape `U/rsfs/m/n' in size <5.5> not available
+(Font)              size <5> substituted on input line 97.
+
+
+LaTeX Warning: Reference `aff1thanks' on page 1 undefined on input line 97.
+
+
+LaTeX Warning: Reference `au1thanks' on page 1 undefined on input line 97.
+
+
+LaTeX Warning: Reference `n1thanks' on page 1 undefined on input line 97.
+
+
+LaTeX Warning: Reference `aff1thanks' on page 1 undefined on input line 101.
+
+
+LaTeX Warning: Reference `au2thanks' on page 1 undefined on input line 101.
+
+
+LaTeX Warning: Reference `aff1thanks' on page 1 undefined on input line 105.
+
+
+LaTeX Warning: Reference `au3thanks' on page 1 undefined on input line 105.
 
 \address@aff1=\toks27
 
+LaTeX Warning: Reference `au3thanks' on page 1 undefined on input line 115.
+
+
 LaTeX Font Warning: Font shape `OT1/cmss/m/n' in size <24> not available
-(Font)              size <24.88> substituted on input line 116.
+(Font)              size <24.88> substituted on input line 117.
 
 (./introduction.tex) (./prez_library.tex
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 12.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 10.
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 12.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 10.
+
+
+LaTeX Warning: Reference `Schema_situation' on page 1 undefined on input line 1
+9.
+
+
+LaTeX Warning: Citation `ouarti2008multimodal' on page 1 undefined on input lin
+e 19.
 
 <images/Schema_situation.png, id=1, 236.885pt x 240.097pt>
 File: images/Schema_situation.png Graphic file (type png)
 
 <use images/Schema_situation.png>
-Package pdftex.def Info: images/Schema_situation.png used on input line 25.
+Package pdftex.def Info: images/Schema_situation.png used on input line 23.
 (pdftex.def)             Requested size: 153.97342pt x 156.06119pt.
 
-Overfull \hbox (10.5pt too wide) in paragraph at lines 26--26
+Overfull \hbox (10.5pt too wide) in paragraph at lines 24--24
 [] [] 
  []
 
-
-Overfull \hbox (12.58688pt too wide) in paragraph at lines 57--58
-[][][][][][][][][][][][][][]  
- []
-
-
-Overfull \hbox (17.31183pt too wide) in paragraph at lines 58--59
-[][][][][][][][][][][][][][]  
- []
-
-
-Overfull \hbox (12.58688pt too wide) in paragraph at lines 59--61
-[][][][][][][][][][][][][][]  
- []
-
-
-Underfull \vbox (badness 4726) has occurred while \output is active []
-
-
+) (./calibration.tex) (./state_of_the_art.tex
 
 LaTeX Font Warning: Font shape `OT1/cmss/m/it' in size <8> not available
-(Font)              Font shape `OT1/cmss/m/sl' tried instead on input line 73.
+(Font)              Font shape `OT1/cmss/m/sl' tried instead on input line 30.
 
 [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
 
- <./images/Schema_situation.png>]) (./calibration.tex) (./state_of_the_art.tex
-Overfull \hbox (26.17612pt too wide) detected at line 24
- $\OT1/cmr/m/n/10 ^^H[]([]) = []$  
- []
+ <./images/Schema_situation.png>]
+
+LaTeX Warning: Citation `kalman_new_1960' on page 2 undefined on input line 38.
 
 
-Overfull \hbox (5.86499pt too wide) in paragraph at lines 73--80
+
+Overfull \hbox (5.86499pt too wide) in paragraph at lines 52--59
  [] 
  []
 
 
-LaTeX Warning: Reference `State_equation_discrete_case' on page 2 undefined on 
-input line 85.
+LaTeX Warning: Citation `terejanu2013discrete' on page 2 undefined on input lin
+e 64.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 85--86
+Underfull \hbox (badness 10000) in paragraph at lines 64--65
 
  []
+
+
+LaTeX Warning: Citation `larson1967application' on page 2 undefined on input li
+ne 104.
+
+
+LaTeX Warning: Citation `larson1967precomputation' on page 2 undefined on input
+ line 104.
+
+
+LaTeX Warning: Citation `terejanu2008extended' on page 2 undefined on input lin
+e 104.
+
+
+LaTeX Warning: Citation `vik2009integrated' on page 2 undefined on input line 1
+06.
+
+
+LaTeX Warning: Citation `markley2003attitude' on page 2 undefined on input line
+ 106.
+
+
+LaTeX Warning: Citation `bar1991quaternion' on page 2 undefined on input line 1
+06.
+
+
+LaTeX Warning: Citation `markley_multiplicative_2004' on page 2 undefined on in
+put line 106.
+
+
+LaTeX Warning: Citation `julier_new_1995' on page 2 undefined on input line 108
+.
+
+
+LaTeX Warning: Citation `uhlmann1995dynamic' on page 2 undefined on input line 
+108.
+
+
+LaTeX Warning: Citation `crassidis_unscented_2003' on page 2 undefined on input
+ line 108.
+
+
+LaTeX Warning: Citation `david1971introduction' on page 2 undefined on input li
+ne 112.
+
+
+LaTeX Warning: Citation `primbs1996survey' on page 2 undefined on input line 11
+2.
+
+
+LaTeX Warning: Citation `mahony_nonlinear_2008' on page 2 undefined on input li
+ne 112.
+
+
+LaTeX Warning: Citation `wahba_least_1965' on page 2 undefined on input line 11
+8.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 118--119
+
+ []
+
+
+LaTeX Warning: Reference `LastPage' on page 2 undefined on input line 119.
 
 [2]
-Underfull \hbox (badness 10000) in paragraph at lines 199--200
+
+LaTeX Warning: Reference `Wahba_loss_function' on page 3 undefined on input lin
+e 128.
+
+
+LaTeX Warning: Reference `quat_to_rot' on page 3 undefined on input line 135.
+
+
+LaTeX Warning: Reference `QUEST' on page 3 undefined on input line 141.
+
+
+LaTeX Warning: Reference `QUEST_bis' on page 3 undefined on input line 173.
+
+
+LaTeX Warning: Citation `markley1999estimate' on page 3 undefined on input line
+ 173.
+
+
+LaTeX Warning: Citation `weighted1971nasa' on page 3 undefined on input line 17
+5.
+
+
+LaTeX Warning: Citation `mortari1997esoq' on page 3 undefined on input line 175
+.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 175--176
 
  []
+
+
+LaTeX Warning: Citation `metropolis1949monte' on page 3 undefined on input line
+ 181.
+
+
+LaTeX Warning: Citation `chen_bayesian_2003' on page 3 undefined on input line 
+181.
+
+
+LaTeX Warning: Citation `terejanu2009tutorial' on page 3 undefined on input lin
+e 181.
+
+
+Overfull \hbox (4.58936pt too wide) in paragraph at lines 209--210
+[]\OT1/cmr/m/n/10 The weight are nor-malised such as we have $[][] [] =
+ []
+
+
+LaTeX Warning: Reference `LastPage' on page 3 undefined on input line 213.
 
 [3]
-Underfull \hbox (badness 10000) in paragraph at lines 283--285
 
- []
-
-
-Overfull \hbox (7.40256pt too wide) in paragraph at lines 296--297
-[]\OT1/cmr/m/n/10 The first step is to prop-a-gate all par-ti-cles $\OMS/cmsy/m
-/n/10 f[][]\OML/cmm/m/it/10 ; w[]\OMS/cmsy/m/n/10 g$
- []
+LaTeX Warning: Reference `N_eff' on page 4 undefined on input line 221.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 338--339
-
- []
-
-[4]
-Underfull \hbox (badness 10000) in paragraph at lines 340--341
-
- []
-
-<images/test_method.png, id=42, 574.145pt x 405.515pt>
-File: images/test_method.png Graphic file (type png)
-
-<use images/test_method.png>
-Package pdftex.def Info: images/test_method.png used on input line 381.
-(pdftex.def)             Requested size: 229.65393pt x 162.20311pt.
-
-Overfull \hbox (5.15393pt too wide) in paragraph at lines 381--382
- [][] 
- []
+LaTeX Warning: Citation `douc2005comparison' on page 4 undefined on input line 
+229.
 
 
-Overfull \hbox (10.5pt too wide) in paragraph at lines 382--382
-[] [] 
- []
+LaTeX Warning: Citation `arulampalam2002tutorial' on page 4 undefined on input 
+line 229.
 
 
-Underfull \hbox (badness 841) in paragraph at lines 387--388
-[]\OT1/cmr/m/n/10 To dif-fer-en-ti-ate the meth-ods, we as-signed some
- []
-
-<images/histo_s1_add.png, id=43, 803.0pt x 602.25pt>
-File: images/histo_s1_add.png Graphic file (type png)
-
-<use images/histo_s1_add.png>
-Package pdftex.def Info: images/histo_s1_add.png used on input line 400.
-(pdftex.def)             Requested size: 224.83847pt x 168.62885pt.
-
-Overfull \hbox (17.5pt too wide) in paragraph at lines 398--404
- []$[]$ 
- []
-
-<images/histo_s2_add.png, id=44, 803.0pt x 602.25pt>
-File: images/histo_s2_add.png Graphic file (type png)
-
-<use images/histo_s2_add.png>
-Package pdftex.def Info: images/histo_s2_add.png used on input line 407.
-(pdftex.def)             Requested size: 224.83847pt x 168.62885pt.
-
-Overfull \hbox (17.5pt too wide) in paragraph at lines 405--411
- []$[]$ 
- []
+LaTeX Warning: Citation `cheng_particle_2010' on page 4 undefined on input line
+ 229.
 
 
-Overfull \hbox (10.5pt too wide) in paragraph at lines 411--411
-[] [] 
- []
-
-)
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-(./conclusion.tex (./main.bbl [5 <./images/test_method.png>]))
-
-AED: lastpage setting LastPage
-[6 <./images/histo_s1_add.png (PNG copy)> <./images/histo_s2_add.png (PNG copy)
->] (./main.aux)
-
-LaTeX Font Warning: Size substitutions with differences
-(Font)              up to 1.0pt have occurred.
+LaTeX Warning: Citation `chang_particle_2014' on page 4 undefined on input line
+ 229.
 
 
-LaTeX Warning: There were undefined references.
+LaTeX Warning: Citation `gordon1993novel' on page 4 undefined on input line 229
+.
 
- ) 
-Here is how much of TeX's memory you used:
- 6789 strings out of 493304
- 93069 string characters out of 6139871
- 199355 words of memory out of 5000000
- 10115 multiletter control sequences out of 15000+600000
- 20368 words of font info for 76 fonts, out of 8000000 for 9000
- 957 hyphenation exceptions out of 8191
- 42i,13n,58p,753b,1866s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
-r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></usr/share
-/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbxti10.pfb></usr/share/tex
-live/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/t
-exmf-dist/fonts/type1/public/amsfonts/cmextra/cmex7.pfb></usr/share/texlive/tex
-mf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dis
-t/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts
-/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/
-public/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmmib10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfo
-nts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/
-cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb
-></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/s
-hare/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/tex
-live/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/share/texlive/t
-exmf-dist/fonts/type1/public/amsfonts/cm/cmss17.pfb></usr/share/texlive/texmf-d
-ist/fonts/type1/public/amsfonts/cm/cmss8.pfb></usr/share/texlive/texmf-dist/fon
-ts/type1/public/amsfonts/cm/cmssbx10.pfb></usr/share/texlive/texmf-dist/fonts/t
-ype1/public/amsfonts/cm/cmssi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
-ublic/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
-s/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
-mtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.p
-fb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pf
-b></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb
->
-Output written on main.pdf (6 pages, 381360 bytes).
-PDF statistics:
- 138 PDF objects out of 1000 (max. 8388607)
- 96 compressed objects within 1 object stream
- 0 named destinations out of 1000 (max. 500000)
- 21 words of extra memory for PDF output out of 10000 (max. 10000000)
 
+LaTeX Warning: Citation `crassidis_unscented_2003' on page 4 undefined on input
+ line 229.
+
+
+LaTeX Warning: Citation `markley2003attitude' on page 4 undefined on input line
+ 229.
+
+
+LaTeX Warning: Reference `test_method' on page 4 undefined on input line 237.
+
+<images/test_metho

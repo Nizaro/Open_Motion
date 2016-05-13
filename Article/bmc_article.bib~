@@ -491,6 +491,8 @@
 @inproceedings{markley_multiplicative_2004,
 	title = {Multiplicative vs. additive filtering for spacecraft attitude determination},
 	volume = {22},
+	url = {http://naca.central.cranfield.ac.uk/dcsss/2004/D22_7_MarkleyEDITfinal.pdf},
+	urldate = {2015-08-24},
 	booktitle = {Proceedings of the 6th {Conference} on {Dynamics} and {Control} of {Systems} and {Structures} in {Space} ({DCSSS})},
 	author = {Markley, F. Landis},
 	year = {2004},
