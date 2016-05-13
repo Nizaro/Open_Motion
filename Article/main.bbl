@@ -1,6 +1,6 @@
 %% BioMed_Central_Bib_Style_v1.01
 
-\begin{thebibliography}{29}
+\begin{thebibliography}{33}
 % BibTex style file: bmc-mathphys.bst (version 2.1), 2014-07-24
 \ifx \bisbn   \undefined \def \bisbn  #1{ISBN #1}\fi
 \ifx \binits  \undefined \def \binits#1{#1}\fi
@@ -56,6 +56,63 @@ In: \bbtitle{Deuxi{\`e}me Conf{\'e}rence Fran{\c{c}}aise de Neurosciences
 \endbibitem
 
 %%% 2
+\bibitem{Gyroscope}
+\begin{botherref}
+\oauthor{\bsnm{Zhang}, \binits{H.}},
+\oauthor{\bsnm{Wu}, \binits{Y.}},
+\oauthor{\bsnm{Wu}, \binits{W.}},
+\oauthor{\bsnm{Wu}, \binits{M.}},
+\oauthor{\bsnm{Hu}, \binits{X.}}:
+Improved multi-position calibration for inertial measurement units.
+Measurement Science and Technology
+\textbf{21}(1)
+(2009)
+\end{botherref}
+\endbibitem
+
+%%% 3
+\bibitem{MLE}
+\begin{barticle}
+\bauthor{\bsnm{Vasconcelos}, \binits{J.F.}},
+\bauthor{\bsnm{Elkaim}, \binits{G.}},
+\bauthor{\bsnm{Silvstre}, \binits{C.}},
+\bauthor{\bsnm{Oliveira}, \binits{P.}},
+\bauthor{\bsnm{Cardeira}, \binits{B.}}:
+\batitle{Geometric approach to strapdown magnetometer calibration in sensor
+  frame}.
+\bjtitle{IEEE Trans. Aerosp. Electron. Syst.}
+\bvolume{47}(\bissue{2}),
+\bfpage{1293}--\blpage{1306}
+(\byear{2011})
+\end{barticle}
+\endbibitem
+
+%%% 4
+\bibitem{Two-Step}
+\begin{bchapter}
+\bauthor{\bsnm{Gebre-Egziabher}, \binits{D.}},
+\bauthor{\bsnm{Elkaim}, \binits{G.H.}},
+\bauthor{\bsnm{Powell}, \binits{J.D.}},
+\bauthor{\bsnm{Parkinson}, \binits{B.W.}}:
+\bctitle{A non-linear, two-step estimation algorithm for calibrating
+  solid-state strapdown magnetometers}.
+In: \bbtitle{Proc. 8th Int. St. Petersburg Conf. Navig. Syst.},
+pp. \bfpage{290}--\blpage{297}
+(\byear{2001})
+\end{bchapter}
+\endbibitem
+
+%%% 5
+\bibitem{Newton}
+\begin{botherref}
+\oauthor{\bsnm{Bertsekas}, \binits{D.}},
+2nd edn.
+Athena Scientific
+(1999)
+\end{botherref}
+\endbibitem
+
+%%% 6
 \bibitem{kalman_new_1960}
 \begin{barticle}
 \bauthor{\bsnm{Kalman}, \binits{R.E.}}:
@@ -68,7 +125,7 @@ Accessed 2015-08-24
 \end{barticle}
 \endbibitem
 
-%%% 3
+%%% 7
 \bibitem{terejanu2013discrete}
 \begin{botherref}
 \oauthor{\bsnm{Terejanu}, \binits{G.A.}}:
@@ -79,7 +136,7 @@ University at Buffalo, Department of Computer Science and Engineering, NY
 \end{botherref}
 \endbibitem
 
-%%% 4
+%%% 8
 \bibitem{larson1967application}
 \begin{botherref}
 \oauthor{\bsnm{Larson}, \binits{R.E.}},
@@ -92,7 +149,7 @@ DTIC Document
 \end{botherref}
 \endbibitem
 
-%%% 5
+%%% 9
 \bibitem{larson1967precomputation}
 \begin{bchapter}
 \bauthor{\bsnm{Larson}, \binits{R.}},
@@ -105,7 +162,7 @@ pp. \bfpage{634}--\blpage{645}
 \end{bchapter}
 \endbibitem
 
-%%% 6
+%%% 10
 \bibitem{terejanu2008extended}
 \begin{botherref}
 \oauthor{\bsnm{Terejanu}, \binits{G.A.}}:
@@ -116,7 +173,7 @@ Online]. Disponible: http://users. ices. utexas. edu/\~{}
 \end{botherref}
 \endbibitem
 
-%%% 7
+%%% 11
 \bibitem{vik2009integrated}
 \begin{botherref}
 \oauthor{\bsnm{Vik}, \binits{B.}}:
@@ -126,7 +183,7 @@ Department of Engineering Cybernetics, NTNU
 \end{botherref}
 \endbibitem
 
-%%% 8
+%%% 12
 \bibitem{markley2003attitude}
 \begin{barticle}
 \bauthor{\bsnm{Markley}, \binits{F.L.}}:
@@ -138,7 +195,7 @@ Department of Engineering Cybernetics, NTNU
 \end{barticle}
 \endbibitem
 
-%%% 9
+%%% 13
 \bibitem{bar1991quaternion}
 \begin{botherref}
 \oauthor{\bsnm{Bar-Itzhack}, \binits{I.Y.}},
@@ -151,7 +208,7 @@ AIAA paper,
 \end{botherref}
 \endbibitem
 
-%%% 10
+%%% 14
 \bibitem{markley_multiplicative_2004}
 \begin{bchapter}
 \bauthor{\bsnm{Markley}, \binits{F.L.}}:
@@ -164,7 +221,7 @@ vol. \bseriesno{22}
 \end{bchapter}
 \endbibitem
 
-%%% 11
+%%% 15
 \bibitem{julier_new_1995}
 \begin{bchapter}
 \bauthor{\bsnm{Julier}, \binits{S.J.}},
@@ -179,7 +236,7 @@ pp. \bfpage{1628}--\blpage{1632}.
 \end{bchapter}
 \endbibitem
 
-%%% 12
+%%% 16
 \bibitem{uhlmann1995dynamic}
 \begin{botherref}
 \oauthor{\bsnm{Uhlmann}, \binits{J.K.}}:
@@ -190,7 +247,7 @@ University of Oxford
 \end{botherref}
 \endbibitem
 
-%%% 13
+%%% 17
 \bibitem{crassidis_unscented_2003}
 \begin{barticle}
 \bauthor{\bsnm{Crassidis}, \binits{J.L.}},
@@ -204,7 +261,7 @@ Accessed 2015-07-02
 \end{barticle}
 \endbibitem
 
-%%% 14
+%%% 18
 \bibitem{david1971introduction}
 \begin{barticle}
 \bauthor{\bsnm{David}, \binits{G.}}:
@@ -216,7 +273,7 @@ Accessed 2015-07-02
 \end{barticle}
 \endbibitem
 
-%%% 15
+%%% 19
 \bibitem{primbs1996survey}
 \begin{botherref}
 \oauthor{\bsnm{Primbs}, \binits{J.}}:
@@ -226,7 +283,7 @@ Citeseer
 \end{botherref}
 \endbibitem
 
-%%% 16
+%%% 20
 \bibitem{mahony_nonlinear_2008}
 \begin{barticle}
 \bauthor{\bsnm{Mahony}, \binits{R.}},
@@ -241,7 +298,7 @@ Accessed 2015-07-02
 \end{barticle}
 \endbibitem
 
-%%% 17
+%%% 21
 \bibitem{wahba_least_1965}
 \begin{barticle}
 \bauthor{\bsnm{Wahba}, \binits{G.}}:
@@ -254,7 +311,7 @@ Accessed 2015-09-03
 \end{barticle}
 \endbibitem
 
-%%% 18
+%%% 22
 \bibitem{markley1999estimate}
 \begin{bchapter}
 \bauthor{\bsnm{Markley}, \binits{F.L.}},
@@ -267,18 +324,7 @@ pp. \bfpage{1979}--\blpage{1996}
 \end{bchapter}
 \endbibitem
 
-%%% 19
-\bibitem{choukroun_novel_2003}
-\begin{botherref}
-\oauthor{\bsnm{Choukroun}, \binits{D.}}:
-Novel methods for attitude determination using vector observations.
-PhD thesis,
-Technion-Israel Institute of Technology, Faculty of Aerospace Engineering
-(2003)
-\end{botherref}
-\endbibitem
-
-%%% 20
+%%% 23
 \bibitem{weighted1971nasa}
 \begin{botherref}
 \oauthor{\bsnm{Davenport}, \binits{P.B.}}:
@@ -288,7 +334,7 @@ Attitude determination and sensor aligment via weighted least squares affine
 \end{botherref}
 \endbibitem
 
-%%% 21
+%%% 24
 \bibitem{mortari1997esoq}
 \begin{barticle}
 \bauthor{\bsnm{Mortari}, \binits{D.}}:
@@ -300,7 +346,7 @@ Attitude determination and sensor aligment via weighted least squares affine
 \end{barticle}
 \endbibitem
 
-%%% 22
+%%% 25
 \bibitem{metropolis1949monte}
 \begin{barticle}
 \bauthor{\bsnm{Metropolis}, \binits{N.}},
@@ -313,7 +359,7 @@ Attitude determination and sensor aligment via weighted least squares affine
 \end{barticle}
 \endbibitem
 
-%%% 23
+%%% 26
 \bibitem{chen_bayesian_2003}
 \begin{barticle}
 \bauthor{\bsnm{Chen}, \binits{Z.}}:
@@ -327,7 +373,7 @@ Accessed 2015-07-02
 \end{barticle}
 \endbibitem
 
-%%% 24
+%%% 27
 \bibitem{terejanu2009tutorial}
 \begin{botherref}
 \oauthor{\bsnm{Terejanu}, \binits{G.A.}}:
@@ -339,7 +385,7 @@ Department of Computer Science and Engineering. University at Buffalo, Buffalo,
 \end{botherref}
 \endbibitem
 
-%%% 25
+%%% 28
 \bibitem{douc2005comparison}
 \begin{bchapter}
 \bauthor{\bsnm{Douc}, \binits{R.}},
@@ -353,7 +399,7 @@ pp. \bfpage{64}--\blpage{69}
 \end{bchapter}
 \endbibitem
 
-%%% 26
+%%% 29
 \bibitem{arulampalam2002tutorial}
 \begin{barticle}
 \bauthor{\bsnm{Arulampalam}, \binits{M.S.}},
@@ -369,7 +415,7 @@ pp. \bfpage{64}--\blpage{69}
 \end{barticle}
 \endbibitem
 
-%%% 27
+%%% 30
 \bibitem{cheng_particle_2010}
 \begin{barticle}
 \bauthor{\bsnm{Cheng}, \binits{Y.}},
@@ -384,7 +430,7 @@ Accessed 2015-07-02
 \end{barticle}
 \endbibitem
 
-%%% 28
+%%% 31
 \bibitem{chang_particle_2014}
 \begin{botherref}
 \oauthor{\bsnm{Chang}, \binits{L.}}:
@@ -396,7 +442,7 @@ Accessed 2015-07-02
 \end{botherref}
 \endbibitem
 
-%%% 29
+%%% 32
 \bibitem{gordon1993novel}
 \begin{bchapter}
 \bauthor{\bsnm{Gordon}, \binits{N.J.}},
@@ -409,6 +455,16 @@ pp. \bfpage{107}--\blpage{113}
 (\byear{1993}).
 \bcomment{IET}
 \end{bchapter}
+\endbibitem
+
+%%% 33
+\bibitem{fossen_handbook_2011}
+\begin{bbook}
+\bauthor{\bsnm{Fossen}, \binits{T.I.}}:
+\bbtitle{Handbook of Marine Craft Hydrodynamics and Motion Control}.
+\bpublisher{John Wiley \& Sons}, \blocation{???}
+(\byear{2011})
+\end{bbook}
 \endbibitem
 
 \end{thebibliography}
@@ -432,6 +488,65 @@ pp. \bfpage{107}--\blpage{113}
 </bibl>
 
 <bibl id="B2">
+  <title><p>Improved multi-position calibration for inertial measurement
+  units</p></title>
+  <aug>
+    <au><snm>Zhang</snm><fnm>H.</fnm></au>
+    <au><snm>Wu</snm><fnm>Y.</fnm></au>
+    <au><snm>Wu</snm><fnm>W.</fnm></au>
+    <au><snm>Wu</snm><fnm>M.</fnm></au>
+    <au><snm>Hu</snm><fnm>X.</fnm></au>
+  </aug>
+  <source>Measurement Science and Technology</source>
+  <pubdate>2009</pubdate>
+  <volume>21</volume>
+  <issue>1</issue>
+</bibl>
+
+<bibl id="B3">
+  <title><p>Geometric approach to strapdown magnetometer calibration in sensor
+  frame</p></title>
+  <aug>
+    <au><snm>Vasconcelos</snm><fnm>J. F.</fnm></au>
+    <au><snm>Elkaim</snm><fnm>G.</fnm></au>
+    <au><snm>Silvstre</snm><fnm>C.</fnm></au>
+    <au><snm>Oliveira</snm><fnm>P.</fnm></au>
+    <au><snm>Cardeira</snm><fnm>B.</fnm></au>
+  </aug>
+  <source>IEEE Trans. Aerosp. Electron. Syst.</source>
+  <pubdate>2011</pubdate>
+  <volume>47</volume>
+  <issue>2</issue>
+  <fpage>1293</fpage>
+  <lpage>1306</lpage>
+</bibl>
+
+<bibl id="B4">
+  <title><p>A non-linear, two-step estimation algorithm for calibrating
+  solid-state strapdown magnetometers</p></title>
+  <aug>
+    <au><snm>Gebre Egziabher</snm><fnm>D.</fnm></au>
+    <au><snm>Elkaim</snm><fnm>G. H.</fnm></au>
+    <au><snm>Powell</snm><fnm>J. D.</fnm></au>
+    <au><snm>Parkinson</snm><fnm>B. W.</fnm></au>
+  </aug>
+  <source>Proc. 8th Int. St. Petersburg Conf. Navig. Syst.</source>
+  <pubdate>2001</pubdate>
+  <fpage>290</fpage>
+  <lpage>297</lpage>
+</bibl>
+
+<bibl id="B5">
+  <aug>
+    <au><snm>Bertsekas</snm><fnm>D.</fnm></au>
+  </aug>
+  <source>Nonlinear Programming</source>
+  <publisher>Athena Scientific</publisher>
+  <edition>2</edition>
+  <pubdate>1999</pubdate>
+</bibl>
+
+<bibl id="B6">
   <title><p>A new approach to linear filtering and prediction
   problems</p></title>
   <aug>
@@ -446,7 +561,7 @@ pp. \bfpage{107}--\blpage{113}
   <url>http://fluidsengineering.asmedigitalcollection.asme.org/article.aspx?articleid=1430402</url>
 </bibl>
 
-<bibl id="B3">
+<bibl id="B7">
   <title><p>Discrete kalman filter tutorial</p></title>
   <aug>
     <au><snm>Terejanu</snm><fnm>GA</fnm></au>
@@ -457,7 +572,7 @@ pp. \bfpage{107}--\blpage{113}
   <volume>14260</volume>
 </bibl>
 
-<bibl id="B4">
+<bibl id="B8">
   <title><p>APPLICATION OF THE EXTENDED KALMAN FILTER TO BALLISTIC TRAJECTORY
   ESTIMATION.</p></title>
   <aug>
@@ -468,7 +583,7 @@ pp. \bfpage{107}--\blpage{113}
   <pubdate>1967</pubdate>
 </bibl>
 
-<bibl id="B5">
+<bibl id="B9">
   <title><p>Precomputation of the weighting matrix in an extended Kalman
   filter</p></title>
   <aug>
@@ -483,7 +598,7 @@ pp. \bfpage{107}--\blpage{113}
   <lpage>-645</lpage>
 </bibl>
 
-<bibl id="B6">
+<bibl id="B10">
   <title><p>Extended kalman filter tutorial</p></title>
   <aug>
     <au><snm>Terejanu</snm><fnm>GA</fnm></au>
@@ -493,7 +608,7 @@ pp. \bfpage{107}--\blpage{113}
   <pubdate>2008</pubdate>
 </bibl>
 
-<bibl id="B7">
+<bibl id="B11">
   <title><p>Integrated satellite and inertial navigation systems</p></title>
   <aug>
     <au><snm>Vik</snm><fnm>B</fnm></au>
@@ -502,7 +617,7 @@ pp. \bfpage{107}--\blpage{113}
   <pubdate>2009</pubdate>
 </bibl>
 
-<bibl id="B8">
+<bibl id="B12">
   <title><p>Attitude error representations for Kalman filtering</p></title>
   <aug>
     <au><snm>Markley</snm><fnm>FL</fnm></au>
@@ -515,7 +630,7 @@ pp. \bfpage{107}--\blpage{113}
   <lpage>-317</lpage>
 </bibl>
 
-<bibl id="B9">
+<bibl id="B13">
   <title><p>Quaternion normalization in additive EKF for spacecraft attitude
   determination</p></title>
   <aug>
@@ -529,7 +644,7 @@ pp. \bfpage{107}--\blpage{113}
   <lpage>-2706</lpage>
 </bibl>
 
-<bibl id="B10">
+<bibl id="B14">
   <title><p>Multiplicative vs. additive filtering for spacecraft attitude
   determination</p></title>
   <aug>
@@ -541,7 +656,7 @@ pp. \bfpage{107}--\blpage{113}
   <volume>22</volume>
 </bibl>
 
-<bibl id="B11">
+<bibl id="B15">
   <title><p>A new approach for filtering nonlinear systems</p></title>
   <aug>
     <au><snm>Julier</snm><fnm>SJ</fnm></au>
@@ -556,7 +671,7 @@ pp. \bfpage{107}--\blpage{113}
   <lpage>-1632</lpage>
 </bibl>
 
-<bibl id="B12">
+<bibl id="B16">
   <title><p>Dynamic map building and localization: New theoretical
   foundations</p></title>
   <aug>
@@ -567,7 +682,7 @@ pp. \bfpage{107}--\blpage{113}
   <pubdate>1995</pubdate>
 </bibl>
 
-<bibl id="B13">
+<bibl id="B17">
   <title><p>Unscented filtering for spacecraft attitude estimation</p></title>
   <aug>
     <au><snm>Crassidis</snm><fnm>JL</fnm></au>
@@ -582,7 +697,7 @@ pp. \bfpage{107}--\blpage{113}
   <url>http://arc.aiaa.org/doi/abs/10.2514/2.5102</url>
 </bibl>
 
-<bibl id="B14">
+<bibl id="B18">
   <title><p>An introduction to observers</p></title>
   <aug>
     <au><snm>David</snm><fnm>G</fnm></au>
@@ -595,7 +710,7 @@ pp. \bfpage{107}--\blpage{113}
   <lpage>-602</lpage>
 </bibl>
 
-<bibl id="B15">
+<bibl id="B19">
   <title><p>Survey of nonlinear observer design techniques</p></title>
   <aug>
     <au><snm>Primbs</snm><fnm>J</fnm></au>
@@ -604,7 +719,7 @@ pp. \bfpage{107}--\blpage{113}
   <pubdate>1996</pubdate>
 </bibl>
 
-<bibl id="B16">
+<bibl id="B20">
   <title><p>Nonlinear complementary filters on the special orthogonal
   group</p></title>
   <aug>
@@ -621,7 +736,7 @@ pp. \bfpage{107}--\blpage{113}
   <url>http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=4608934</url>
 </bibl>
 
-<bibl id="B17">
+<bibl id="B21">
   <title><p>A least squares estimate of satellite attitude</p></title>
   <aug>
     <au><snm>Wahba</snm><fnm>G</fnm></au>
@@ -635,7 +750,7 @@ pp. \bfpage{107}--\blpage{113}
   <url>http://epubs.siam.org/doi/abs/10.1137/1007077</url>
 </bibl>
 
-<bibl id="B18">
+<bibl id="B22">
   <title><p>How to estimate attitude from vector observations</p></title>
   <aug>
     <au><snm>Markley</snm><fnm>FL</fnm></au>
@@ -650,19 +765,7 @@ pp. \bfpage{107}--\blpage{113}
   <lpage>-1996</lpage>
 </bibl>
 
-<bibl id="B19">
-  <title><p>Novel methods for attitude determination using vector
-  observations</p></title>
-  <aug>
-    <au><snm>Choukroun</snm><fnm>D</fnm></au>
-  </aug>
-  <source>PhD thesis</source>
-  <publisher>Technion-Israel Institute of Technology, Faculty of Aerospace
-  Engineering</publisher>
-  <pubdate>2003</pubdate>
-</bibl>
-
-<bibl id="B20">
+<bibl id="B23">
   <title><p>Attitude determination and sensor aligment via weighted least
   squares affine transformations</p></title>
   <aug>
@@ -671,7 +774,7 @@ pp. \bfpage{107}--\blpage{113}
   <pubdate>1971</pubdate>
 </bibl>
 
-<bibl id="B21">
+<bibl id="B24">
   <title><p>ESOQ: A closed-form solution to the Wahba problem</p></title>
   <aug>
     <au><snm>Mortari</snm><fnm>D</fnm></au>
@@ -685,7 +788,7 @@ pp. \bfpage{107}--\blpage{113}
   <lpage>-204</lpage>
 </bibl>
 
-<bibl id="B22">
+<bibl id="B25">
   <title><p>The monte carlo method</p></title>
   <aug>
     <au><snm>Metropolis</snm><fnm>N</fnm></au>
@@ -700,7 +803,7 @@ pp. \bfpage{107}--\blpage{113}
   <lpage>-341</lpage>
 </bibl>
 
-<bibl id="B23">
+<bibl id="B26">
   <title><p>Bayesian filtering: {From} {Kalman} filters to particle filters,
   and beyond</p></title>
   <aug>
@@ -715,7 +818,7 @@ pp. \bfpage{107}--\blpage{113}
   <url>http://www2.ee.kuas.edu.tw/~lwang/WWW/BayesianFilteringFromKalmanFiltersToParticleFiltersAndBeyond.pdf</url>
 </bibl>
 
-<bibl id="B24">
+<bibl id="B27">
   <title><p>Tutorial on Monte Carlo Techniques</p></title>
   <aug>
     <au><snm>Terejanu</snm><fnm>GA</fnm></au>
@@ -726,7 +829,7 @@ pp. \bfpage{107}--\blpage{113}
   <volume>14260</volume>
 </bibl>
 
-<bibl id="B25">
+<bibl id="B28">
   <title><p>Comparison of resampling schemes for particle filtering</p></title>
   <aug>
     <au><snm>Douc</snm><fnm>R</fnm></au>
@@ -739,7 +842,7 @@ pp. \bfpage{107}--\blpage{113}
   <lpage>-69</lpage>
 </bibl>
 
-<bibl id="B26">
+<bibl id="B29">
   <title><p>A tutorial on particle filters for online nonlinear/non-Gaussian
   Bayesian tracking</p></title>
   <aug>
@@ -757,7 +860,7 @@ pp. \bfpage{107}--\blpage{113}
   <lpage>-188</lpage>
 </bibl>
 
-<bibl id="B27">
+<bibl id="B30">
   <title><p>Particle filtering for attitude estimation using a minimal
   local-error representation</p></title>
   <aug>
@@ -773,7 +876,7 @@ pp. \bfpage{107}--\blpage{113}
   <url>http://arc.aiaa.org/doi/pdf/10.2514/1.47236</url>
 </bibl>
 
-<bibl id="B28">
+<bibl id="B31">
   <title><p>Particle {Filtering} for {Attitude} {Estimation} {Using} a
   {Minimal} {Local}-{Error} {Representation}: {A} {Revisit}</p></title>
   <aug>
@@ -784,7 +887,7 @@ pp. \bfpage{107}--\blpage{113}
   <url>http://arxiv.org/abs/1411.6127</url>
 </bibl>
 
-<bibl id="B29">
+<bibl id="B32">
   <title><p>Novel approach to nonlinear/non-Gaussian Bayesian state
   estimation</p></title>
   <aug>
@@ -798,6 +901,16 @@ pp. \bfpage{107}--\blpage{113}
   <issue>2</issue>
   <fpage>107</fpage>
   <lpage>-113</lpage>
+</bibl>
+
+<bibl id="B33">
+  <title><p>Handbook of marine craft hydrodynamics and motion
+  control</p></title>
+  <aug>
+    <au><snm>Fossen</snm><fnm>TI</fnm></au>
+  </aug>
+  <publisher>John Wiley \& Sons</publisher>
+  <pubdate>2011</pubdate>
 </bibl>
 
 </refgrp>

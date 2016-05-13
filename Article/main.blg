@@ -23,46 +23,48 @@ Database file #1: bmc_article.bib
 Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
+Warning--empty title in Newton
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
-You've used 29 entries,
+You've used 33 entries,
             7128 wiz_defined-function locations,
-            1297 strings with 14189 characters,
-and the built_in function-call counts, 453971 in all, are:
-= -- 82967
-> -- 749
-< -- 487
-+ -- 50467
-- -- 200
-* -- 12064
-:= -- 79729
-add.period$ -- 38
-call.type$ -- 29
-change.case$ -- 292
-chr.to.int$ -- 1045
-cite$ -- 29
-duplicate$ -- 2367
-empty$ -- 6256
-format.name$ -- 567
-if$ -- 116167
+            1324 strings with 14806 characters,
+and the built_in function-call counts, 576851 in all, are:
+= -- 106378
+> -- 874
+< -- 552
++ -- 65472
+- -- 245
+* -- 14776
+:= -- 100693
+add.period$ -- 42
+call.type$ -- 33
+change.case$ -- 352
+chr.to.int$ -- 1170
+cite$ -- 34
+duplicate$ -- 2753
+empty$ -- 7379
+format.name$ -- 714
+if$ -- 148049
 int.to.chr$ -- 2
-int.to.str$ -- 77
-missing$ -- 905
-newline$ -- 769
-num.names$ -- 145
-pop$ -- 1082
+int.to.str$ -- 85
+missing$ -- 1043
+newline$ -- 878
+num.names$ -- 165
+pop$ -- 1264
 preamble$ -- 1
-purify$ -- 134
-quote$ -- 58
-skip$ -- 50163
+purify$ -- 150
+quote$ -- 66
+skip$ -- 64461
 stack$ -- 0
-substring$ -- 43011
-swap$ -- 748
-text.length$ -- 480
+substring$ -- 54423
+swap$ -- 858
+text.length$ -- 547
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 1123
-warning$ -- 0
-while$ -- 878
+type$ -- 1268
+warning$ -- 1
+while$ -- 1023
 width$ -- 0
-write$ -- 942
+write$ -- 1100
+(There was 1 warning)

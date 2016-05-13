@@ -280,20 +280,18 @@ s_2 = \frac{1}{\bar{\epsilon} \times \bar{\tau}}
 \end{align}
 
 With $\bar{\epsilon}$ average attitude error (voir \ref{error_definition}) et $\bar{\tau}$ the average computation time. \\
-\begin{figure}[!h]
-
 
 \subsection{Simulated environment}
 
-Our framework has been entierely coded in C++ and all tests have been launched on a Dell Optiplex 9020 with Intel $ Core^{TM}$ i7-4790 CPU at 3.60GHz $\times$ 8.  All curves were generated with \texttt{R} and \texttt{Matlab}. No paralelization or code optimisation have been done, our program turns entirely in sequential manner. Our goal is to see the difference of computation duration of all methods without modifying the performance with a specific optimisation.
+We  modelled our inertial sensors based on the Fossen's model \cite{fossen_handbook_2011}. The noise generated here is Gaussian. In this study, sensor bias are not considerate as constant. We proceed 30 consecutive simulations in order to get valid results. We've used  specification described in table \ref{spec_imu}. 
 
-\begin{table}
+\begin{table}[!h]
 \begin{tabular}{|c|c|c|}
 \hline
 Sensor & Bias instability  & Measurement noise\rule[-2pt]{0pt}{10pt} \\
 \hline
 \hline
- Gyroscope & $0.316\times 10^{-2} $  $\mu$rad.s$^{-\frac{1}{2}}$ & $ 3.16$ $ \times 10^{-4} $ $\mu$rad.s$^{-\frac{3}{2}}$ \rule[-1.5pt]{0pt}{13pt}\\
+ Gyroscope & $0.316\times 10^{-4} $  $\mu$rad.s$^{-\frac{3}{2}}$ & $ 0.316$  $\mu$rad.s$^{-\frac{1}{2}}$ \rule[-1.5pt]{0pt}{13pt}\\
  \hline
 Magnetometer & $0.0023$ mGauss$/\sqrt{Hz}$ & 0.05 mGauss  \rule[-1.5pt]{0pt}{13pt}\\
  \hline
@@ -304,8 +302,35 @@ Accelerometer &  $0.002$ m.s$^{-2}/\sqrt{Hz} $ & 0.02 m.s$^{-2}$ \rule[-1.5pt]{0
 \label{spec_imu}
 \end{table}
 
-For our Sensor Model, we've used  specification described in table \ref{spec_imu}. 
 
+
+All simulations started with an initial attitude error $\delta\mathbi{q}_0$ randomly generated through normal distribution $\mathcal{N}(20,50^2)$. The results of score $s_1$ (resp $s_2$) are shown in figure \ref{histo_s1_add} (resp \ref{histo_s2_add}). Mean computation times of all methods required for one iteration is given in table (\ref{mean_time}).
+
+\begin{table}[!h]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+Method & Mean Computation time \\
+\hline
+\hline
+CGO & $7.88 \times 10^{-6} s$\rule[-2pt]{0pt}{10pt}\\
+ \hline
+MEKF & $1.12\times 10^{-4} s$\rule[-2pt]{0pt}{10pt}\\
+ \hline
+ USQUE & $1.63\times 10^{-4} s $\rule[-2pt]{0pt}{10pt}\\
+ \hline
+PF & $4.5\times 10^{-2} s$\rule[-2pt]{0pt}{10pt}\\
+ \hline
+REQUEST& $1.91\times 10^{-4} s$ \rule[-2pt]{0pt}{10pt} \\
+ \hline
+\end{tabular}
+\caption{Mean computation times for one iteration}
+\label{mean_time}
+\end{table}
+
+
+
+\begin{figure}[!h]
 \begin{subfigure}{.5\textwidth}
 \centering
 \includegraphics[scale=0.28]{images/histo_s1_add.png}
