@@ -26,45 +26,45 @@ Reallocated singl_function (elt_size=4) to 100 items from 50.
 Warning--empty title in Newton
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
-You've used 33 entries,
+You've used 35 entries,
             7128 wiz_defined-function locations,
-            1324 strings with 14806 characters,
-and the built_in function-call counts, 576851 in all, are:
-= -- 106378
-> -- 874
-< -- 552
-+ -- 65472
-- -- 245
-* -- 14776
-:= -- 100693
-add.period$ -- 42
-call.type$ -- 33
-change.case$ -- 352
-chr.to.int$ -- 1170
-cite$ -- 34
-duplicate$ -- 2753
-empty$ -- 7379
-format.name$ -- 714
-if$ -- 148049
+            1338 strings with 15322 characters,
+and the built_in function-call counts, 588288 in all, are:
+= -- 107672
+> -- 954
+< -- 610
++ -- 65681
+- -- 256
+* -- 15707
+:= -- 102962
+add.period$ -- 45
+call.type$ -- 35
+change.case$ -- 367
+chr.to.int$ -- 1316
+cite$ -- 36
+duplicate$ -- 2958
+empty$ -- 8112
+format.name$ -- 765
+if$ -- 150598
 int.to.chr$ -- 2
-int.to.str$ -- 85
-missing$ -- 1043
-newline$ -- 878
-num.names$ -- 165
-pop$ -- 1264
+int.to.str$ -- 89
+missing$ -- 1109
+newline$ -- 937
+num.names$ -- 175
+pop$ -- 1331
 preamble$ -- 1
-purify$ -- 150
-quote$ -- 66
-skip$ -- 64461
+purify$ -- 158
+quote$ -- 70
+skip$ -- 65059
 stack$ -- 0
-substring$ -- 54423
-swap$ -- 858
-text.length$ -- 547
+substring$ -- 56134
+swap$ -- 948
+text.length$ -- 575
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 1268
+type$ -- 1359
 warning$ -- 1
-while$ -- 1023
+while$ -- 1090
 width$ -- 0
-write$ -- 1100
+write$ -- 1176
 (There was 1 warning)

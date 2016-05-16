@@ -9,9 +9,7 @@ A quaternion is a four-dimensional vector, defined as
 $ \mathbi{q} = \begin{pmatrix} \textbf{q} \\ q_w \end{pmatrix} $ with $ \textbf{q} =  ( q_x, q_y, q_z)^T $. 
 \end{center}
 
-For attitude representation, the quaternion must satisfies a single constraint given by  $|| \mathbi{q}  || = 1$.
-
-Then, the attitude matrix $R \in SO(3) $ related to the quaternion $\mathbi{q}$ is given by :
+For attitude representation, the quaternion must satisfies a single constraint given by  $|| \mathbi{q}  || = 1$. The attitude matrix $R \in SO(3) $ related to the quaternion $\mathbi{q}$ is given by :
 \vspace{-0.15cm}
 \begin{equation}
 R(\mathbi{q}) = (q_w^2 - |\textbf{q}|^2)I + 2 \textbf{q}\textbf{q}^T - 2q_w[\textbf{q} \times]
@@ -19,6 +17,7 @@ R(\mathbi{q}) = (q_w^2 - |\textbf{q}|^2)I + 2 \textbf{q}\textbf{q}^T - 2q_w[\tex
 \end{equation}
 
 Where $SO(3)$ is the special orthogonal group defined by:
+
 \vspace{-0.15cm}
 $$SO(3) = \{ R \in \mathbb{R}^{ 3 \times 3} | RR^T = R^TR = I, det(R) = 1 \}$$
 
@@ -101,7 +100,7 @@ Where $\mathcal{K}_{k+1}$ is the Kalman gain  representing relative importance o
 \mathcal{K}_{k+1}=P^-_{k+1}H^T_{k+1}\mathcal{S}^{-1}
 \end{equation}
 
-The Kalman filter provides an optimal estimation for linear systems. Nevertheless, most of studied dynamical systems are nonlinear (attitude estimation, pendula, ... ). Thus, extended Kalman Filter approach  was proposed for nonlinear systems \cite{larson1967application, larson1967precomputation,terejanu2008extended}. 
+The Kalman filter provides an optimal estimation for linear systems. Nevertheless, most of studied dynamical systems are nonlinear (like attitude estimation problem). Thus, extended Kalman Filter approach  was proposed for nonlinear systems \cite{larson1967application, larson1967precomputation,terejanu2008extended}. 
 
 Here, we have chosen to use quaternions for the attitude representation because of its singular-free specificity. But special care must be taken when designing a quaternion based extended Kalman filter. Because of the constraint on the quaternions, the covariance matrix $P$ can be singular \cite{vik2009integrated} which is problematic for the numerical stability. There exist several methods to deal with this issue. Multiplicative Extended Kalman Filter (MEKF)\cite{markley2003attitude} and the Additive Extended Kalman Filter (AEKF) \cite{bar1991quaternion} are designed to tackle this problem.The difference between AEKF and MEKF is discussed in \cite{markley_multiplicative_2004}. For the library, we choose to implement MEKF.
 
@@ -109,14 +108,12 @@ On the other hand, the Unscented Kalman Filter method was proposed by Julier and
 
 \subsubsection{Nonlinear Observer}
 
-The theory of the state observer was first introduced by Kalman and Bucy for a linear system in a stochastic environment. Then Luenberger \cite{david1971introduction} made a general theory of observers for deterministic linear systems, introducing the notions of observer and reduced minimum observer \cite{primbs1996survey}. Mahony et al. \cite{mahony_nonlinear_2008} have proposed an nonlinear observer called Constant Gain Observer (CGO), termed the explicit complementary filter, that provides attitude estimates as well as gyro bias estimates. 
-
-One problem of Kalman Filters is to find the initial values in the covariance (matrix $Q$) because it is difficult to relate it to real physical quantities. The covariance matrix is not involve in nonlinear observer theory. This is one of the reasons there has been an increasing interest for nonlinear observer design the last decades. Another reason is their low computational need.
+The theory of the state observer was first introduced by Kalman and Bucy for a linear system in a stochastic environment. Then Luenberger \cite{david1971introduction} made a general theory of observers for deterministic linear systems, introducing the notions of observer and reduced minimum observer \cite{primbs1996survey}. Mahony et al. \cite{mahony_nonlinear_2008} have proposed an nonlinear observer called Constant Gain Observer (CGO), termed the explicit complementary filter, that provides attitude estimates as well as gyro bias estimates. One problem of Kalman Filters is to find the initial values in the covariance (matrix $Q$) because it is difficult to relate it to real physical quantities. The covariance matrix is not involve in nonlinear observer theory. This is one of the reasons there has been an increasing interest for nonlinear observer design during the last decades. Another reason is their low computational need.
 
 \subsubsection{Methods Based on Solutions of the Wahba's Problem}
 
-The attitude determination problem for vector observation was first formulated as a least squares estimation problem by Wahba \cite{wahba_least_1965} in 1965 :\\
-
+The attitude determination problem for vector observation was first formulated as a least squares estimation problem by Wahba \cite{wahba_least_1965} in 1965 :
+\vspace{0.1cm}
 
 Given the two sets of $n$ vectors $\{ \textbf{r}_{1},...,\textbf{r}_{n} \}$ and $\{ \textbf{b}_{1},...,\textbf{b}_{n} \}$, $n \geqslant 2 $, where each pair $(\textbf{r}_{i},\textbf{b}_{i})$ corresponds to a generalised vector, $\textbf{x}_{i}$, find the proper orthogonal matrix, $A$, which bring the first into the best least squares coincidence with the second. That is, find $A \in SO(3)$ which minimises the function $J$ defined as:
 
@@ -132,7 +129,7 @@ J(\mathbi{q}) = \frac{1}{2} \sum_{i=1}^n a_i||b_i-R(\mathbi{q})r_i||^2
 \label{QUEST}
 \end{equation}
 
-The matrix $R(\mathbi{q})$, is the rotation matrix that corresponds to the quaternion $\mathbi{q}$ (equation \ref{quat_to_rot}). The QUEST algorithm are conducted in the following manner. Let
+The matrix $R(\mathbi{q})$, is the rotation matrix that corresponds to the quaternion $\mathbi{q}$ (equation \ref{quat_to_rot}). The Quatenion Estimator (QUEST) algorithm propose a solution to the Wahba's problem. Let :
 
 \begin{equation}
 B = \sum_{i=1}^N a_i\textbf{b}_i \textbf{r}_i^T
@@ -169,16 +166,13 @@ S = B + B^T\\
 \right.
 \end{equation}
 
-
-The minimisation problem from Equation (\ref{QUEST_bis}) is now a maximisation problem. thus, the solution $\mathbi{q}_{opt}$ is the eingen vector correspond to the largest eigen value of $K$ \cite{markley1999estimate}. The main problem of QUEST is that it does not take into account of all the previous observations performed since the beginning. A recursive QUEST algorithm (REQUEST) proposed by Bar-Itzhack manages this problem.  Contrary to other methods, the QUEST algorithms do not estimate the gyroscope bias. Which can make it less robust in some cases.
-
-There are also other methods based on Wahba's problem like the Davenport's q-method \cite{weighted1971nasa} proposed in 1971 considered more robust than QUEST. Or the method ESOQ proposed by Mortari \cite{mortari1997esoq}  in 1997. However, for this library, we limit our investigation to REQUEST.\\
+The minimization problem from equation (\ref{QUEST_bis}) is now a maximization problem. thus, the solution $\mathbi{q}_{opt}$ is the eingen vector correspond to the highest eigen value of $K$ \cite{markley1999estimate}. The main problem of QUEST is that it does not take into account of all the previous observations performed since the beginning. Then, a REcursive-QUEST algorithm (REQUEST) proposed by Bar-Itzhack\cite{bar-itzhack_request-recursive_1996} manages this problem.  Contrary to other methods, solutions to Wahba's problem do not estimate the gyroscope bias. Which can make it less robust in some cases. There are also other methods based on Wahba's problem like the Davenport's q-method \cite{weighted1971nasa} proposed in 1971 considered more robust than QUEST. Or the method ESOQ proposed by Mortari \cite{mortari1997esoq}  in 1997. However, for this library, we limit our investigation to REQUEST.
 
 
 
 \subsubsection{Particle Filtering Method}
 
-Particle filtering method is based on Monte-Carlo method\cite{metropolis1949monte}. The main idea is to use a large number of samples called particles to estimate a nonlinear function \cite{chen_bayesian_2003} and \cite{terejanu2009tutorial}. The set of $N$ particle with associated weight at time $k$ are denoted by $\{\textbf{x}^{(i)}_{k},w^{(i)}_{k}\}$. Initially, the particle are drawn from a proposal distribution. The PF is divided into three step, prediction, update, resampling, that constitute a filter cycle:
+Particle filtering method is based on Monte-Carlo simulation\cite{metropolis1949monte}. The main idea is to use a large number of samples called particles to estimate a nonlinear function \cite{chen_bayesian_2003,terejanu2009tutorial}. The set of $N$ particle with associated weight at time $k$ are denoted by $\{\textbf{x}^{(i)}_{k},w^{(i)}_{k}\}$. Initially, the particle are drawn from a proposal distribution. The PF is divided into three step, prediction, update, resampling, that constitute a filter cycle:
 
 \begin{itemize}
 \item Prediction
@@ -226,15 +220,14 @@ A common problem with PF is the degeneracy phenomenon. After some iterations, mo
  \end{equation}
 
 
-The choice of the threshold is important. Indeed, a high threshold gives $N_{eff} \approx N$, but that does not mean necessarily we have a lot of efficient particles. On the contrary, it means that most of the particle are identical making large computations unnecessary. Moreover, with a low threshold, many particles are neglected making computations less efficient. In general, the threshold is fixed at  $\frac{N}{2}$ or $\frac{N}{3}$. There are several types of resampling, a comparison is made in \cite{douc2005comparison}. We took the resampling algorithm described in \cite{arulampalam2002tutorial} because it is the most commun. Cheng, Yang and Crassidis have propose an attitute estimation with a particle filter method \cite{cheng_particle_2010}. We have also considered the revisited algorithm of Cheng \cite{chang_particle_2014} based on bootstrap filter\cite{gordon1993novel}. We have chosen to implement this one because they use the same approach as USQUE \cite{crassidis_unscented_2003} and MEKF\cite{markley2003attitude}. We decided to explore the performance of this three algorithms with the same model. The particle filter provides an estimate of the nonlinear system without assuming that the noise is Gaussian. So it is more robust to any situation, which makes it more performant in the context of a real applications. But an important computation time is required and that is a limitation for a real-time application.
-
+The choice of the threshold is important. Indeed, a high threshold gives $N_{eff} \approx N$, but that does not mean necessarily we have a lot of efficient particles. On the contrary, it means that most of the particle are identical making large computations unnecessary. Moreover, with a low threshold, many particles are neglected making computations less efficient. In general, the threshold is fixed at  $\frac{N}{2}$ or $\frac{N}{3}$. There are several types of resampling, a comparison is made in \cite{douc2005comparison}. We took the resampling algorithm described in \cite{arulampalam2002tutorial} because it is the most commun. Cheng, Yang and Crassidis have propose an attitute estimation with a particle filter method \cite{cheng_particle_2010}. We have also considered the revisited algorithm of Cheng \cite{chang_particle_2014} based on bootstrap filter\cite{gordon1993novel}. We have chosen to implement this one because they use the same approach as USQUE  and MEKF.  The particle filter does not assume that the measurement noise is Gaussian. Which makes it more adaptable in the context of a real applications. Nevertheless an important computation time is required. 
 
 
 \section{Performance Evaluation}
 
 \subsection{Score definition}
-We have access through our designed ground truth (simulated or from computer vision technics) to the true attitude $\mathbi{q}^{real}_k$ at time $k$ of the reference frame $\{c\}$ related to $\{a\}$.
-By computation, each method returns an estimate attitude $\mathbi{q}^{est}_k$ at time $k$ (see figure \ref{test_method}). 
+We have access through the ground truth (simulated or from computer vision technics) to the true attitude $\mathbi{q}^{real}_k$ at time $k$ of the reference frame $\{c\}$ related to $\{a\}$.
+By computation, each method returns an estimate attitude $\mathbi{q}^{est}_k$ at time $k$. 
 
 \begin{equation}
  \delta \mathbi{q}_k = \mathbi{q}^{real}_k \otimes (\mathbi{q}^{est}_k)^{-1} =  \begin{pmatrix}  \delta \textbf{q}_{k} \\ \delta q_{w_k}  \end{pmatrix}
@@ -261,17 +254,16 @@ The mean of the error is given by :
 \label{mean_var_error_def}
 \end{equation}
 
-With $n$ the number of data at our disposal. We use this information (mean error) for our performance study. 
+With $n$ the number of iteration at our disposal. We use this information (mean error) for our performance study. To differentiate the methods, we assigned  some scores in order to highlight the behaviour of these methods in different configurations defined as:
 
-\begin{figure}[!h]
-\centering
-\includegraphics[scale=0.40]{images/test_method.png}
-\caption{Algorithm designed to compute attitude estimation methods' performances}
-\label{test_method}
-\end{figure}
+%\begin{figure}[!h]
+%\centering
+%\includegraphics[scale=0.40]{images/test_method.png}
+%\caption{Algorithm designed to compute attitude estimation methods' performances}
+%\label{test_method}
+%\end{figure}
 
 
-To differentiate the methods, we assigned  some ''scores'' in order to highlight the behaviour of these methods in different configurations. We defined these ''scores'' as:
 
 \begin{align}
 s_1 = \bar{\epsilon}\\
@@ -279,11 +271,11 @@ s_2 = \frac{1}{\bar{\epsilon} \times \bar{\tau}}
 \label{score}
 \end{align}
 
-With $\bar{\epsilon}$ average attitude error (voir \ref{error_definition}) et $\bar{\tau}$ the average computation time. \\
+With $\bar{\epsilon}$ average attitude error (see \ref{error_definition}) et $\bar{\tau}$ the average computation time. \\
 
 \subsection{Simulated environment}
 
-We  modelled our inertial sensors based on the Fossen's model \cite{fossen_handbook_2011}. The noise generated here is Gaussian. In this study, sensor bias are not considerate as constant. We proceed 30 consecutive simulations in order to get valid results. We've used  specification described in table \ref{spec_imu}. 
+We  modelled our inertial sensors based on the Fossen's model \cite{fossen_handbook_2011}. The noise generated here is Gaussian. In this study, sensor bias are not considerate as constant. We proceed 30 consecutive simulations in order to get valid results with data performance specification described in table \ref{spec_imu}. 
 
 \begin{table}[!h]
 \begin{tabular}{|c|c|c|}
@@ -302,9 +294,7 @@ Accelerometer &  $0.002$ m.s$^{-2}/\sqrt{Hz} $ & 0.02 m.s$^{-2}$ \rule[-1.5pt]{0
 \label{spec_imu}
 \end{table}
 
-
-
-All simulations started with an initial attitude error $\delta\mathbi{q}_0$ randomly generated through normal distribution $\mathcal{N}(20,50^2)$. The results of score $s_1$ (resp $s_2$) are shown in figure \ref{histo_s1_add} (resp \ref{histo_s2_add}). Mean computation times of all methods required for one iteration is given in table (\ref{mean_time}).
+All simulations started with an initial attitude error $\delta\mathbi{q}_0$ randomly generated through normal distribution. The results of score $s_1$ (resp $s_2$) are shown in figure \ref{histo_s1_add} (resp \ref{histo_s2_add}). Mean computation times of all methods required for one iteration is given in table (\ref{mean_time}).
 
 \begin{table}[!h]
 \centering
@@ -319,15 +309,16 @@ MEKF & $1.12\times 10^{-4} s$\rule[-2pt]{0pt}{10pt}\\
  \hline
  USQUE & $1.63\times 10^{-4} s $\rule[-2pt]{0pt}{10pt}\\
  \hline
-PF & $4.5\times 10^{-2} s$\rule[-2pt]{0pt}{10pt}\\
- \hline
 REQUEST& $1.91\times 10^{-4} s$ \rule[-2pt]{0pt}{10pt} \\
  \hline
+PF & $4.5\times 10^{-2} s$\rule[-2pt]{0pt}{10pt}\\
+ \hline
 \end{tabular}
-\caption{Mean computation times for one iteration}
+\caption{Mean computation times for one iteration according to the methods available in the library}
 \label{mean_time}
 \end{table}
 
+The library has been entierely coded in C and all tests have been launched on a Dell Optiplex 9020 with Intel $ Core^{TM}$ i7-4790 CPU at 3.60GHz $\times$ 8.  All curves were generated with \texttt{R} and \texttt{Matlab}. No paralelization or code optimization have been done, our program turns entirely in sequential manner. Some optimization will come in the next versions.
 
 
 \begin{figure}[!h]
@@ -349,7 +340,7 @@ REQUEST& $1.91\times 10^{-4} s$ \rule[-2pt]{0pt}{10pt} \\
 
 \subsection{Experimental validation}
 
-We have designed a system that can be easily repeatable in laboratory. We used a smartphone as our IMU and a calibrated webcam (see figure \ref{situation_validation} ). With this system, we have defined our ground-truth as follows. A marker is stuck on the smartphone and we calculate an estimate of the attitude of the marker (which represents the smartphone) relative to the reference frame of the webcam $\{w\}$. We used the library \texttt{ArUco}  as optical feedback. At the same time, we get the data from the IMU of the smartphone to proceed the attitude estimation with our different algorithms.
+We have designed a system that can be easily repeatable in laboratory. We used a smartphone as our IMU and a calibrated webcam (see figure \ref{situation_validation}). With this system, we have defined our ground-truth as follows: Some markers are stuck on the smartphone and we calculate an estimate of the quaternion attitude $\mathbi{q}_c^w$ of the markers (which represents the smartphone) relative to the reference frame of the webcam $\{w\}$. To do so, we've used the library \texttt{ArUco} \cite{garrido2014automatic} as optical feedback. At the same time, we get the data from the IMU of the smartphone to proceed the attitude estimation with our different algorithms. At time $t = 0$, the camera and the smartphone have been set such as attitude quaternions $\mathbi{q}^a_w$, $\mathbi{q}^c_a$ et $\mathbi{q}^w_c$ are approximatively known. The camera being fixed, $\mathbi{q}^a_w $ does not vary. Moreover, from figure \ref{situation_validation}  we have:
 
 
 \begin{figure}
@@ -359,9 +350,6 @@ We have designed a system that can be easily repeatable in laboratory. We used a
 \label{situation_validation}
 \end{figure}
 
-
-
-At time $t = 0$, the camera and the smartphone has been set such as attitude quaternions $\mathbi{q}^a_w$, $\mathbi{q}^c_a$ et $\mathbi{q}^w_c$ are approximatively known. The camera being fixed, $\mathbi{q}^a_w $ does not vary. Moreover, from figure \ref{situation_validation}  we have:
 
 \begin{equation}
 \mathbi{q}^c_a =( \mathbi{q}^c_w \otimes \mathbi{q}^a_w )^{-1}
@@ -374,6 +362,6 @@ At time $t = 0$, the camera and the smartphone has been set such as attitude qua
 \label{situation_validation}
 \end{figure}
 
-All methods give an estimate of $\mathbi{q}^c_a$ , that are compared with the data from the camera. The optical feedback provides a ground truth estimate for this experiment. To estimate the error that can occur with the optical feedback. We were careful in the experimentation to avoid the occlusion of the marker that is required to estimate the orientation. During this experiment, we applied a rotation of 90 degree around the $z_c$  on the smartphone in clockwise direction. Then, another rotation of 90 degree around the $z_c$ on the smartphone but in anticlockwise direction to return to the initial state. In order to study possible divergence of all methods. 
+All methods give an approximation of $\mathbi{q}^c_a$ , that are compared with the data from the camera. To estimate the error that can occur with the optical feedback. We were careful in the experimentation to avoid the occlusion of the marker that is required to estimate the orientation. During this experiment, we applied a rotation of 90 degree around the $z_c$  on the smartphone in clockwise direction. Then, another rotation of 90 degree around the $z_c$ on the smartphone but in anticlockwise direction to return to the initial state. In order to study possible divergence. The results is shown in figure ... 
 
 

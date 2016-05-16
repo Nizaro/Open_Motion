@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2016.1.28)  13 MAY 2016 17:39
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2016.1.28)  16 MAY 2016 14:38
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -643,122 +643,85 @@ Overfull \hbox (18.52829pt too wide) in paragraph at lines 45--46
  []
 
 ) (./state_of_the_art.tex [2]
-Overfull \hbox (5.86499pt too wide) in paragraph at lines 52--59
+Overfull \hbox (5.86499pt too wide) in paragraph at lines 51--58
  [] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 64--65
+Underfull \hbox (badness 10000) in paragraph at lines 63--64
 
  []
 
-[3]
-Underfull \hbox (badness 10000) in paragraph at lines 118--119
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 175--176
-
- []
-
-[4]
-Overfull \hbox (4.58936pt too wide) in paragraph at lines 209--210
+[3] [4]
+Overfull \hbox (4.58936pt too wide) in paragraph at lines 203--204
 []\OT1/cmr/m/n/10 The weight are nor-malised such as we have $[][] [] =
  []
 
-<images/test_method.png, id=38, 574.145pt x 405.515pt>
-File: images/test_method.png Graphic file (type png)
 
-<use images/test_method.png>
-Package pdftex.def Info: images/test_method.png used on input line 268.
-(pdftex.def)             Requested size: 229.65393pt x 162.20311pt.
-
-Overfull \hbox (5.15393pt too wide) in paragraph at lines 268--269
- [][] 
- []
-
-
-Overfull \hbox (10.5pt too wide) in paragraph at lines 269--269
-[] [] 
- []
-
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-
-Underfull \hbox (badness 841) in paragraph at lines 274--275
-[]\OT1/cmr/m/n/10 To dif-fer-en-ti-ate the meth-ods, we as-signed some
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 282--283
+Underfull \hbox (badness 10000) in paragraph at lines 274--275
 
  []
 
 [5]
-Overfull \hbox (7.46025pt too wide) in paragraph at lines 289--301
+Overfull \hbox (7.46025pt too wide) in paragraph at lines 281--293
  [][] 
  []
 
-<images/histo_s1_add.png, id=45, 803.0pt x 602.25pt>
+<images/histo_s1_add.png, id=44, 803.0pt x 602.25pt>
 File: images/histo_s1_add.png Graphic file (type png)
 
 <use images/histo_s1_add.png>
-Package pdftex.def Info: images/histo_s1_add.png used on input line 336.
+Package pdftex.def Info: images/histo_s1_add.png used on input line 327.
 (pdftex.def)             Requested size: 224.83847pt x 168.62885pt.
 
-Overfull \hbox (17.5pt too wide) in paragraph at lines 334--340
+Overfull \hbox (17.5pt too wide) in paragraph at lines 325--331
  []$[]$ 
  []
 
-<images/histo_s2_add.png, id=46, 803.0pt x 602.25pt>
+<images/histo_s2_add.png, id=45, 803.0pt x 602.25pt>
 File: images/histo_s2_add.png Graphic file (type png)
 
 <use images/histo_s2_add.png>
-Package pdftex.def Info: images/histo_s2_add.png used on input line 343.
+Package pdftex.def Info: images/histo_s2_add.png used on input line 334.
 (pdftex.def)             Requested size: 224.83847pt x 168.62885pt.
 
-Overfull \hbox (17.5pt too wide) in paragraph at lines 341--347
+Overfull \hbox (17.5pt too wide) in paragraph at lines 332--338
  []$[]$ 
  []
 
 
-Overfull \hbox (10.5pt too wide) in paragraph at lines 347--347
+Overfull \hbox (10.5pt too wide) in paragraph at lines 338--338
 [] [] 
  []
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<images/situation_validation.png, id=47, 591.008pt x 524.359pt>
+<images/situation_validation.png, id=46, 591.008pt x 524.359pt>
 File: images/situation_validation.png Graphic file (type png)
 
 <use images/situation_validation.png>
-Package pdftex.def Info: images/situation_validation.png used on input line 357
+Package pdftex.def Info: images/situation_validation.png used on input line 348
 .
 (pdftex.def)             Requested size: 206.8559pt x 183.5284pt.
 
-Overfull \hbox (10.5pt too wide) in paragraph at lines 358--358
+Overfull \hbox (10.5pt too wide) in paragraph at lines 349--349
 [] [] 
  []
 
-<images/output_aruco.png, id=48, 643.40375pt x 626.34pt>
+<images/output_aruco.png, id=47, 643.40375pt x 626.34pt>
 File: images/output_aruco.png Graphic file (type png)
 
 <use images/output_aruco.png>
-Package pdftex.def Info: images/output_aruco.png used on input line 372.
+Package pdftex.def Info: images/output_aruco.png used on input line 360.
 (pdftex.def)             Requested size: 225.19469pt x 219.22227pt.
 
-Overfull \hbox (10.5pt too wide) in paragraph at lines 373--373
+Overfull \hbox (10.5pt too wide) in paragraph at lines 361--361
 [] [] 
  []
 
-
-Underfull \vbox (badness 1210) has occurred while \output is active []
-
- [6 <./images/test_method.png> <./images/histo_s1_add.png (PNG copy)> <./images
-/histo_s2_add.png (PNG copy)>]) (./conclusion.tex (./main.bbl
+) (./conclusion.tex [6 <./images/histo_s1_add.png (PNG copy)> <./images/histo_s
+2_add.png (PNG copy)>] (./main.bbl
 Underfull \vbox (badness 2401) has occurred while \output is active []
 
  [7 <./images/situation_validation.png> <./images/output_aruco.png>]))
@@ -779,13 +742,13 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 6510 strings out of 493304
- 91562 string characters out of 6139871
- 186487 words of memory out of 5000000
- 9819 multiletter control sequences out of 15000+600000
+ 6507 strings out of 493304
+ 91494 string characters out of 6139871
+ 187487 words of memory out of 5000000
+ 9817 multiletter control sequences out of 15000+600000
  21986 words of font info for 85 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
- 38i,13n,58p,1509b,438s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 38i,13n,58p,1323b,438s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></usr/share
 /texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbxti10.pfb></usr/share/tex
@@ -814,10 +777,10 @@ hare/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/t
 exlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive
 /texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/share/texlive/
 texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on main.pdf (8 pages, 896804 bytes).
+Output written on main.pdf (8 pages, 869812 bytes).
 PDF statistics:
- 162 PDF objects out of 1000 (max. 8388607)
+ 160 PDF objects out of 1000 (max. 8388607)
  111 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
- 31 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 26 words of extra memory for PDF output out of 10000 (max. 10000000)
 

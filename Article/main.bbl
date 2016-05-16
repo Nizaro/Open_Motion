@@ -1,6 +1,6 @@
 %% BioMed_Central_Bib_Style_v1.01
 
-\begin{thebibliography}{33}
+\begin{thebibliography}{35}
 % BibTex style file: bmc-mathphys.bst (version 2.1), 2014-07-24
 \ifx \bisbn   \undefined \def \bisbn  #1{ISBN #1}\fi
 \ifx \binits  \undefined \def \binits#1{#1}\fi
@@ -325,6 +325,20 @@ pp. \bfpage{1979}--\blpage{1996}
 \endbibitem
 
 %%% 23
+\bibitem{bar-itzhack_request-recursive_1996}
+\begin{barticle}
+\bauthor{\bsnm{Bar-Itzhack}, \binits{I.Y.}}:
+\batitle{{REQUEST}-{A} recursive {QUEST} algorithm for sequential attitude
+  determination}.
+\bjtitle{Journal of Guidance, Control, and Dynamics}
+\bvolume{19}(\bissue{5}),
+\bfpage{1034}--\blpage{1038}
+(\byear{1996}).
+Accessed 2015-08-27
+\end{barticle}
+\endbibitem
+
+%%% 24
 \bibitem{weighted1971nasa}
 \begin{botherref}
 \oauthor{\bsnm{Davenport}, \binits{P.B.}}:
@@ -334,7 +348,7 @@ Attitude determination and sensor aligment via weighted least squares affine
 \end{botherref}
 \endbibitem
 
-%%% 24
+%%% 25
 \bibitem{mortari1997esoq}
 \begin{barticle}
 \bauthor{\bsnm{Mortari}, \binits{D.}}:
@@ -346,7 +360,7 @@ Attitude determination and sensor aligment via weighted least squares affine
 \end{barticle}
 \endbibitem
 
-%%% 25
+%%% 26
 \bibitem{metropolis1949monte}
 \begin{barticle}
 \bauthor{\bsnm{Metropolis}, \binits{N.}},
@@ -359,7 +373,7 @@ Attitude determination and sensor aligment via weighted least squares affine
 \end{barticle}
 \endbibitem
 
-%%% 26
+%%% 27
 \bibitem{chen_bayesian_2003}
 \begin{barticle}
 \bauthor{\bsnm{Chen}, \binits{Z.}}:
@@ -373,7 +387,7 @@ Accessed 2015-07-02
 \end{barticle}
 \endbibitem
 
-%%% 27
+%%% 28
 \bibitem{terejanu2009tutorial}
 \begin{botherref}
 \oauthor{\bsnm{Terejanu}, \binits{G.A.}}:
@@ -385,7 +399,7 @@ Department of Computer Science and Engineering. University at Buffalo, Buffalo,
 \end{botherref}
 \endbibitem
 
-%%% 28
+%%% 29
 \bibitem{douc2005comparison}
 \begin{bchapter}
 \bauthor{\bsnm{Douc}, \binits{R.}},
@@ -399,7 +413,7 @@ pp. \bfpage{64}--\blpage{69}
 \end{bchapter}
 \endbibitem
 
-%%% 29
+%%% 30
 \bibitem{arulampalam2002tutorial}
 \begin{barticle}
 \bauthor{\bsnm{Arulampalam}, \binits{M.S.}},
@@ -415,7 +429,7 @@ pp. \bfpage{64}--\blpage{69}
 \end{barticle}
 \endbibitem
 
-%%% 30
+%%% 31
 \bibitem{cheng_particle_2010}
 \begin{barticle}
 \bauthor{\bsnm{Cheng}, \binits{Y.}},
@@ -430,7 +444,7 @@ Accessed 2015-07-02
 \end{barticle}
 \endbibitem
 
-%%% 31
+%%% 32
 \bibitem{chang_particle_2014}
 \begin{botherref}
 \oauthor{\bsnm{Chang}, \binits{L.}}:
@@ -442,7 +456,7 @@ Accessed 2015-07-02
 \end{botherref}
 \endbibitem
 
-%%% 32
+%%% 33
 \bibitem{gordon1993novel}
 \begin{bchapter}
 \bauthor{\bsnm{Gordon}, \binits{N.J.}},
@@ -457,7 +471,7 @@ pp. \bfpage{107}--\blpage{113}
 \end{bchapter}
 \endbibitem
 
-%%% 33
+%%% 34
 \bibitem{fossen_handbook_2011}
 \begin{bbook}
 \bauthor{\bsnm{Fossen}, \binits{T.I.}}:
@@ -465,6 +479,22 @@ pp. \bfpage{107}--\blpage{113}
 \bpublisher{John Wiley \& Sons}, \blocation{???}
 (\byear{2011})
 \end{bbook}
+\endbibitem
+
+%%% 35
+\bibitem{garrido2014automatic}
+\begin{barticle}
+\bauthor{\bsnm{Garrido-Jurado}, \binits{S.}},
+\bauthor{\bsnm{Mu{\~n}oz-Salinas}, \binits{R.}},
+\bauthor{\bsnm{Madrid-Cuevas}, \binits{F.J.}},
+\bauthor{\bsnm{Mar{\'\i}n-Jim{\'e}nez}, \binits{M.J.}}:
+\batitle{Automatic generation and detection of highly reliable fiducial markers
+  under occlusion}.
+\bjtitle{Pattern Recognition}
+\bvolume{47}(\bissue{6}),
+\bfpage{2280}--\blpage{2292}
+(\byear{2014})
+\end{barticle}
 \endbibitem
 
 \end{thebibliography}
@@ -766,6 +796,21 @@ pp. \bfpage{107}--\blpage{113}
 </bibl>
 
 <bibl id="B23">
+  <title><p>{REQUEST}-{A} recursive {QUEST} algorithm for sequential attitude
+  determination</p></title>
+  <aug>
+    <au><snm>Bar Itzhack</snm><fnm>IY</fnm></au>
+  </aug>
+  <source>Journal of Guidance, Control, and Dynamics</source>
+  <pubdate>1996</pubdate>
+  <volume>19</volume>
+  <issue>5</issue>
+  <fpage>1034</fpage>
+  <lpage>-1038</lpage>
+  <url>http://arc.aiaa.org/doi/pdf/10.2514/3.21742</url>
+</bibl>
+
+<bibl id="B24">
   <title><p>Attitude determination and sensor aligment via weighted least
   squares affine transformations</p></title>
   <aug>
@@ -774,7 +819,7 @@ pp. \bfpage{107}--\blpage{113}
   <pubdate>1971</pubdate>
 </bibl>
 
-<bibl id="B24">
+<bibl id="B25">
   <title><p>ESOQ: A closed-form solution to the Wahba problem</p></title>
   <aug>
     <au><snm>Mortari</snm><fnm>D</fnm></au>
@@ -788,7 +833,7 @@ pp. \bfpage{107}--\blpage{113}
   <lpage>-204</lpage>
 </bibl>
 
-<bibl id="B25">
+<bibl id="B26">
   <title><p>The monte carlo method</p></title>
   <aug>
     <au><snm>Metropolis</snm><fnm>N</fnm></au>
@@ -803,7 +848,7 @@ pp. \bfpage{107}--\blpage{113}
   <lpage>-341</lpage>
 </bibl>
 
-<bibl id="B26">
+<bibl id="B27">
   <title><p>Bayesian filtering: {From} {Kalman} filters to particle filters,
   and beyond</p></title>
   <aug>
@@ -818,7 +863,7 @@ pp. \bfpage{107}--\blpage{113}
   <url>http://www2.ee.kuas.edu.tw/~lwang/WWW/BayesianFilteringFromKalmanFiltersToParticleFiltersAndBeyond.pdf</url>
 </bibl>
 
-<bibl id="B27">
+<bibl id="B28">
   <title><p>Tutorial on Monte Carlo Techniques</p></title>
   <aug>
     <au><snm>Terejanu</snm><fnm>GA</fnm></au>
@@ -829,7 +874,7 @@ pp. \bfpage{107}--\blpage{113}
   <volume>14260</volume>
 </bibl>
 
-<bibl id="B28">
+<bibl id="B29">
   <title><p>Comparison of resampling schemes for particle filtering</p></title>
   <aug>
     <au><snm>Douc</snm><fnm>R</fnm></au>
@@ -842,7 +887,7 @@ pp. \bfpage{107}--\blpage{113}
   <lpage>-69</lpage>
 </bibl>
 
-<bibl id="B29">
+<bibl id="B30">
   <title><p>A tutorial on particle filters for online nonlinear/non-Gaussian
   Bayesian tracking</p></title>
   <aug>
@@ -860,7 +905,7 @@ pp. \bfpage{107}--\blpage{113}
   <lpage>-188</lpage>
 </bibl>
 
-<bibl id="B30">
+<bibl id="B31">
   <title><p>Particle filtering for attitude estimation using a minimal
   local-error representation</p></title>
   <aug>
@@ -876,7 +921,7 @@ pp. \bfpage{107}--\blpage{113}
   <url>http://arc.aiaa.org/doi/pdf/10.2514/1.47236</url>
 </bibl>
 
-<bibl id="B31">
+<bibl id="B32">
   <title><p>Particle {Filtering} for {Attitude} {Estimation} {Using} a
   {Minimal} {Local}-{Error} {Representation}: {A} {Revisit}</p></title>
   <aug>
@@ -887,7 +932,7 @@ pp. \bfpage{107}--\blpage{113}
   <url>http://arxiv.org/abs/1411.6127</url>
 </bibl>
 
-<bibl id="B32">
+<bibl id="B33">
   <title><p>Novel approach to nonlinear/non-Gaussian Bayesian state
   estimation</p></title>
   <aug>
@@ -903,7 +948,7 @@ pp. \bfpage{107}--\blpage{113}
   <lpage>-113</lpage>
 </bibl>
 
-<bibl id="B33">
+<bibl id="B34">
   <title><p>Handbook of marine craft hydrodynamics and motion
   control</p></title>
   <aug>
@@ -911,6 +956,24 @@ pp. \bfpage{107}--\blpage{113}
   </aug>
   <publisher>John Wiley \& Sons</publisher>
   <pubdate>2011</pubdate>
+</bibl>
+
+<bibl id="B35">
+  <title><p>Automatic generation and detection of highly reliable fiducial
+  markers under occlusion</p></title>
+  <aug>
+    <au><snm>Garrido Jurado</snm><fnm>S</fnm></au>
+    <au><snm>Mu{\~n}oz Salinas</snm><fnm>R</fnm></au>
+    <au><snm>Madrid Cuevas</snm><fnm>FJ</fnm></au>
+    <au><snm>Mar{\'\i}n Jim{\'e}nez</snm><fnm>MJ</fnm></au>
+  </aug>
+  <source>Pattern Recognition</source>
+  <publisher>Elsevier</publisher>
+  <pubdate>2014</pubdate>
+  <volume>47</volume>
+  <issue>6</issue>
+  <fpage>2280</fpage>
+  <lpage>-2292</lpage>
 </bibl>
 
 </refgrp>

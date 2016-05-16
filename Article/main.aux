@@ -46,14 +46,15 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Most Common Fusion Methods}{3}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.1}Kalman Filter}{3}}
 \newlabel{linear_system}{{4}{3}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.2}Nonlinear Observer}{3}}
 \citation{wahba_least_1965}
 \citation{markley1999estimate}
+\citation{bar-itzhack_request-recursive_1996}
 \citation{weighted1971nasa}
 \citation{mortari1997esoq}
 \citation{metropolis1949monte}
 \citation{chen_bayesian_2003}
 \citation{terejanu2009tutorial}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.2}Nonlinear Observer}{4}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.3}Methods Based on Solutions of the Wahba's Problem}{4}}
 \newlabel{Wahba_loss_function}{{9}{4}}
 \newlabel{QUEST}{{10}{4}}
@@ -65,8 +66,6 @@
 \citation{cheng_particle_2010}
 \citation{chang_particle_2014}
 \citation{gordon1993novel}
-\citation{crassidis_unscented_2003}
-\citation{markley2003attitude}
 \citation{fossen_handbook_2011}
 \newlabel{N_eff}{{19}{5}}
 \@writefile{toc}{\contentsline {section}{\numberline {5}Performance Evaluation}{5}}
@@ -74,20 +73,19 @@
 \newlabel{error_definition}{{22}{5}}
 \newlabel{mean_var_error_def}{{23}{5}}
 \newlabel{score}{{25}{5}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Algorithm designed to compute attitude estimation methods' performances\relax }}{6}}
-\newlabel{test_method}{{2}{6}}
+\citation{garrido2014automatic}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Simulated environment}{6}}
 \@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Calibrated IMU data performance specification, Gyrometer, Accelerometer, Magnetometer\relax }}{6}}
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
 \newlabel{spec_imu}{{1}{6}}
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Mean computation times for one iteration\relax }}{6}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Mean computation times for one iteration according to the methods available in the library\relax }}{6}}
 \newlabel{mean_time}{{2}{6}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Experimental validation}{6}}
-\newlabel{histo_s1_add}{{3a}{6}}
+\newlabel{histo_s1_add}{{2a}{6}}
 \newlabel{sub@histo_s1_add}{{a}{6}}
-\newlabel{histo_s2_add}{{3b}{6}}
+\newlabel{histo_s2_add}{{2b}{6}}
 \newlabel{sub@histo_s2_add}{{b}{6}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Scores $s_1$ (accuracy) and $s_2$ (accuracy and computation time ratio) of methods where noise is AWGN with 3 strength (weak, moderate, strong)\relax }}{6}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Scores $s_1$ (accuracy) and $s_2$ (accuracy and computation time ratio) of methods where noise is AWGN with 3 strength (weak, moderate, strong)\relax }}{6}}
 \bibstyle{bmc-mathphys}
 \bibdata{bmc_article}
 \bibcite{ouarti2008multimodal}{1}
@@ -110,24 +108,26 @@
 \bibcite{david1971introduction}{18}
 \bibcite{primbs1996survey}{19}
 \bibcite{mahony_nonlinear_2008}{20}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Representation of different reference frame used in this experiment. Here, only $ \text  {\fig@textbf  {\em  q}}_w^a $ does not change.\relax }}{7}}
-\newlabel{situation_validation}{{4}{7}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{7}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces exemple of output of \texttt  {ArUco} with 6 markers. Here the object-fixed reference frame $\{c\}$ is drawn\relax }}{7}}
-\newlabel{situation_validation}{{5}{7}}
 \bibcite{wahba_least_1965}{21}
 \bibcite{markley1999estimate}{22}
-\bibcite{weighted1971nasa}{23}
-\bibcite{mortari1997esoq}{24}
-\bibcite{metropolis1949monte}{25}
-\bibcite{chen_bayesian_2003}{26}
-\bibcite{terejanu2009tutorial}{27}
-\bibcite{douc2005comparison}{28}
-\bibcite{arulampalam2002tutorial}{29}
-\bibcite{cheng_particle_2010}{30}
-\bibcite{chang_particle_2014}{31}
-\bibcite{gordon1993novel}{32}
-\bibcite{fossen_handbook_2011}{33}
+\bibcite{bar-itzhack_request-recursive_1996}{23}
+\bibcite{weighted1971nasa}{24}
+\bibcite{mortari1997esoq}{25}
+\bibcite{metropolis1949monte}{26}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Representation of different reference frame used in this experiment. Here, only $ \text  {\fig@textbf  {\em  q}}_w^a $ does not change.\relax }}{7}}
+\newlabel{situation_validation}{{3}{7}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{7}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces exemple of output of \texttt  {ArUco} with 6 markers. Here the object-fixed reference frame $\{c\}$ is drawn\relax }}{7}}
+\newlabel{situation_validation}{{4}{7}}
+\bibcite{chen_bayesian_2003}{27}
+\bibcite{terejanu2009tutorial}{28}
+\bibcite{douc2005comparison}{29}
+\bibcite{arulampalam2002tutorial}{30}
+\bibcite{cheng_particle_2010}{31}
+\bibcite{chang_particle_2014}{32}
+\bibcite{gordon1993novel}{33}
+\bibcite{fossen_handbook_2011}{34}
+\bibcite{garrido2014automatic}{35}
 \newlabel{LastPage}{{}{8}}
 \xdef\lastpage@lastpage{8}
 \gdef\lastpage@lastpageHy{}
