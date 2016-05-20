@@ -318,7 +318,6 @@ PF & $4.5\times 10^{-2} s$\rule[-2pt]{0pt}{10pt}\\
 \label{mean_time}
 \end{table}
 
-The library has been entierely coded in C and all tests have been launched on a Dell Optiplex 9020 with Intel $ Core^{TM}$ i7-4790 CPU at 3.60GHz $\times$ 8.  All curves were generated with \texttt{R} and \texttt{Matlab}. No paralelization or code optimization have been done, our program turns entirely in sequential manner. Some optimization will come in the next versions.
 
 
 \begin{figure}[!h]
@@ -337,6 +336,23 @@ The library has been entierely coded in C and all tests have been launched on a 
 \end{subfigure}
 \caption{Scores $s_1$ (accuracy) and $s_2$ (accuracy and computation time ratio) of methods where noise is AWGN with 3 strength (weak, moderate, strong)}
 \end{figure}
+
+From figures \ref{histo_s1_add} et \ref{histo_s2_add}, we can observe that USQUE has the best score $s_1$, which proove its effectiveness in term of accuracy. While CGO has the highest $s_2$, that make it more interesting for embedded system context. On a other hand, it seems that PF is not as accurate as expected. This is due to the fact that its covariance time requirement is more important than USQUE. Moreover, as shown in figure \ref{error_plot}, even when the noise is strong, PF become more reliable than USQUE after a fex second of utilization. \\
+
+The library has been entierely coded in C and all tests have been launched on a Dell Optiplex 9020 with Intel $ Core^{TM}$ i7-4790 CPU at 3.60GHz $\times$ 8.  All curves were generated with \texttt{R} and \texttt{Matlab}. No paralelization or code optimization have been done, our program turns entirely in sequential manner. Some optimization will come in the next versions.
+
+
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.3]{images/error_plot.png}
+\caption{Plot of the RMS attitude error (score $s_1$)over time when the noise is AWGN with strong strength. Here only PF, USQUE and CGO is represented. We can observe that PF and CGO require more time to converge to the solution. However, after a few second, PF become more reliable than USQUE. }
+\label{error_plot}
+\end{figure}
+
+
+
+
 
 \subsection{Experimental validation}
 
