@@ -1,5 +1,15 @@
 cmake_minimum_required(VERSION 2.6)
 
+macro(use_c99)
+  if (CMAKE_VERSION VERSION_LESS "3.1")
+    if (CMAKE_C_COMPILER_ID STREQUAL "GNU")
+      set (CMAKE_C_FLAGS "--std=gnu99 ${CMAKE_C_FLAGS}")
+    endif ()
+  else ()
+    set (CMAKE_C_STANDARD 99)
+  endif ()
+endmacro(use_c99)
+
 
 project(openmotion)
 set(PROJECT_VERSION "1.0.0")
@@ -10,7 +20,7 @@ list(GET PROJECT_VERSION_PARTS 1 PROJECT_VERSION_MINOR)
 list(GET PROJECT_VERSION_PARTS 2 PROJECT_VERSION_PATCH)
 set(PROJECT_SOVERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}")
 
-
+use_c99()
 #------------------------------------------------------
 # Build type
 #------------------------------------------------------

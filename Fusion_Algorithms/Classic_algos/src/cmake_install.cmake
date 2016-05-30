@@ -1,4 +1,4 @@
-# Install script for directory: /home/thomas/These/Projet/OpenISF/src
+# Install script for directory: /home/thomas/These/Projet/OpenMotion/src
 
 # Set the install prefix
 IF(NOT DEFINED CMAKE_INSTALL_PREFIX)
