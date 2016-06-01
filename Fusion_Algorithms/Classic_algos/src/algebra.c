@@ -378,6 +378,7 @@ void om_matrix_squareRoot(struct omMatrix *matrix,struct omMatrix *m_sqrt){
 			om_matrix_clone(matrix,&D);
 			om_matrix_factorizationQR(&D,&Q,&R);
 			om_matrix_clone(&Q,&P);
+			om_matrix_create(&P_tmp,matrix->_rows,matrix->_rows);
 
 			for(int i=0;i<N;i++){
 
@@ -390,6 +391,7 @@ void om_matrix_squareRoot(struct omMatrix *matrix,struct omMatrix *m_sqrt){
 			}
 
 			om_matrix_create(&squareD,D._rows,D._columns);
+			om_matrix_create(&S_tmp,matrix->_rows,matrix->_rows);
 
 			for(int i=0;i< squareD._rows;i++)
 				om_matrix_setValue(&squareD,i,i,sqrt(om_matrix_getValue(&D,i,i)));
@@ -398,7 +400,6 @@ void om_matrix_squareRoot(struct omMatrix *matrix,struct omMatrix *m_sqrt){
 
 			om_operator_matrix_mul(&P,&squareD,&S_tmp);
 			om_operator_matrix_mul(&S_tmp,&P_inv,m_sqrt);
-
 
 			om_matrix_dispose(&P);
 			om_matrix_dispose(&P_inv);
@@ -539,6 +540,13 @@ void om_matrix_inverse(struct omMatrix *matrix,struct omMatrix *inverse){
 		om_matrix_createIdentity(&I,matrix->_rows);
 		om_matrix_factorizationLU(matrix,&L,&U);
 
+		/*
+		printf("\nmatrix L \n");
+		om_matrix_display(&L);
+
+		printf("\nmatrix U \n");
+		om_matrix_display(&U);
+		 */
 
 		for(int i=0;i<matrix->_rows;++i){
 
@@ -591,7 +599,7 @@ void om_matrix_factorizationLU(struct omMatrix *matrix,struct omMatrix *L,struct
 				 om_matrix_setValue(L,i,k,om_matrix_getValue(&A,i,k)/om_matrix_getValue(&A,k,k));
 
 				 for(int j=k+1;j<n;j++)
-					 om_matrix_setValue(&A,i,j,om_matrix_getValue(&A,i,j) - om_matrix_getValue(L,i,k)*om_matrix_getValue(&A,k,j));
+					 om_matrix_setValue(&A,i,j,om_matrix_getValue(&A,i,j) - (om_matrix_getValue(L,i,k)*om_matrix_getValue(&A,k,j)) );
 			 }
 
 			 for(int j=k;j<n;j++)

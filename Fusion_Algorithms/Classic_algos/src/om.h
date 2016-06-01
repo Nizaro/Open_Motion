@@ -117,7 +117,9 @@ typedef struct omNonLinearFilter_USQUE{
 	omQuaternion _q_pred;
 
 	omVector _x_k;
+	omVector _x_k_pred;
 	omMatrix _P_k;
+	omMatrix _P_k_pred;
 
 	omMatrix _Q;
 	omMatrix _R;
@@ -125,10 +127,10 @@ typedef struct omNonLinearFilter_USQUE{
 
 }omNonLinearFilter_USQUE;
 
-void om_initialization_usque(struct omSensorFusionManager *manager,void *filter);
-void om_process_usque(struct omSensorFusionManager *manager,void *filter);
-void om_prediction_usque(struct omSensorFusionManager *manager,void *filter);
-void om_update_usque(struct omSensorFusionManager *manager,void *filter);
+void om_usque_initialization(struct omSensorFusionManager *manager,void *filter);
+void om_usque_process(struct omSensorFusionManager *manager,void *filter);
+void om_usque_prediction(struct omSensorFusionManager *manager,omNonLinearFilter_USQUE *filter);
+void om_usque_update(struct omSensorFusionManager *manager,omNonLinearFilter_USQUE *filter,omVector *sigma_points,omQuaternion* sigma_quaternion);
 
 
 
