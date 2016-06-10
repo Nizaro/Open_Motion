@@ -1,3 +1,13 @@
+/**
+ * @file algebra.h
+ * @author Thomas BRAUD, Nizar OUARTI
+ * @date 10 june 2016
+ * @brief File containing linear algebra methods
+ *
+ * Here typically goes a more extensive explanation of what the header
+ * defines. Doxygens tags are words preceeded by either a backslash @\
+ */
+
 #ifndef ALGEBRA_H_
 #define ALGEBRA_H_
 
@@ -29,22 +39,35 @@
 /////            Global constants                 /////
 ///////////////////////////////////////////////////////
 
-
+// PI Variable
 #define PI 3.14159265359
+
+// Time variation
 #define DELTA_T 0.001
+
+// Gravitational constant.
 #define G 9.81
-#define EPSILON 0.000000001
+
+// Convert radian to degree
 #define RAD_TO_DEG 180.0/PI
+
+// Convert degree to radian
 #define DEG_TO_RAD PI/180
 
+#define EPSILON 0.000000001
 
-typedef enum { FALSE, TRUE } bool;
+
+
 
 ///////////////////////////////////////////////////////
 /////             Vector class                    /////
 ///////////////////////////////////////////////////////
 
-
+/**
+ * @brief Use brief, otherwise the index won't have a brief explanation.
+ *
+ * A vector of size n containing
+ */
 typedef struct omVector{
 
 	int _length;
@@ -52,7 +75,10 @@ typedef struct omVector{
 
 }omVector;
 
-
+/**
+ * update the length of the vector (normally it will be unecessary
+ * @param length the new length of the vector
+ */
 void om_vector_create(struct omVector *vector,int size,...);
 void om_vector_clone(struct omVector *in,struct omVector *out);
 void om_vector_setValue(struct omVector *vector,int index,double value);
@@ -94,9 +120,9 @@ double om_matrix_trace(struct omMatrix *matrix);
 void om_matrix_exponantial(struct omMatrix *matrix,struct omMatrix *m_exp,int N);
 void om_matrix_squareRoot(struct omMatrix *matrix,struct omMatrix *m_sqrt);
 
-bool om_matrix_isSquare(struct omMatrix *matrix);
-bool om_matrix_containsNaN(struct omMatrix *matrix);
-bool om_matrix_isNull(struct omMatrix *matrix);
+int om_matrix_isSquare(struct omMatrix *matrix);
+int om_matrix_containsNaN(struct omMatrix *matrix);
+int om_matrix_isNull(struct omMatrix *matrix);
 
 void om_matrix_submatrix(struct omMatrix *matrix,struct omMatrix *submatrix,int row, int column,int n, int m);
 void om_matrix_comatrix(struct omMatrix *matrix,struct omMatrix *comatrix);

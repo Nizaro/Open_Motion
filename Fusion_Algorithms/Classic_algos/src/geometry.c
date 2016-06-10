@@ -17,12 +17,13 @@ void om_rotate_vector_quaternion(struct omQuaternion *q,struct omVector *in,stru
 
 	omQuaternion q_inv;
 	omQuaternion q_vec;
+	omQuaternion q_tmp;
 
 	om_quat_inverse(q,&q_inv);
 	om_quat_create(&q_vec,0.0,in->_values[0],in->_values[1],in->_values[2]);
 
-	om_operator_quat_mul(&q_inv,&q_vec,&q_vec);
-	om_operator_quat_mul(&q_vec,q,&q_vec);
+	om_operator_quat_mul(&q_inv,&q_vec,&q_tmp);
+	om_operator_quat_mul(&q_tmp,q,&q_vec);
 
 	om_vector_create(out,3,q_vec._qx,q_vec._qy,q_vec._qz);
 
@@ -46,50 +47,19 @@ void om_rotate_vector_axisAngle(struct omAxisAngle *aa,struct omVector *in,struc
 void om_kinematics_quaternion(struct omQuaternion *q_t,struct omVector *angular_velocity,struct omQuaternion *q_tp1){
 
 	omMatrix Omega;
-	omMatrix Omega_tmp;
-	omMatrix S_phi;
-	omMatrix I;
-	omVector phi;
+
 	omVector q_t_vec;
 	omVector q_tp1_vec;
 
-	om_matrix_create(&Omega_tmp,3,3);
-	om_matrix_create(&Omega,4,4);
-	om_matrix_createIdentity(&I,3);
+	om_operator_omega_kinematics(angular_velocity,&Omega);
+
 	om_vector_create(&q_t_vec,4,q_t->_qx,q_t->_qy,q_t->_qz,q_t->_qw);
 	om_vector_create(&q_tp1_vec,4);
-
-	double norm = om_vector_norm(angular_velocity);
-	double cos_tmp = cosf(0.5*norm*DELTA_T);
-	double sin_tmp = sinf(0.5*norm*DELTA_T);
-
-	om_vector_create(&phi,3);
-	om_vector_clone(angular_velocity,&phi);
-	om_operator_vector_const_mul(&phi,( sin_tmp/norm ),&phi);
-
-	om_matrix_skewSymetricMatrix(&phi,&S_phi);
-	om_operator_matrix_const_mul(&I,cos_tmp,&I);
-
-	om_operator_matrix_sub(&I,&S_phi,&Omega_tmp);
-
-	for(int i=0;i<3;++i){
-		om_matrix_setValue(&Omega,i,3,phi._values[i]);
-		om_matrix_setValue(&Omega,3,i,-phi._values[i]);
-
-		for(int j=0;j<3;++j)
-			om_matrix_setValue(&Omega,i,j,om_matrix_getValue(&Omega_tmp,i,j));
-	}
-
-	om_matrix_setValue(&Omega,3,3,cos_tmp);
 
 	om_operator_matrix_vector_mul(&Omega,&q_t_vec,&q_tp1_vec);
 	om_quat_create(q_tp1,q_tp1_vec._values[3],q_tp1_vec._values[0],q_tp1_vec._values[1],q_tp1_vec._values[2]);
 
 	om_matrix_dispose(&Omega);
-	om_matrix_dispose(&Omega_tmp);
-	om_matrix_dispose(&I);
-	om_matrix_dispose(&S_phi);
-	om_vector_dispose(&phi);
 	om_vector_dispose(&q_t_vec);
 	om_vector_dispose(&q_tp1_vec);
 
@@ -108,6 +78,8 @@ void om_convert_quaternion2matrix(struct omQuaternion *in,struct omMatrix* out){
 	omVector in_img;
 
 	om_matrix_create(out,3,3);
+	om_matrix_create(&S_tmp,3,3);
+
 	om_matrix_createIdentity(&I,3);
 	om_quat_imaginary(in,&in_img);
 	om_matrix_skewSymetricMatrix(&in_img,&S);
@@ -411,6 +383,46 @@ void om_operator_psy(struct omQuaternion *in,struct omMatrix *out){
 }
 
 
+void om_operator_omega_kinematics(struct omVector *angular_velocity,struct omMatrix *out){
+
+	omMatrix Omega_tmp;
+	omMatrix S_phi;
+	omMatrix I;
+	omVector phi;
+
+	om_matrix_create(&Omega_tmp,3,3);
+	om_matrix_create(out,4,4);
+	om_matrix_createIdentity(&I,3);
+
+	double norm = om_vector_norm(angular_velocity);
+	double cos_tmp = cosf(0.5*norm*DELTA_T);
+	double sin_tmp = sinf(0.5*norm*DELTA_T);
+
+	om_vector_create(&phi,3);
+	om_vector_clone(angular_velocity,&phi);
+	om_operator_vector_const_mul(&phi,( sin_tmp/norm ),&phi);
+
+	om_matrix_skewSymetricMatrix(&phi,&S_phi);
+	om_operator_matrix_const_mul(&I,cos_tmp,&I);
+
+	om_operator_matrix_sub(&I,&S_phi,&Omega_tmp);
+
+	for(int i=0;i<3;++i){
+		om_matrix_setValue(out,i,3,phi._values[i]);
+		om_matrix_setValue(out,3,i,-phi._values[i]);
+
+		for(int j=0;j<3;++j)
+			om_matrix_setValue(out,i,j,om_matrix_getValue(&Omega_tmp,i,j));
+	}
+
+	om_matrix_setValue(out,3,3,cos_tmp);
+
+	om_matrix_dispose(&Omega_tmp);
+	om_matrix_dispose(&I);
+	om_matrix_dispose(&S_phi);
+	om_vector_dispose(&phi);
+
+}
 
 
 

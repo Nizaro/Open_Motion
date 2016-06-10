@@ -190,7 +190,7 @@ double om_matrix_determinant(struct omMatrix *matrix){
 
 	   double determinant = -1.0;
 
-	   if( om_matrix_isSquare(matrix) == TRUE ){
+	   if( om_matrix_isSquare(matrix) == 1 ){
 
 			omMatrix L;
 			omMatrix U;
@@ -217,7 +217,7 @@ double om_matrix_trace(struct omMatrix *matrix){
 
 	double trace = 0.0;
 
-	if( om_matrix_isSquare(matrix) == TRUE ){
+	if( om_matrix_isSquare(matrix) == 1 ){
 
 		for (int i = 0; i < matrix->_rows; i++)
 			trace += om_matrix_getValue(matrix,i,i);
@@ -230,7 +230,6 @@ double om_matrix_trace(struct omMatrix *matrix){
 
 void om_matrix_getEingenValues(struct omMatrix *matrix,struct omVector **eigen_vectors,double **eigen_values,int N){
 
-
 	omMatrix D;
 	omMatrix Q;
 	omMatrix R;
@@ -241,16 +240,32 @@ void om_matrix_getEingenValues(struct omMatrix *matrix,struct omVector **eigen_v
 
 	om_matrix_clone(&Q,&P);
 
-	omMatrix P_tmp;
+	/*
+	printf("\n eigen matrix D\n");
+	om_matrix_display(&D);
+	printf("\n eigen matrix P\n");
+	om_matrix_display(&P);
+	*/
 
-	for(int i=0;i<N;i++){
+	for(int index=0;index<N;index++){
+
+		omMatrix P_tmp;
+		om_matrix_create(&P_tmp,matrix->_rows,matrix->_columns);
 
 		om_operator_matrix_mul(&R,&Q,&D);
+
+		//free memory
+		om_matrix_dispose(&Q);
+		om_matrix_dispose(&R);
+
 		om_matrix_factorizationQR(&D,&Q,&R);
 		om_operator_matrix_mul(&P,&Q,&P_tmp);
 		om_matrix_clone(&P_tmp,&P);
 
+		om_matrix_dispose(&P_tmp);
 	}
+
+
 
 	(*eigen_values) = (double*)malloc(matrix->_columns*sizeof(double));
 	(*eigen_vectors) = (omVector*)malloc(matrix->_columns*sizeof(omVector));
@@ -266,7 +281,7 @@ void om_matrix_getEingenValues(struct omMatrix *matrix,struct omVector **eigen_v
 	om_matrix_dispose(&Q);
 	om_matrix_dispose(&R);
 	om_matrix_dispose(&P);
-	om_matrix_dispose(&P_tmp);
+
 
 
 }
@@ -416,29 +431,29 @@ void om_matrix_squareRoot(struct omMatrix *matrix,struct omMatrix *m_sqrt){
 
 }
 
-bool om_matrix_isSquare(struct omMatrix *matrix){
+int om_matrix_isSquare(struct omMatrix *matrix){
 
 	if(matrix->_rows == matrix->_columns)
-		return TRUE;
+		return 1;
 	else
-		return FALSE;
+		return 0;
 
 }
 
-bool om_matrix_containsNaN(struct omMatrix *matrix){
+int om_matrix_containsNaN(struct omMatrix *matrix){
 
-	return FALSE;
+	return 0;
 }
 
-bool om_matrix_isNull(struct omMatrix *matrix){
+int om_matrix_isNull(struct omMatrix *matrix){
 
-	return FALSE;
+	return 0;
 
 }
 
 void om_matrix_comatrix(struct omMatrix *matrix,struct omMatrix *comatrix){
 
-	if( om_matrix_isSquare(matrix) == TRUE ){
+	if( om_matrix_isSquare(matrix) == 1 ){
 		 int NMAX=matrix->_rows;
 
 		 omMatrix b;
@@ -530,7 +545,7 @@ void om_matrix_setRow(struct omMatrix *matrix,int row,struct omVector *in){
 
 void om_matrix_inverse(struct omMatrix *matrix,struct omMatrix *inverse){
 
-	if( om_matrix_isSquare(matrix) == TRUE ){
+	if( om_matrix_isSquare(matrix) == 1 ){
 
 		omMatrix L;
 		omMatrix U;
@@ -582,7 +597,7 @@ void om_matrix_adjugate(struct omMatrix *matrix,struct omMatrix *adjugate){
 
 void om_matrix_factorizationLU(struct omMatrix *matrix,struct omMatrix *L,struct omMatrix *U){
 
-	if( om_matrix_isSquare(matrix) == TRUE ){
+	if( om_matrix_isSquare(matrix) == 1 ){
 
 		 int n = matrix->_rows;
 
@@ -644,8 +659,11 @@ void om_matrix_factorizationQR(struct omMatrix *matrix,struct omMatrix *Q,struct
 
 			om_matrix_setValue(R,k,i,s);
 
-			for(int j=0;j<m;++j)
-				om_matrix_setValue(&A,j,i, om_matrix_getValue(&A,j,i) - (om_matrix_getValue(R,k,i) *om_matrix_getValue(R,j,k) ) );
+			for(int j=0;j<m;++j){
+				double value = om_matrix_getValue(&A,j,i) - (om_matrix_getValue(R,k,i) *om_matrix_getValue(Q,j,k) );
+				om_matrix_setValue(&A,j,i, value);
+			}
+
 
 		}
 
@@ -659,7 +677,7 @@ void om_matrix_factorizationQR(struct omMatrix *matrix,struct omMatrix *Q,struct
 /* Cholesky decomposition of a matrix */
 void om_matrix_choleskyDecomposition(struct omMatrix *matrix,struct omMatrix *L){
 
-	if( om_matrix_isSquare(matrix) == TRUE ){
+	if( om_matrix_isSquare(matrix) == 1 ){
 
 		int n = matrix->_rows;
 
