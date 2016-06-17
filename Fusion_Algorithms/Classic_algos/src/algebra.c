@@ -466,7 +466,8 @@ void om_matrix_comatrix(struct omMatrix *matrix,struct omMatrix *comatrix){
 				 int m = 0;
 				 int n = 0;
 
-				 //sous matrice
+				 // Sub matrix
+
 				 for (int i = 0; i < NMAX; i++) {
 					 for (int j = 0; j < NMAX; j++) {
 
@@ -886,6 +887,23 @@ void om_operator_vector_const_div(struct omVector *a,double b,struct omVector *o
 }
 
 
+void om_operator_vector_outer_product (struct omVector* a, struct omVector* b, struct omMatrix* out)
+{
+    int i,j;
+
+    int m = a->_length;
+    int n = b->_length;
+
+    om_matrix_create(out,m,n);
+
+    for(i = 0; i < m; i++) {
+        for (j = 0; j < n; j++) {
+            om_matrix_setValue(out,i,j,om_vector_getValue(a,i) * om_vector_getValue(b,i));
+        }
+    }
+}
+
+
 void om_operator_matrix_add(struct omMatrix *a,struct omMatrix *b,struct omMatrix *out){
 
 	if( (a->_rows == b->_rows) && (a->_columns == b->_columns) ){
@@ -1034,6 +1052,14 @@ void om_operator_quat_const_div(struct omQuaternion *a,double b,struct omQuatern
 /////                Divers                       /////
 ///////////////////////////////////////////////////////
 
+void om_conversion_vector_matrix(struct omVector* a, struct omMatrix* out)
+{
+    if(out->_columns!=1){
+           printf("The size of the matrix does not match a vector\n");
+    }
+
+    om_matrix_setColumn(out,0,a);
+}
 
 void om_vector_crossProduct(struct omVector *a,struct omVector *b,struct omVector *cross){
 
@@ -1135,6 +1161,123 @@ void om_solvingLinearSystemLU(struct omMatrix *L,struct omMatrix *U,struct omVec
 	om_vector_dispose(&d);
 
 }
+
+
+/*
+    This function is an implementation of the least square method.
+
+    Parameters : - struct omMatrix *pX : data matrix
+                        - struct omVector *pY : response variable vector (Y=f(X))
+                        - struct omVector *pBeta : output vector of the estimation of the best coefficients
+
+    Algorithm : Beta = (X_Transposed . X)^(-1) . X_Transposed . Y
+
+*/
+
+void om_least_square_method (struct omMatrix *pX,struct omVector *pY,struct omVector *pBeta)
+{
+
+     /*Declaration of pointers*/
+
+    omMatrix* pX_transposed;
+    omMatrix* pX_transposed_Product_X;
+    omMatrix* p_Inverse_of_X_transposed_product_X;
+    omMatrix* p_Inverse_of_X_transposed_product_X_Multiplied_by_X_transposed;
+
+    /*Check the size of the vectors and matrices for the product*/
+
+    if (pBeta->_length != pY->_length){
+        printf("Error : Beta length and Y length are not the same size\n");
+        return;
+    }
+
+    if (pY->_length != pX->_rows){
+        printf("Error : Y length and X number of rows are not the same size\n");
+        return;
+    }
+
+    /*Dynamic creation of matrices*/
+
+    om_matrix_create(pX_transposed,pX->_columns,pX->_rows); // transposed of the X matrix
+    om_matrix_create(pX_transposed_Product_X,pX->_columns,pX->_columns); //  product of the X matrix and its transposed
+    om_matrix_create(p_Inverse_of_X_transposed_product_X,pX->_columns,pX->_columns); // Inverse of the product of the X matrix and its transposed
+    om_matrix_create(p_Inverse_of_X_transposed_product_X_Multiplied_by_X_transposed, pX->_columns, pX->_rows); // Product of the previous matrix and the transposed of X
+
+   /*Computation of intermediate matrices*/
+
+    om_matrix_transpose(pX, pX_transposed);
+    om_operator_matrix_mul(pX_transposed, pX, pX_transposed_Product_X);
+    om_matrix_inverse(pX_transposed_Product_X, p_Inverse_of_X_transposed_product_X);
+    om_operator_matrix_mul(p_Inverse_of_X_transposed_product_X, pX_transposed, p_Inverse_of_X_transposed_product_X_Multiplied_by_X_transposed);
+
+    /*Computing of the estimation of the coefficients of the Beta matrix*/
+
+    om_operator_matrix_vector_mul(p_Inverse_of_X_transposed_product_X_Multiplied_by_X_transposed, pY, pBeta);
+
+    /*Destruction of dynamically  created  structures*/
+
+    om_matrix_dispose(pX_transposed);
+    om_matrix_dispose(pX_transposed_Product_X);
+    om_matrix_dispose(p_Inverse_of_X_transposed_product_X);
+    om_matrix_dispose(p_Inverse_of_X_transposed_product_X_Multiplied_by_X_transposed);
+}
+
+/*
+   This function performs the integration of the function fnct between a and b applying the adaptive Simpson method.
+
+    Parameters : - (*fnct) : pointer to the function to integrate
+                        - a, b : lower and upper  limits of the integral
+                        - mid : midpoint of the interval integration (has to be computed outside the function because the simpsonadapt call itself recursively
+                        - epsilon : maximum allowable error
+                        - maxh : maximum and minimum lengths of the subdivision
+                        - fa, fb, fmid : fnct values at a,b and mid
+                        - *bada, *badb : endpoints of the subinterval on which the calculation failed
+                        - succes : variable equal to 1 if successful or 0 otherwise
+
+    Source : INTRODUCTION TO NUMERICAL ANALYSIS WITH C PROGRAMS, Attila MATE, Brooklyn College of the City University of New York
+*/
+
+double simpsonadapt(double (*fnct)(double), double a, double b, double mid, double epsilon, double maxh, double minh, double fa, double fb, double fmid, double *bada, double *badb, int *success)
+{
+   double x, integr1, integr2, integr = 0.0, mid1, mid2, fmid1, fmid2, h, s1, s2;
+
+    h = b - a;
+
+    if ( h >= minh )
+    {
+        mid1 = (a + mid)/2.0; fmid1 = (*fnct)(mid1);
+        mid2 = (mid + b)/2.0; fmid2 = (*fnct)(mid2);
+        s1 = (fa+4.0*fmid+fb)*h/6.0;
+        s2 = (fa+4.0*fmid1+2.0*fmid+4.0*fmid2+fb)*h/12.0;
+        if ( h<=maxh && absval(s2-s1)<= 15.0*epsilon )
+        {
+            integr = s2;
+            *success = 1;
+        }
+        else
+        {
+            integr1 = simpsonadapt(fnct, a, mid, mid1, epsilon/2.0,
+            maxh, minh, fa, fmid, fmid1, bada, badb, success);
+            if ( *success )
+            {
+                integr2 = simpsonadapt(fnct, mid, b, mid2, epsilon/2.0,
+                maxh, minh, fmid, fb, fmid2, bada, badb, success);
+
+            }
+            if ( *success )
+            {
+                  integr = integr1+integr2;
+            }
+        }
+    }
+    else
+    {
+        *success = 0; *bada = a; *badb = b;
+    }
+     return integr;
+}
+
+
 
 
 

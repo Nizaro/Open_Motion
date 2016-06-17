@@ -174,6 +174,7 @@ void om_operator_vector_add(struct omVector *a,struct omVector *b,struct omVecto
 void om_operator_vector_sub(struct omVector *a,struct omVector *b,struct omVector *out);
 void om_operator_vector_const_mul(struct omVector *a,double b,struct omVector *out);
 void om_operator_vector_const_div(struct omVector *a,double b,struct omVector *out);
+void om_operator_vector_outer_product (struct omVector* a, struct omVector* b, struct omMatrix* out);
 
 void om_operator_matrix_add(struct omMatrix *a,struct omMatrix *b,struct omMatrix *out);
 void om_operator_matrix_sub(struct omMatrix *a,struct omMatrix *b,struct omMatrix *out);
@@ -189,11 +190,11 @@ void om_operator_quat_const_mul(struct omQuaternion *a,double b,struct omQuatern
 void om_operator_quat_const_div(struct omQuaternion *a,double b,struct omQuaternion *out);
 
 
-
-
 ///////////////////////////////////////////////////////
 /////                Divers                       /////
 ///////////////////////////////////////////////////////
+
+void om_conversion_vector_matrix(struct omVector* a, struct omMatrix* out);
 
 void om_vector_crossProduct(struct omVector *a,struct omVector *b,struct omVector *cross);
 double om_vector_dotProduct(struct omVector *a,struct omVector *b);
@@ -201,5 +202,9 @@ double om_quat_dotProduct(struct omQuaternion *a,struct omQuaternion *b);
 
 void om_solvingLinearSystem(struct omMatrix *A,struct omVector *b,struct omVector *x);
 void om_solvingLinearSystemLU(struct omMatrix *L,struct omMatrix *U,struct omVector *b,struct omVector *x);
+
+void om_least_square_method (struct omMatrix *pX,struct omVector *pY,struct omVector *pBeta);
+
+double simpsonadapt(double (*fnct)(double), double a,double b, double mid, double epsilon, double maxh,double minh, double fa, double fb, double fmid, double *bada, double *badb,int *success);
 
 #endif /* ALGEBRA_H_ */
