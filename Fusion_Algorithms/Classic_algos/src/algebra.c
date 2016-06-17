@@ -1239,7 +1239,7 @@ void om_least_square_method (struct omMatrix *pX,struct omVector *pY,struct omVe
 
 double simpsonadapt(double (*fnct)(double), double a, double b, double mid, double epsilon, double maxh, double minh, double fa, double fb, double fmid, double *bada, double *badb, int *success)
 {
-   double x, integr1, integr2, integr = 0.0, mid1, mid2, fmid1, fmid2, h, s1, s2;
+   double integr1, integr2, integr = 0.0, mid1, mid2, fmid1, fmid2, h, s1, s2;
 
     h = b - a;
 
