@@ -140,19 +140,19 @@ void om_cgo_process(struct omSensorFusionManager *manager,void *filter){
 	om_matrix_skewSymetricMatrix(&cross_acc,&S_acc);
 	om_matrix_skewSymetricMatrix(&cross_mag,&S_mag);
 
-	om_operator_matrix_const_mul(&S_acc,(-1.0) * (*(omNonLinearFilter_CGO*)filter)._k_acc /2.0,&S_acc);
-	om_operator_matrix_const_mul(&S_mag,(-1.0) * (*(omNonLinearFilter_CGO*)filter)._k_mag /2.0,&S_mag);
+	om_operator_matrix_scal_mul(&S_acc,(-1.0) * (*(omNonLinearFilter_CGO*)filter)._k_acc /2.0,&S_acc);
+	om_operator_matrix_scal_mul(&S_mag,(-1.0) * (*(omNonLinearFilter_CGO*)filter)._k_mag /2.0,&S_mag);
 
 	// compute omega = - vex (S_acc+S_mag)
 	om_operator_matrix_add(&S_acc,&S_mag,&S);
 	om_operator_vex(&S,&omega);
-	om_operator_vector_const_mul(&omega,(-1.0),&omega);
+	om_operator_vector_scal_mul(&omega,(-1.0),&omega);
 
 	// compute omega_q = omega * k_P * 0.5 * DELTA_T
-	om_operator_vector_const_mul(&omega,(*(omNonLinearFilter_CGO*)filter)._k_P * (0.5*DELTA_T),&omega_q);
+	om_operator_vector_scal_mul(&omega,(*(omNonLinearFilter_CGO*)filter)._k_P * (0.5*DELTA_T),&omega_q);
 
 	// compute omega_b = omega * k_I * DELTA_T
-	om_operator_vector_const_mul(&omega,(*(omNonLinearFilter_CGO*)filter)._k_I * DELTA_T,&omega_b);
+	om_operator_vector_scal_mul(&omega,(*(omNonLinearFilter_CGO*)filter)._k_I * DELTA_T,&omega_b);
 
 	// compute Xi(q_(k+1)^-)
 	om_operator_xi(&(*(omNonLinearFilter_CGO*)filter)._q_pred , &Xi);
@@ -179,22 +179,22 @@ void om_cgo_process(struct omSensorFusionManager *manager,void *filter){
 
 
 
-	//dispose object
-	om_vector_dispose(&z_acc);
-	om_vector_dispose(&z_mag);
-	om_vector_dispose(&cross_acc);
-	om_vector_dispose(&cross_mag);
-	om_vector_dispose(&omega);
-	om_vector_dispose(&omega_q);
-	om_vector_dispose(&omega_b);
-	om_vector_dispose(&q_tmp);
-	om_vector_dispose(&v_mag_pred);
-	om_vector_dispose(&v_acc_pred);
+	//free object
+	om_vector_free(&z_acc);
+	om_vector_free(&z_mag);
+	om_vector_free(&cross_acc);
+	om_vector_free(&cross_mag);
+	om_vector_free(&omega);
+	om_vector_free(&omega_q);
+	om_vector_free(&omega_b);
+	om_vector_free(&q_tmp);
+	om_vector_free(&v_mag_pred);
+	om_vector_free(&v_acc_pred);
 
-	om_matrix_dispose(&S_acc);
-	om_matrix_dispose(&S_mag);
-	om_matrix_dispose(&S);
-	om_matrix_dispose(&Xi);
+	om_matrix_free(&S_acc);
+	om_matrix_free(&S_mag);
+	om_matrix_free(&S);
+	om_matrix_free(&Xi);
 
 
 
@@ -294,7 +294,7 @@ void om_usque_prediction(struct omSensorFusionManager *manager,omNonLinearFilter
 
 	// compute S = sqrt( (P + Q)*(n + lambda )
 	om_operator_matrix_add(&filter->_P_k,&filter->_Q,&T);
-	om_operator_matrix_const_mul(&T,lambda + 6.0,&T);
+	om_operator_matrix_scal_mul(&T,lambda + 6.0,&T);
 	om_matrix_choleskyDecomposition(&T,&S);
 
 	// generate sigma point at time k
@@ -312,13 +312,13 @@ void om_usque_prediction(struct omSensorFusionManager *manager,omNonLinearFilter
 		om_operator_vector_add(&filter->_x_k,&S_row,&sigma_points[i]);
 		om_operator_vector_sub(&filter->_x_k,&S_row,&sigma_points[i+6]);
 
-		om_vector_dispose(&S_row);
+		om_vector_free(&S_row);
 
 	}
 
 
-	om_matrix_dispose(&S);
-	om_matrix_dispose(&T);
+	om_matrix_free(&S);
+	om_matrix_free(&T);
 
 	// generate sigma quaternion at time k
 	omQuaternion* sigma_quaternion = (omQuaternion*)malloc(13 * sizeof(omQuaternion));
@@ -344,17 +344,17 @@ void om_usque_prediction(struct omSensorFusionManager *manager,omNonLinearFilter
 
 			omVector dqv_i;
 			om_vector_create(&dqv_i,3);
-			om_operator_vector_const_mul(&dp_i,( (1.0/f) * (a + dqw_i )),&dqv_i);
+			om_operator_vector_scal_mul(&dp_i,( (1.0/f) * (a + dqw_i )),&dqv_i);
 			omQuaternion dq_i;
 			om_quat_create(&dq_i,dqw_i,om_vector_getValue(&dqv_i,0),om_vector_getValue(&dqv_i,1),om_vector_getValue(&dqv_i,2) );
 
 			// compute sigma quaternion i
 			om_operator_quat_mul(&dq_i,&filter->_q_est,&sigma_quaternion[i]);
-			om_vector_dispose(&dqv_i);
+			om_vector_free(&dqv_i);
 
 		}
 
-		om_vector_dispose(&dp_i);
+		om_vector_free(&dp_i);
 
 
 	}
@@ -399,8 +399,8 @@ void om_usque_prediction(struct omSensorFusionManager *manager,omNonLinearFilter
 
 		om_quat_create(&sigma_quaternion[i],q_pred_i._qw,q_pred_i._qx,q_pred_i._qy,q_pred_i._qz);
 
-		om_vector_dispose(&b_i);
-		om_vector_dispose(&angular_velocity_i);
+		om_vector_free(&b_i);
+		om_vector_free(&angular_velocity_i);
 	}
 
 	// compute mean of x_k
@@ -416,13 +416,13 @@ void om_usque_prediction(struct omSensorFusionManager *manager,omNonLinearFilter
 		om_operator_vector_add(&sum_x,&sigma_points[i],&sum_x);
 	}
 
-	om_operator_vector_const_mul(&sigma_points[0],lambda/(6.0+lambda),&sum_a);
-	om_operator_vector_const_mul(&sum_x,1.0/(2.0*(6.0+lambda)),&sum_b);
+	om_operator_vector_scal_mul(&sigma_points[0],lambda/(6.0+lambda),&sum_a);
+	om_operator_vector_scal_mul(&sum_x,1.0/(2.0*(6.0+lambda)),&sum_b);
 	om_operator_vector_add(&sum_a,&sum_b,&filter->_x_k_pred);
 
-	om_vector_dispose(&sum_a);
-	om_vector_dispose(&sum_b);
-	om_vector_dispose(&sum_x);
+	om_vector_free(&sum_a);
+	om_vector_free(&sum_b);
+	om_vector_free(&sum_x);
 
 
 	// compute covariance P_k
@@ -453,10 +453,10 @@ void om_usque_prediction(struct omSensorFusionManager *manager,omNonLinearFilter
 		om_operator_matrix_add(&sum_P,&P_i,&sum_P);
 
 		//free memory
-		om_vector_dispose(&var_x_i);
-		om_matrix_dispose(&tmp_i);
-		om_matrix_dispose(&tmp_i_t);
-		om_matrix_dispose(&P_i);
+		om_vector_free(&var_x_i);
+		om_matrix_free(&tmp_i);
+		om_matrix_free(&tmp_i_t);
+		om_matrix_free(&P_i);
 
 	}
 
@@ -485,8 +485,8 @@ void om_usque_prediction(struct omSensorFusionManager *manager,omNonLinearFilter
 	om_matrix_create(&sum_P_b,6,6);
 
 	//compute P_k^- = (lambda/(6.0+lambda))* (X_k(0) - x_k^-)*(X_k(0) - x_k^-)^T + (1.0/(2.0*(6.0+lambda)))*sum_{i=0}^n( (X_k(i) - x_k^-)(X_k(i) - x_k^-)^Ts  )
-	om_operator_matrix_const_mul(&P_0,lambda/(6.0+lambda),&sum_P_a);
-	om_operator_matrix_const_mul(&sum_P,1.0/(2.0*(6.0+lambda)),&sum_P_b);
+	om_operator_matrix_scal_mul(&P_0,lambda/(6.0+lambda),&sum_P_a);
+	om_operator_matrix_scal_mul(&sum_P,1.0/(2.0*(6.0+lambda)),&sum_P_b);
 	om_operator_matrix_add(&sum_P_a,&sum_P_b,&filter->_P_k_pred);
 	om_operator_matrix_add(&filter->_P_k_pred,&filter->_Q,&filter->_P_k_pred);
 
@@ -509,16 +509,16 @@ void om_usque_prediction(struct omSensorFusionManager *manager,omNonLinearFilter
 
 
 	//free memory
-	om_vector_dispose(&var_x_0);
-	om_matrix_dispose(&tmp_0);
-	om_matrix_dispose(&tmp_0_t);
-	om_matrix_dispose(&P_0);
-	om_matrix_dispose(&sum_P);
-	om_matrix_dispose(&sum_P_a);
-	om_matrix_dispose(&sum_P_b);
+	om_vector_free(&var_x_0);
+	om_matrix_free(&tmp_0);
+	om_matrix_free(&tmp_0_t);
+	om_matrix_free(&P_0);
+	om_matrix_free(&sum_P);
+	om_matrix_free(&sum_P_a);
+	om_matrix_free(&sum_P_b);
 
 	for(int i=0;i<13;++i){
-		om_vector_dispose(&sigma_points[i]);
+		om_vector_free(&sigma_points[i]);
 	}
 
 	free(sigma_points);
@@ -566,15 +566,15 @@ void om_usque_update(struct omSensorFusionManager *manager,omNonLinearFilter_USQ
 		om_rotate_vector_quaternion(&sigma_quaternion[i],&ned_gravity,&tmp_res_a);
 		om_rotate_vector_quaternion(&sigma_quaternion[i],&ned_geographic_north,&tmp_res_m);
 
-		om_operator_vector_const_mul(&tmp_res_a,G,&tmp_res_a);
+		om_operator_vector_scal_mul(&tmp_res_a,G,&tmp_res_a);
 
 		//om_vector_normalize(&tmp_res_m);
 
 		om_vector_create(&sigma_z[i],6,om_vector_getValue(&tmp_res_a,0),om_vector_getValue(&tmp_res_a,1),om_vector_getValue(&tmp_res_a,2),
 									   om_vector_getValue(&tmp_res_m,0),om_vector_getValue(&tmp_res_m,1),om_vector_getValue(&tmp_res_m,2));
 
-        om_vector_dispose(&tmp_res_m);
-        om_vector_dispose(&tmp_res_a);
+        om_vector_free(&tmp_res_m);
+        om_vector_free(&tmp_res_a);
 
 
 
@@ -598,13 +598,13 @@ void om_usque_update(struct omSensorFusionManager *manager,omNonLinearFilter_USQ
 		om_operator_vector_add(&sum_z,&sigma_z[i],&sum_z);
 	}
 
-	om_operator_vector_const_mul(&sigma_z[0],lambda/(6.0+lambda),&sum_a);
-	om_operator_vector_const_mul(&sum_z,1.0/(2.0*(6.0+lambda)),&sum_b);
+	om_operator_vector_scal_mul(&sigma_z[0],lambda/(6.0+lambda),&sum_a);
+	om_operator_vector_scal_mul(&sum_z,1.0/(2.0*(6.0+lambda)),&sum_b);
 	om_operator_vector_add(&sum_a,&sum_b,&mean_z);
 
-	om_vector_dispose(&sum_a);
-	om_vector_dispose(&sum_b);
-	om_vector_dispose(&sum_z);
+	om_vector_free(&sum_a);
+	om_vector_free(&sum_b);
+	om_vector_free(&sum_z);
 
 	// compute covariance and cross-covariance
 	omMatrix P_zz;
@@ -686,14 +686,14 @@ void om_usque_update(struct omSensorFusionManager *manager,omNonLinearFilter_USQ
 		om_operator_matrix_add(&sum_P_zz,&P_zz_i,&sum_P_zz);
 
 		//free memory
-		om_vector_dispose(&var_x_i);
-		om_vector_dispose(&var_z_i);
+		om_vector_free(&var_x_i);
+		om_vector_free(&var_z_i);
 
-		om_matrix_dispose(&tmp_z_i);
-		om_matrix_dispose(&tmp_x_i);
-		om_matrix_dispose(&tmp_z_i_t);
-		om_matrix_dispose(&P_xz_i);
-		om_matrix_dispose(&P_zz_i);
+		om_matrix_free(&tmp_z_i);
+		om_matrix_free(&tmp_x_i);
+		om_matrix_free(&tmp_z_i_t);
+		om_matrix_free(&P_xz_i);
+		om_matrix_free(&P_zz_i);
 
 
 
@@ -710,10 +710,10 @@ void om_usque_update(struct omSensorFusionManager *manager,omNonLinearFilter_USQ
 	om_matrix_create(&sum_P_zz_b,6,6);
 
 	//compute P_k^- = (lambda/(13.0+lambda))* (X_k(0) - x_k^-)*(X_k(0) - x_k^-)^T + (1.0/(2.0*(13.0+lambda)))*sum_{i=0}^n( (X_k(i) - x_k^-)(X_k(i) - x_k^-)^Ts  )
-	om_operator_matrix_const_mul(&P_xz_0,lambda/(6.0+lambda),&sum_P_xz_a);
-	om_operator_matrix_const_mul(&sum_P_xz,1.0/(2.0*(6.0+lambda)),&sum_P_xz_b);
-	om_operator_matrix_const_mul(&P_zz_0,lambda/(6.0+lambda),&sum_P_zz_a);
-	om_operator_matrix_const_mul(&sum_P_zz,1.0/(2.0*(6.0+lambda)),&sum_P_zz_b);
+	om_operator_matrix_scal_mul(&P_xz_0,lambda/(6.0+lambda),&sum_P_xz_a);
+	om_operator_matrix_scal_mul(&sum_P_xz,1.0/(2.0*(6.0+lambda)),&sum_P_xz_b);
+	om_operator_matrix_scal_mul(&P_zz_0,lambda/(6.0+lambda),&sum_P_zz_a);
+	om_operator_matrix_scal_mul(&sum_P_zz,1.0/(2.0*(6.0+lambda)),&sum_P_zz_b);
 
 	om_operator_matrix_add(&sum_P_xz_a,&sum_P_xz_b,&P_xz);
 	om_operator_matrix_add(&sum_P_zz_a,&sum_P_zz_b,&P_zz);
@@ -773,34 +773,34 @@ void om_usque_update(struct omSensorFusionManager *manager,omNonLinearFilter_USQ
 	om_operator_quat_mul(&dq,&filter->_q_pred,&manager->output.quaternion);
 
 	//free memory
-	om_vector_dispose(&z_k);
-	om_vector_dispose(&dp_est);
-	om_vector_dispose(&mean_z);
-	om_vector_dispose(&s_z_k);
-	om_vector_dispose(&corr_x);
-	om_vector_dispose(&var_x_0);
-	om_vector_dispose(&var_z_0);
+	om_vector_free(&z_k);
+	om_vector_free(&dp_est);
+	om_vector_free(&mean_z);
+	om_vector_free(&s_z_k);
+	om_vector_free(&corr_x);
+	om_vector_free(&var_x_0);
+	om_vector_free(&var_z_0);
 
 
-	om_matrix_dispose(&tmp_x_0);
-	om_matrix_dispose(&tmp_z_0);
-	om_matrix_dispose(&tmp_z_0_t);
-	om_matrix_dispose(&K);
-	om_matrix_dispose(&K_t);
-	om_matrix_dispose(&S);
-	om_matrix_dispose(&S_tmp);
-	om_matrix_dispose(&sum_P_xz);
-	om_matrix_dispose(&sum_P_zz);
-	om_matrix_dispose(&P_zz);
-	om_matrix_dispose(&P_zz_inv);
-	om_matrix_dispose(&P_xz);
-	om_matrix_dispose(&sum_P_xz_a);
-	om_matrix_dispose(&sum_P_xz_b);
-	om_matrix_dispose(&sum_P_zz_a);
-	om_matrix_dispose(&sum_P_zz_b);
+	om_matrix_free(&tmp_x_0);
+	om_matrix_free(&tmp_z_0);
+	om_matrix_free(&tmp_z_0_t);
+	om_matrix_free(&K);
+	om_matrix_free(&K_t);
+	om_matrix_free(&S);
+	om_matrix_free(&S_tmp);
+	om_matrix_free(&sum_P_xz);
+	om_matrix_free(&sum_P_zz);
+	om_matrix_free(&P_zz);
+	om_matrix_free(&P_zz_inv);
+	om_matrix_free(&P_xz);
+	om_matrix_free(&sum_P_xz_a);
+	om_matrix_free(&sum_P_xz_b);
+	om_matrix_free(&sum_P_zz_a);
+	om_matrix_free(&sum_P_zz_b);
 
 	for(int i=0;i<13;++i){
-		om_vector_dispose(&sigma_z[i]);
+		om_vector_free(&sigma_z[i]);
 	}
 
 	free(sigma_z);
@@ -879,7 +879,7 @@ void om_request_initialization(struct omSensorFusionManager *manager,void *filte
 
 		// compute _d_z_k = _d_z_k + (crossProduct(_b[i],_r[i])*_a[i]);
 		om_vector_crossProduct(&(*(omNonLinearFilter_REQUEST*)filter)._b[i],&(*(omNonLinearFilter_REQUEST*)filter)._r[i],&cross);
-		om_operator_vector_const_mul(&cross,(*(omNonLinearFilter_REQUEST*)filter)._a[i],&cross);
+		om_operator_vector_scal_mul(&cross,(*(omNonLinearFilter_REQUEST*)filter)._a[i],&cross);
 		om_operator_vector_add(&(*(omNonLinearFilter_REQUEST*)filter)._d_z_k,&cross,&(*(omNonLinearFilter_REQUEST*)filter)._d_z_k);
 
 
@@ -894,14 +894,14 @@ void om_request_initialization(struct omSensorFusionManager *manager,void *filte
 		}
 
 		om_operator_matrix_mul(&m_bi,&m_ri_t,&M);
-		om_operator_matrix_const_mul(&M,(*(omNonLinearFilter_REQUEST*)filter)._a[i],&M);
+		om_operator_matrix_scal_mul(&M,(*(omNonLinearFilter_REQUEST*)filter)._a[i],&M);
 		om_operator_matrix_add(&(*(omNonLinearFilter_REQUEST*)filter)._d_B_k,&M,&(*(omNonLinearFilter_REQUEST*)filter)._d_B_k);
 
 		//free memory
-		om_vector_dispose(&cross);
-		om_matrix_dispose(&m_bi);
-		om_matrix_dispose(&m_ri_t);
-		om_matrix_dispose(&M);
+		om_vector_free(&cross);
+		om_matrix_free(&m_bi);
+		om_matrix_free(&m_ri_t);
+		om_matrix_free(&M);
 
 
 	}
@@ -920,7 +920,7 @@ void om_request_initialization(struct omSensorFusionManager *manager,void *filte
 	//compute _d_S_k =_d_B_k + _d_B_k.transpose();
 	om_operator_matrix_add(&(*(omNonLinearFilter_REQUEST*)filter)._d_B_k,&d_B_k_t,&(*(omNonLinearFilter_REQUEST*)filter)._d_S_k);
 
-	om_matrix_dispose(&d_B_k_t);
+	om_matrix_free(&d_B_k_t);
 
 	// init K_est_0
 	omMatrix I;
@@ -936,7 +936,7 @@ void om_request_initialization(struct omSensorFusionManager *manager,void *filte
 	om_matrix_create(&(*(omNonLinearFilter_REQUEST*)filter)._P_k_pred,4,4);
 
 	om_matrix_createIdentity(&I,3);
-	om_operator_matrix_const_mul(&I,(*(omNonLinearFilter_REQUEST*)filter)._d_sigma_k,&I);
+	om_operator_matrix_scal_mul(&I,(*(omNonLinearFilter_REQUEST*)filter)._d_sigma_k,&I);
 	om_operator_matrix_sub(&(*(omNonLinearFilter_REQUEST*)filter)._d_S_k,&I,&T);
 
 
@@ -958,8 +958,8 @@ void om_request_initialization(struct omSensorFusionManager *manager,void *filte
 	(*(omNonLinearFilter_REQUEST*)filter)._m_k = (*(omNonLinearFilter_REQUEST*)filter)._d_m_k;
 
 
-	om_matrix_dispose(&T);
-	om_matrix_dispose(&I);
+	om_matrix_free(&T);
+	om_matrix_free(&I);
 
 }
 
@@ -996,9 +996,9 @@ void om_request_preprocess(struct omSensorFusionManager *manager,omNonLinearFilt
 	om_vector_setValues(&filter->_b[2],3,om_vector_getValue(&z_acc,0),om_vector_getValue(&z_acc,1),om_vector_getValue(&z_acc,2));
 
 
-	om_vector_dispose(&z_acc);
-	om_vector_dispose(&z_mag);
-	om_vector_dispose(&y_axis);
+	om_vector_free(&z_acc);
+	om_vector_free(&z_mag);
+	om_vector_free(&y_axis);
 
 }
 
@@ -1029,7 +1029,7 @@ void om_request_prediction(struct omSensorFusionManager *manager,omNonLinearFilt
 
 		// compute _d_z_k = _d_z_k + (crossProduct(_b[i],_r[i])*_a[i]);
 		om_vector_crossProduct(&filter->_b[i],&filter->_r[i],&cross);
-		om_operator_vector_const_mul(&cross,filter->_a[i],&cross);
+		om_operator_vector_scal_mul(&cross,filter->_a[i],&cross);
 		om_operator_vector_add(&filter->_d_z_k,&cross,&filter->_d_z_k);
 
 
@@ -1044,14 +1044,14 @@ void om_request_prediction(struct omSensorFusionManager *manager,omNonLinearFilt
 		}
 
 		om_operator_matrix_mul(&m_bi,&m_ri_t,&M);
-		om_operator_matrix_const_mul(&M,filter->_a[i],&M);
+		om_operator_matrix_scal_mul(&M,filter->_a[i],&M);
 		om_operator_matrix_add(&filter->_d_B_k,&M,&filter->_d_B_k);
 
 		//free memory
-		om_vector_dispose(&cross);
-		om_matrix_dispose(&m_bi);
-		om_matrix_dispose(&m_ri_t);
-		om_matrix_dispose(&M);
+		om_vector_free(&cross);
+		om_matrix_free(&m_bi);
+		om_matrix_free(&m_ri_t);
+		om_matrix_free(&M);
 
 
 	}
@@ -1067,7 +1067,7 @@ void om_request_prediction(struct omSensorFusionManager *manager,omNonLinearFilt
 	omMatrix d_B_k_t;
 	om_matrix_transpose(&filter->_d_B_k,&d_B_k_t);
 	om_operator_matrix_add(&filter->_d_B_k,&d_B_k_t,&filter->_d_S_k);
-	om_matrix_dispose(&d_B_k_t);
+	om_matrix_free(&d_B_k_t);
 
 	// compute d_K
 	omMatrix I;
@@ -1080,7 +1080,7 @@ void om_request_prediction(struct omSensorFusionManager *manager,omNonLinearFilt
 			om_matrix_setValue(&filter->_d_K_k,i,j,0.0);
 
 	om_matrix_createIdentity(&I,3);
-	om_operator_matrix_const_mul(&I,filter->_d_sigma_k,&I);
+	om_operator_matrix_scal_mul(&I,filter->_d_sigma_k,&I);
 	om_operator_matrix_sub(&filter->_d_S_k,&I,&T);
 
 
@@ -1097,8 +1097,8 @@ void om_request_prediction(struct omSensorFusionManager *manager,omNonLinearFilt
 
 	om_matrix_setValue(&filter->_d_K_k,3,3,filter->_d_sigma_k);
 
-	om_matrix_dispose(&T);
-	om_matrix_dispose(&I);
+	om_matrix_free(&T);
+	om_matrix_free(&I);
 
 	//propagate Q
 	om_request_computeQ(manager,filter);
@@ -1132,11 +1132,11 @@ void om_request_prediction(struct omSensorFusionManager *manager,omNonLinearFilt
 	om_operator_matrix_add(&filter->_P_k_pred,&filter->_Q,&filter->_P_k_pred);
 
 	// free memory
-	om_matrix_dispose(&Phi);
-	om_matrix_dispose(&Phi_t);
-	om_matrix_dispose(&tmp_K);
-	om_matrix_dispose(&tmp_P);
-	om_vector_dispose(&angular_velocity);
+	om_matrix_free(&Phi);
+	om_matrix_free(&Phi_t);
+	om_matrix_free(&tmp_K);
+	om_matrix_free(&tmp_P);
+	om_vector_free(&angular_velocity);
 
 
 
@@ -1160,13 +1160,13 @@ void om_request_update(struct omSensorFusionManager *manager,omNonLinearFilter_R
 	double tmp_b = (rho_k_opt)*(filter->_d_m_k/m_kp1);
 
 	// update K
-	om_operator_matrix_const_mul(&filter->_K_k_pred,tmp_a,&filter->_K_k_pred);
-	om_operator_matrix_const_mul(&filter->_d_K_k,tmp_b,&filter->_d_K_k);
+	om_operator_matrix_scal_mul(&filter->_K_k_pred,tmp_a,&filter->_K_k_pred);
+	om_operator_matrix_scal_mul(&filter->_d_K_k,tmp_b,&filter->_d_K_k);
 	om_operator_matrix_add(&filter->_K_k_pred,&filter->_d_K_k,&filter->_K_k);
 
 	// update P
-	om_operator_matrix_const_mul(&filter->_P_k_pred,tmp_a*tmp_a,&filter->_P_k_pred);
-	om_operator_matrix_const_mul(&filter->_R,tmp_b*tmp_b,&filter->_R);
+	om_operator_matrix_scal_mul(&filter->_P_k_pred,tmp_a*tmp_a,&filter->_P_k_pred);
+	om_operator_matrix_scal_mul(&filter->_R,tmp_b*tmp_b,&filter->_R);
 	om_operator_matrix_add(&filter->_P_k_pred,&filter->_R,&filter->_P_k);
 
 	/*
@@ -1202,7 +1202,7 @@ void om_request_update(struct omSensorFusionManager *manager,omNonLinearFilter_R
 
 		}
 
-		om_vector_dispose(&eigen_vector[i]);
+		om_vector_free(&eigen_vector[i]);
 
 	}
 
@@ -1269,7 +1269,7 @@ void om_request_computeR(struct omSensorFusionManager *manager,omNonLinearFilter
 
 		// compute I = identity(3)*(3.0 -(dotProduct(_r[i],_b[i])*dotProduct(_r[i],_b[i])));
 		om_matrix_createIdentity(&I,3);
-		om_operator_matrix_const_mul(&I,3.0 - (dot*dot),&I);
+		om_operator_matrix_scal_mul(&I,3.0 - (dot*dot),&I);
 
 		// transpose
 		om_matrix_transpose(&m_bi,&m_bi_t);
@@ -1295,7 +1295,7 @@ void om_request_computeR(struct omSensorFusionManager *manager,omNonLinearFilter
 
 		// compute ( I + ( ( (m_bi*m_ri.transpose()) +(m_ri*m_bi.transpose())   )*dotProduct(_b[i],_r[i]) )
 		om_operator_matrix_add(&tmp_bi_ri,&tmp_ri_bi,&R11_i_a);
-		om_operator_matrix_const_mul(&R11_i_a,dot,&R11_i_a);
+		om_operator_matrix_scal_mul(&R11_i_a,dot,&R11_i_a);
 		om_operator_matrix_add(&R11_i_a,&I,&R11_i_a);
 
 
@@ -1310,25 +1310,25 @@ void om_request_computeR(struct omSensorFusionManager *manager,omNonLinearFilter
 
 
 		//free memory
-		om_matrix_dispose(&m_bi);
-		om_matrix_dispose(&m_ri);
-		om_matrix_dispose(&S_ri);
-		om_matrix_dispose(&S_ri_t);
-		om_matrix_dispose(&I);
-		om_matrix_dispose(&tmp_bi_bi);
-		om_matrix_dispose(&tmp_bi_ri);
-		om_matrix_dispose(&tmp_ri_bi);
-		om_matrix_dispose(&m_bi_t);
-		om_matrix_dispose(&m_ri_t);
-		om_matrix_dispose(&R11_i_a);
-		om_matrix_dispose(&R11_i_b);
-		om_matrix_dispose(&tmp);
+		om_matrix_free(&m_bi);
+		om_matrix_free(&m_ri);
+		om_matrix_free(&S_ri);
+		om_matrix_free(&S_ri_t);
+		om_matrix_free(&I);
+		om_matrix_free(&tmp_bi_bi);
+		om_matrix_free(&tmp_bi_ri);
+		om_matrix_free(&tmp_ri_bi);
+		om_matrix_free(&m_bi_t);
+		om_matrix_free(&m_ri_t);
+		om_matrix_free(&R11_i_a);
+		om_matrix_free(&R11_i_b);
+		om_matrix_free(&tmp);
 
 
 	}
 
 	//compute R11 = R11*(_mu_k/n_k);
-	om_operator_matrix_const_mul(&R11,(filter->_mu_k/n_k),&R11);
+	om_operator_matrix_scal_mul(&R11,(filter->_mu_k/n_k),&R11);
 
 
 	//set R values
@@ -1338,7 +1338,7 @@ void om_request_computeR(struct omSensorFusionManager *manager,omNonLinearFilter
 
 	om_matrix_setValue(&filter->_R,3,3,R22);
 
-	om_matrix_dispose(&R11);
+	om_matrix_free(&R11);
 
 
 
@@ -1398,11 +1398,11 @@ void om_request_computeQ(struct omSensorFusionManager *manager,omNonLinearFilter
 	om_matrix_create(&Q11,3,3);
 
 	om_matrix_createIdentity(&I,3);
-	om_operator_matrix_const_mul(&I,tmp,&I);
+	om_operator_matrix_scal_mul(&I,tmp,&I);
 
 	om_operator_matrix_sub(&tmp_d_B_k_2,&tmp_d_B_k_square,&T);
 	om_operator_matrix_sub(&T,&tmp_d_B_k_t_square,&T);
-	om_operator_matrix_const_mul(&T,2.0,&T);
+	om_operator_matrix_scal_mul(&T,2.0,&T);
 
 	// computation of Q11
 	om_operator_matrix_add(&I,&T,&Q11);
@@ -1423,7 +1423,7 @@ void om_request_computeQ(struct omSensorFusionManager *manager,omNonLinearFilter
 	om_matrix_create(&M,3,3);
 	om_matrix_create(&D,3,3);
 	om_matrix_createIdentity(&I2,3);
-	om_operator_matrix_const_mul(&I2,filter->_d_sigma_k,&I2);
+	om_operator_matrix_scal_mul(&I2,filter->_d_sigma_k,&I2);
 
 	//compute M = _d_B_k*(_d_B_k - (identity(3)*_d_sigma_k))
 	om_operator_matrix_sub(&filter->_d_B_k,&I2,&A);
@@ -1437,7 +1437,7 @@ void om_request_computeQ(struct omSensorFusionManager *manager,omNonLinearFilter
 	//compute  Q12 = (y + (_d_B_k.transpose()*_d_z_k))*(eta_k*(-1));
 	om_operator_matrix_vector_mul(&d_B_k_t,&filter->_d_z_k,&x);
 	om_operator_vector_add(&y,&x,&Q12);
-	om_operator_vector_const_mul(&Q12,eta_k*(-1.0),&Q12);
+	om_operator_vector_scal_mul(&Q12,eta_k*(-1.0),&Q12);
 
 	//set Q values
 	for(int i=0;i<3;i++){
@@ -1451,27 +1451,27 @@ void om_request_computeQ(struct omSensorFusionManager *manager,omNonLinearFilter
 	}
 
 	om_matrix_setValue(&filter->_Q,3,3,Q22);
-	om_operator_matrix_const_mul(&filter->_Q,DELTA_T*DELTA_T,&filter->_Q);
+	om_operator_matrix_scal_mul(&filter->_Q,DELTA_T*DELTA_T,&filter->_Q);
 
 
 	//free memory
-	om_matrix_dispose(&d_B_k_t);
-	om_matrix_dispose(&tmp_d_B_k);
-	om_matrix_dispose(&tmp_d_B_k_2);
-	om_matrix_dispose(&tmp_d_B_k_square);
-	om_matrix_dispose(&tmp_d_B_k_t_square);
-	om_matrix_dispose(&I);
-	om_matrix_dispose(&T);
-	om_matrix_dispose(&Q11);
-	om_matrix_dispose(&M);
-	om_matrix_dispose(&M_t);
-	om_matrix_dispose(&D);
-	om_matrix_dispose(&I2);
-	om_matrix_dispose(&A);
+	om_matrix_free(&d_B_k_t);
+	om_matrix_free(&tmp_d_B_k);
+	om_matrix_free(&tmp_d_B_k_2);
+	om_matrix_free(&tmp_d_B_k_square);
+	om_matrix_free(&tmp_d_B_k_t_square);
+	om_matrix_free(&I);
+	om_matrix_free(&T);
+	om_matrix_free(&Q11);
+	om_matrix_free(&M);
+	om_matrix_free(&M_t);
+	om_matrix_free(&D);
+	om_matrix_free(&I2);
+	om_matrix_free(&A);
 
-	om_vector_dispose(&y);
-	om_vector_dispose(&x);
-	om_vector_dispose(&Q12);
+	om_vector_free(&y);
+	om_vector_free(&x);
+	om_vector_free(&Q12);
 
 }
 

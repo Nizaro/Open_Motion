@@ -42,8 +42,8 @@ void om_random_generateWhiteNoiseFromCovarianceMatrix(double mu,struct omMatrix 
 	om_operator_matrix_vector_mul(cov_L,&z,out);
 	om_operator_vector_add(&mu_vec,out,out);
 
-	om_vector_dispose(&z);
-	om_vector_dispose(&mu_vec);
+	om_vector_free(&z);
+	om_vector_free(&mu_vec);
 
 
 }

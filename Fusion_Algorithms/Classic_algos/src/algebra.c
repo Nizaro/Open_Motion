@@ -111,7 +111,7 @@ void om_vector_display(struct omVector *vector){
 	printf("]\n");
 }
 
-void om_vector_dispose(struct omVector *vector){
+void om_vector_free(struct omVector *vector){
 
 	if(vector->_values != 0){
 		free(vector->_values);
@@ -141,7 +141,7 @@ void om_matrix_create(struct omMatrix *matrix,int rows,int columns){
 }
 
 
-void om_matrix_dispose(struct omMatrix *matrix){
+void om_matrix_free(struct omMatrix *matrix){
 
 	if(matrix->_values != 0){
 
@@ -255,14 +255,14 @@ void om_matrix_getEingenValues(struct omMatrix *matrix,struct omVector **eigen_v
 		om_operator_matrix_mul(&R,&Q,&D);
 
 		//free memory
-		om_matrix_dispose(&Q);
-		om_matrix_dispose(&R);
+		om_matrix_free(&Q);
+		om_matrix_free(&R);
 
 		om_matrix_factorizationQR(&D,&Q,&R);
 		om_operator_matrix_mul(&P,&Q,&P_tmp);
 		om_matrix_clone(&P_tmp,&P);
 
-		om_matrix_dispose(&P_tmp);
+		om_matrix_free(&P_tmp);
 	}
 
 
@@ -277,10 +277,10 @@ void om_matrix_getEingenValues(struct omMatrix *matrix,struct omVector **eigen_v
 
 	}
 
-	om_matrix_dispose(&D);
-	om_matrix_dispose(&Q);
-	om_matrix_dispose(&R);
-	om_matrix_dispose(&P);
+	om_matrix_free(&D);
+	om_matrix_free(&Q);
+	om_matrix_free(&R);
+	om_matrix_free(&P);
 
 
 
@@ -341,11 +341,11 @@ void om_matrix_exponantial(struct omMatrix *matrix,struct omMatrix *exp,int N){
 			om_operator_matrix_const_div(&tmp,acc_n,&tmp);
 			om_operator_matrix_add(exp,&tmp,exp);
 
-			om_matrix_dispose(&tmp);
+			om_matrix_free(&tmp);
 		}
 
 
-		om_matrix_dispose(&acc);
+		om_matrix_free(&acc);
 
 	}
 
@@ -370,12 +370,12 @@ void om_matrix_squareRoot(struct omMatrix *matrix,struct omMatrix *m_sqrt){
 			double det = sqrt(om_matrix_determinant(matrix));
 			double tmp = sqrt(om_matrix_trace(matrix) + (2.0*det));
 
-			om_operator_matrix_const_mul(&I,det,&I);
+			om_operator_matrix_scal_mul(&I,det,&I);
 			om_operator_matrix_add(matrix,&I,m_sqrt);
 
 			om_operator_matrix_const_div(m_sqrt,tmp,m_sqrt);
 
-			om_matrix_dispose(&I);
+			om_matrix_free(&I);
 
 		}else{
 
@@ -416,14 +416,14 @@ void om_matrix_squareRoot(struct omMatrix *matrix,struct omMatrix *m_sqrt){
 			om_operator_matrix_mul(&P,&squareD,&S_tmp);
 			om_operator_matrix_mul(&S_tmp,&P_inv,m_sqrt);
 
-			om_matrix_dispose(&P);
-			om_matrix_dispose(&P_inv);
-			om_matrix_dispose(&S_tmp);
-			om_matrix_dispose(&D);
-			om_matrix_dispose(&R);
-			om_matrix_dispose(&Q);
-			om_matrix_dispose(&squareD);
-			om_matrix_dispose(&P_tmp);
+			om_matrix_free(&P);
+			om_matrix_free(&P_inv);
+			om_matrix_free(&S_tmp);
+			om_matrix_free(&D);
+			om_matrix_free(&R);
+			om_matrix_free(&Q);
+			om_matrix_free(&squareD);
+			om_matrix_free(&P_tmp);
 
 		}
 
@@ -490,7 +490,7 @@ void om_matrix_comatrix(struct omMatrix *matrix,struct omMatrix *comatrix){
 			 }
 		 }
 
-		 om_matrix_dispose(&b);
+		 om_matrix_free(&b);
 
 	}
 
@@ -572,14 +572,14 @@ void om_matrix_inverse(struct omMatrix *matrix,struct omMatrix *inverse){
 			om_matrix_getColumn(&I,i,&I_i);
 			om_solvingLinearSystemLU(&L,&U,&I_i,&x_i);
 			om_matrix_setColumn(inverse,i,&x_i);
-			om_vector_dispose(&x_i);
-			om_vector_dispose(&I_i);
+			om_vector_free(&x_i);
+			om_vector_free(&I_i);
 		}
 
 
-		om_matrix_dispose(&L);
-		om_matrix_dispose(&U);
-		om_matrix_dispose(&I);
+		om_matrix_free(&L);
+		om_matrix_free(&U);
+		om_matrix_free(&I);
 	}
 
 
@@ -593,7 +593,7 @@ void om_matrix_adjugate(struct omMatrix *matrix,struct omMatrix *adjugate){
 
 	om_matrix_transpose(&comatrix,adjugate);
 
-	om_matrix_dispose(&comatrix);
+	om_matrix_free(&comatrix);
 }
 
 void om_matrix_factorizationLU(struct omMatrix *matrix,struct omMatrix *L,struct omMatrix *U){
@@ -622,7 +622,7 @@ void om_matrix_factorizationLU(struct omMatrix *matrix,struct omMatrix *L,struct
 				 om_matrix_setValue(U,k,j,om_matrix_getValue(&A,k,j));
 		 }
 
-		 om_matrix_dispose(&A);
+		 om_matrix_free(&A);
 
 	}
 
@@ -670,7 +670,7 @@ void om_matrix_factorizationQR(struct omMatrix *matrix,struct omMatrix *Q,struct
 
 	}
 
-	om_matrix_dispose(&A);
+	om_matrix_free(&A);
 
 }
 
@@ -866,7 +866,7 @@ void om_operator_vector_sub(struct omVector *a,struct omVector *b,struct omVecto
 
 }
 
-void om_operator_vector_const_mul(struct omVector *a,double b,struct omVector *out){
+void om_operator_vector_scal_mul(struct omVector *a,double b,struct omVector *out){
 
 	if(out->_values == NULL)
 		om_vector_create(out,a->_length);
@@ -886,7 +886,6 @@ void om_operator_vector_const_div(struct omVector *a,double b,struct omVector *o
 
 }
 
-
 void om_operator_vector_outer_product (struct omVector* a, struct omVector* b, struct omMatrix* out)
 {
     int i,j;
@@ -898,11 +897,10 @@ void om_operator_vector_outer_product (struct omVector* a, struct omVector* b, s
 
     for(i = 0; i < m; i++) {
         for (j = 0; j < n; j++) {
-            om_matrix_setValue(out,i,j,om_vector_getValue(a,i) * om_vector_getValue(b,i));
+            om_matrix_setValue(out,i,j,om_vector_getValue(a,i) * om_vector_getValue(b,j));
         }
     }
 }
-
 
 void om_operator_matrix_add(struct omMatrix *a,struct omMatrix *b,struct omMatrix *out){
 
@@ -963,7 +961,7 @@ void om_operator_matrix_mul(struct omMatrix *a,struct omMatrix *b,struct omMatri
 
 }
 
-void om_operator_matrix_const_mul(struct omMatrix *a,double b,struct omMatrix *out){
+void om_operator_matrix_scal_mul(struct omMatrix *a,double b,struct omMatrix *out){
 
 	if(out->_values == NULL)
 		om_matrix_create(out,a->_rows,a->_columns);
@@ -1034,7 +1032,7 @@ void om_operator_quat_mul(struct omQuaternion *a,struct omQuaternion *b,struct o
 
 }
 
-void om_operator_quat_const_mul(struct omQuaternion *a,double b,struct omQuaternion *out){
+void om_operator_quat_scal_mul(struct omQuaternion *a,double b,struct omQuaternion *out){
 
 	om_quat_create(out,a->_qw * b,a->_qx * b,a->_qy * b,a->_qz * b);
 
@@ -1052,13 +1050,12 @@ void om_operator_quat_const_div(struct omQuaternion *a,double b,struct omQuatern
 /////                Divers                       /////
 ///////////////////////////////////////////////////////
 
-void om_conversion_vector_matrix(struct omVector* a, struct omMatrix* out)
+void om_convert_vector2matrix(struct omVector* a, struct omMatrix* out)
 {
-    if(out->_columns!=1){
-           printf("The size of the matrix does not match a vector\n");
+    if(out->_columns==1){
+          om_matrix_setColumn(out,0,a);
     }
-
-    om_matrix_setColumn(out,0,a);
+    else  printf("The size of the matrix does not match a vector\n");
 }
 
 void om_vector_crossProduct(struct omVector *a,struct omVector *b,struct omVector *cross){
@@ -1117,8 +1114,8 @@ void om_solvingLinearSystem(struct omMatrix *A,struct omVector *b,struct omVecto
 	om_matrix_factorizationLU(A,&L,&U);
 	om_solvingLinearSystemLU(&L,&U,b,x);
 
-	om_matrix_dispose(&L);
-	om_matrix_dispose(&U);
+	om_matrix_free(&L);
+	om_matrix_free(&U);
 
 }
 
@@ -1158,7 +1155,7 @@ void om_solvingLinearSystemLU(struct omMatrix *L,struct omMatrix *U,struct omVec
 
 	}
 
-	om_vector_dispose(&d);
+	om_vector_free(&d);
 
 }
 
@@ -1216,10 +1213,10 @@ void om_least_square_method (struct omMatrix *pX,struct omVector *pY,struct omVe
 
     /*Destruction of dynamically  created  structures*/
 
-    om_matrix_dispose(pX_transposed);
-    om_matrix_dispose(pX_transposed_Product_X);
-    om_matrix_dispose(p_Inverse_of_X_transposed_product_X);
-    om_matrix_dispose(p_Inverse_of_X_transposed_product_X_Multiplied_by_X_transposed);
+    om_matrix_free(pX_transposed);
+    om_matrix_free(pX_transposed_Product_X);
+    om_matrix_free(p_Inverse_of_X_transposed_product_X);
+    om_matrix_free(p_Inverse_of_X_transposed_product_X_Multiplied_by_X_transposed);
 }
 
 /*
@@ -1229,13 +1226,14 @@ void om_least_square_method (struct omMatrix *pX,struct omVector *pY,struct omVe
                         - a, b : lower and upper  limits of the integral
                         - mid : midpoint of the interval integration (has to be computed outside the function because the simpsonadapt call itself recursively
                         - epsilon : maximum allowable error
-                        - maxh : maximum and minimum lengths of the subdivision
+                        - maxh, minh : maximum and minimum lengths of the subdivision
                         - fa, fb, fmid : fnct values at a,b and mid
                         - *bada, *badb : endpoints of the subinterval on which the calculation failed
-                        - succes : variable equal to 1 if successful or 0 otherwise
+                        - success : variable equal to 1 if successful or 0 otherwise
 
     Source : INTRODUCTION TO NUMERICAL ANALYSIS WITH C PROGRAMS, Attila MATE, Brooklyn College of the City University of New York
 */
+
 
 double simpsonadapt(double (*fnct)(double), double a, double b, double mid, double epsilon, double maxh, double minh, double fa, double fb, double fmid, double *bada, double *badb, int *success)
 {

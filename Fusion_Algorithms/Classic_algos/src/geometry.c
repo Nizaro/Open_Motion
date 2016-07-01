@@ -59,9 +59,9 @@ void om_kinematics_quaternion(struct omQuaternion *q_t,struct omVector *angular_
 	om_operator_matrix_vector_mul(&Omega,&q_t_vec,&q_tp1_vec);
 	om_quat_create(q_tp1,q_tp1_vec._values[3],q_tp1_vec._values[0],q_tp1_vec._values[1],q_tp1_vec._values[2]);
 
-	om_matrix_dispose(&Omega);
-	om_vector_dispose(&q_t_vec);
-	om_vector_dispose(&q_tp1_vec);
+	om_matrix_free(&Omega);
+	om_vector_free(&q_t_vec);
+	om_vector_free(&q_tp1_vec);
 
 }
 
@@ -85,17 +85,17 @@ void om_convert_quaternion2matrix(struct omQuaternion *in,struct omMatrix* out){
 	om_matrix_skewSymetricMatrix(&in_img,&S);
 
 	om_operator_matrix_mul(&S,&S,&S_tmp);
-	om_operator_matrix_const_mul(&S_tmp,2.0,&S_tmp);
+	om_operator_matrix_scal_mul(&S_tmp,2.0,&S_tmp);
 
-	om_operator_matrix_const_mul(&S,2.0*in->_qw,&S);
+	om_operator_matrix_scal_mul(&S,2.0*in->_qw,&S);
 
 	om_operator_matrix_add(&I,&S,out);
 	om_operator_matrix_add(out,&S_tmp,out);
 
-	om_matrix_dispose(&I);
-	om_matrix_dispose(&S);
-	om_matrix_dispose(&S_tmp);
-	om_vector_dispose(&in_img);
+	om_matrix_free(&I);
+	om_matrix_free(&S);
+	om_matrix_free(&S_tmp);
+	om_vector_free(&in_img);
 
 }
 
@@ -237,14 +237,14 @@ void om_convert_axisAngle2matrix(struct omAxisAngle *in,struct omMatrix *out){
 
 	// I + S*sin_a + S*S*( 1.0 - cos_a )
 	om_operator_matrix_mul(&S,&S,&S_tmp);
-	om_operator_matrix_const_mul(&S_tmp,(1.0 - cos_a),&S_tmp);
-	om_operator_matrix_const_mul(&S,sin_a,&S);
+	om_operator_matrix_scal_mul(&S_tmp,(1.0 - cos_a),&S_tmp);
+	om_operator_matrix_scal_mul(&S,sin_a,&S);
 	om_operator_matrix_add(&S,&S_tmp,out);
 	om_operator_matrix_add(out,&I,out);
 
-	om_matrix_dispose(&I);
-	om_matrix_dispose(&S);
-	om_matrix_dispose(&S_tmp);
+	om_matrix_free(&I);
+	om_matrix_free(&S);
+	om_matrix_free(&S_tmp);
 
 }
 
@@ -400,10 +400,10 @@ void om_operator_omega_kinematics(struct omVector *angular_velocity,struct omMat
 
 	om_vector_create(&phi,3);
 	om_vector_clone(angular_velocity,&phi);
-	om_operator_vector_const_mul(&phi,( sin_tmp/norm ),&phi);
+	om_operator_vector_scal_mul(&phi,( sin_tmp/norm ),&phi);
 
 	om_matrix_skewSymetricMatrix(&phi,&S_phi);
-	om_operator_matrix_const_mul(&I,cos_tmp,&I);
+	om_operator_matrix_scal_mul(&I,cos_tmp,&I);
 
 	om_operator_matrix_sub(&I,&S_phi,&Omega_tmp);
 
@@ -417,10 +417,10 @@ void om_operator_omega_kinematics(struct omVector *angular_velocity,struct omMat
 
 	om_matrix_setValue(out,3,3,cos_tmp);
 
-	om_matrix_dispose(&Omega_tmp);
-	om_matrix_dispose(&I);
-	om_matrix_dispose(&S_phi);
-	om_vector_dispose(&phi);
+	om_matrix_free(&Omega_tmp);
+	om_matrix_free(&I);
+	om_matrix_free(&S_phi);
+	om_vector_free(&phi);
 
 }
 

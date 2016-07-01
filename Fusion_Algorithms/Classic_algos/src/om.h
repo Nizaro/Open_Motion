@@ -46,12 +46,12 @@ typedef struct omIMUData{
 }omIMUData;
 
 
-typedef enum omAttitudeReprensatationType{
+typedef enum omAttitudeRepresentationType{
 	Quarternion,Matrix,AxisAngle,EulerAngle
-}omAttitudeReprensatationType;
+}omAttitudeRepresentationType;
 
 
-union omAttitudeReprensatation{
+union omAttitudeRepresentation{
 
 	omQuaternion quaternion;
 	omEulerAngle euler;
@@ -63,8 +63,8 @@ union omAttitudeReprensatation{
 
 typedef struct omSensorFusionManager{
 
-	enum omAttitudeReprensatationType type;
-	union omAttitudeReprensatation output;
+	enum omAttitudeRepresentationType type;
+	union omAttitudeRepresentation output;
 	omIMUData imu_data;
 	omIMUParams imu_params;
 
