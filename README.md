@@ -6,7 +6,8 @@ Synopsis
 At the top of the file there should be a short introduction and/ or overview that explains what the project is. This description should match descriptions added for package managers (Gemspec, package.json, etc.)
 
 
-The OpenMotion library provides functions in order to implement, test, or compare data fusion algorithms.
+OpenMotion is a open source library mainly aimed for real-time attitude estimation. The approach is based on data fusion technics using the output of a IMU (composed by a 3D gyroscope, 3D accelerometer and a
+3D magnetometer). Among several methods proposed by the library, the user has the possibilities to choose which methods fits the best to his expectation according to its performance.
 
 Code Example
 ============
@@ -72,6 +73,7 @@ Here are some usefull links fot those who want to study or understand deeper the
 - Kalman extended filters :
 - CGO :
 - USQUE :
+- Particle filter :
 
 
 License
