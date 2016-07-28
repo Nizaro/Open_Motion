@@ -338,7 +338,7 @@ void om_matrix_exponantial(struct omMatrix *matrix,struct omMatrix *exp,int N){
 
 			om_operator_matrix_mul(&acc,matrix,&tmp);
 			om_matrix_clone(&tmp,&acc);
-			om_operator_matrix_const_div(&tmp,acc_n,&tmp);
+			om_operator_matrix_scal_div(&tmp,acc_n,&tmp);
 			om_operator_matrix_add(exp,&tmp,exp);
 
 			om_matrix_free(&tmp);
@@ -373,7 +373,7 @@ void om_matrix_squareRoot(struct omMatrix *matrix,struct omMatrix *m_sqrt){
 			om_operator_matrix_scal_mul(&I,det,&I);
 			om_operator_matrix_add(matrix,&I,m_sqrt);
 
-			om_operator_matrix_const_div(m_sqrt,tmp,m_sqrt);
+			om_operator_matrix_scal_div(m_sqrt,tmp,m_sqrt);
 
 			om_matrix_free(&I);
 
@@ -840,9 +840,6 @@ void om_operator_vector_add(struct omVector *a,struct omVector *b,struct omVecto
 
 	if (a->_length == b->_length){
 
-		if(out->_values == NULL)
-			om_vector_create(out,a->_length);
-
 		for(int i=0;i<out->_length;i++)
 			om_vector_setValue(out,i,a->_values[i] + b->_values[i]);
 
@@ -855,8 +852,6 @@ void om_operator_vector_sub(struct omVector *a,struct omVector *b,struct omVecto
 
 	if (a->_length == b->_length){
 
-		if(out->_values == NULL)
-			om_vector_create(out,a->_length);
 
 		for(int i=0;i<out->_length;i++)
 			om_vector_setValue(out,i,a->_values[i] - b->_values[i]);
@@ -868,18 +863,14 @@ void om_operator_vector_sub(struct omVector *a,struct omVector *b,struct omVecto
 
 void om_operator_vector_scal_mul(struct omVector *a,double b,struct omVector *out){
 
-	if(out->_values == NULL)
-		om_vector_create(out,a->_length);
 
 	for(int i=0;i<out->_length;i++)
 		om_vector_setValue(out,i,a->_values[i] * b);
 
 }
 
-void om_operator_vector_const_div(struct omVector *a,double b,struct omVector *out){
+void om_operator_vector_scal_div(struct omVector *a,double b,struct omVector *out){
 
-	if(out->_values == NULL)
-		om_vector_create(out,a->_length);
 
 	for(int i=0;i<out->_length;i++)
 		om_vector_setValue(out,i,a->_values[i] / b);
@@ -906,10 +897,6 @@ void om_operator_matrix_add(struct omMatrix *a,struct omMatrix *b,struct omMatri
 
 	if( (a->_rows == b->_rows) && (a->_columns == b->_columns) ){
 
-		if(out->_values == NULL){
-			om_matrix_create(out,a->_rows,a->_columns);
-		}
-
 
 		for(int i=0;i<out->_rows;i++)
 			for(int j=0;j<out->_columns;j++)
@@ -923,9 +910,6 @@ void om_operator_matrix_sub(struct omMatrix *a,struct omMatrix *b,struct omMatri
 
 	if( (a->_rows == b->_rows) && (a->_columns == b->_columns) ){
 
-		if(out->_values == NULL){
-			om_matrix_create(out,a->_rows,a->_columns);
-		}
 
 		for(int i=0;i<out->_rows;i++)
 			for(int j=0;j<out->_columns;j++)
@@ -940,9 +924,6 @@ void om_operator_matrix_mul(struct omMatrix *a,struct omMatrix *b,struct omMatri
 
 
 	if( a->_columns == b->_rows){
-
-		if(out->_values == NULL)
-			om_matrix_create(out,a->_rows,b->_columns);
 
 		for(int i=0;i<out->_rows;++i)
 			for(int j=0;j<out->_columns;++j){
@@ -963,19 +944,14 @@ void om_operator_matrix_mul(struct omMatrix *a,struct omMatrix *b,struct omMatri
 
 void om_operator_matrix_scal_mul(struct omMatrix *a,double b,struct omMatrix *out){
 
-	if(out->_values == NULL)
-		om_matrix_create(out,a->_rows,a->_columns);
-
 	for(int i=0;i<out->_rows;i++)
 		for(int j=0;j<out->_columns;j++)
 			om_matrix_setValue(out,i,j,om_matrix_getValue(a,i,j)*b);
 
 }
 
-void om_operator_matrix_const_div(struct omMatrix *a,double b,struct omMatrix *out){
+void om_operator_matrix_scal_div(struct omMatrix *a,double b,struct omMatrix *out){
 
-	if(out->_values == NULL)
-		om_matrix_create(out,a->_rows,a->_columns);
 
 	for(int i=0;i<out->_rows;i++)
 		for(int j=0;j<out->_columns;j++)
@@ -987,9 +963,6 @@ void om_operator_matrix_const_div(struct omMatrix *a,double b,struct omMatrix *o
 void om_operator_matrix_vector_mul(struct omMatrix *a,struct omVector *b,struct omVector *out){
 
 	if (b->_length == a->_columns){
-
-		if(out->_values == NULL)
-			om_vector_create(out,b->_length);
 
 		for(int i=0;i<out->_length;++i){
 
@@ -1038,7 +1011,7 @@ void om_operator_quat_scal_mul(struct omQuaternion *a,double b,struct omQuaterni
 
 }
 
-void om_operator_quat_const_div(struct omQuaternion *a,double b,struct omQuaternion *out){
+void om_operator_quat_scal_div(struct omQuaternion *a,double b,struct omQuaternion *out){
 
 	om_quat_create(out,a->_qw / b,a->_qx / b,a->_qy / b,a->_qz / b);
 }

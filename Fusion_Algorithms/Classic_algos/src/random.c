@@ -27,9 +27,6 @@ void om_random_generateWhiteNoiseFromCovarianceMatrix(double mu,struct omMatrix 
 
 	int n = cov_L->_rows;
 
-	if(!out->_length)
-		om_vector_create(out,n);
-
 	omVector z;
 	omVector mu_vec;
 

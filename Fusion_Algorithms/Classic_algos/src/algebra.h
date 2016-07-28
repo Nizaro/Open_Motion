@@ -173,21 +173,21 @@ void om_quat_display(struct omQuaternion *quat);
 void om_operator_vector_add(struct omVector *a,struct omVector *b,struct omVector *out);
 void om_operator_vector_sub(struct omVector *a,struct omVector *b,struct omVector *out);
 void om_operator_vector_scal_mul(struct omVector *a,double b,struct omVector *out);
-void om_operator_vector_const_div(struct omVector *a,double b,struct omVector *out);
+void om_operator_vector_scal_div(struct omVector *a,double b,struct omVector *out);
 void om_operator_vector_outer_product (struct omVector* a, struct omVector* b, struct omMatrix* out);
 
 void om_operator_matrix_add(struct omMatrix *a,struct omMatrix *b,struct omMatrix *out);
 void om_operator_matrix_sub(struct omMatrix *a,struct omMatrix *b,struct omMatrix *out);
 void om_operator_matrix_mul(struct omMatrix *a,struct omMatrix *b,struct omMatrix *out);
 void om_operator_matrix_scal_mul(struct omMatrix *a,double b,struct omMatrix *out);
-void om_operator_matrix_const_div(struct omMatrix *a,double b,struct omMatrix *out);
+void om_operator_matrix_scal_div(struct omMatrix *a,double b,struct omMatrix *out);
 void om_operator_matrix_vector_mul(struct omMatrix *a,struct omVector *b,struct omVector *out);
 
 void om_operator_quat_add(struct omQuaternion *a,struct omQuaternion *b,struct omQuaternion *out);
 void om_operator_quat_sub(struct omQuaternion *a,struct omQuaternion *b,struct omQuaternion *out);
 void om_operator_quat_mul(struct omQuaternion *a,struct omQuaternion *b,struct omQuaternion *out);
 void om_operator_quat_scal_mul(struct omQuaternion *a,double b,struct omQuaternion *out);
-void om_operator_quat_const_div(struct omQuaternion *a,double b,struct omQuaternion *out);
+void om_operator_quat_scal_div(struct omQuaternion *a,double b,struct omQuaternion *out);
 
 
 ///////////////////////////////////////////////////////
