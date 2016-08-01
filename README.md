@@ -29,7 +29,7 @@ Clone the GitHub OpenMotion repository :
 
 Get into the corresponding folder and create a build repository :
 	
-	cd OpenMotion
+	cd OpenMotion/Fusion_Algorithms/Classic_algos
 
 Then execute the "build.sh"	script which will make use of cmake in odrer to create the OpenMotion library.
 
@@ -74,7 +74,7 @@ API Reference
 Code Example
 ============
 
-An sample of usage is available here in the folder ./OpenMotion/Fusion_Algorithms/samples/
+An sample of usage is available here in the folder ./OpenMotion/Fusion_Algorithms/samples/.
 A makefile is provided. But you can compile by yourself with the command :
 	
 	gcc -o om_sample om_sample.c -std=c99 -lopenmotion -lm -D_BSD_SOURCE
