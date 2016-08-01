@@ -80,6 +80,7 @@ A makefile is provided. But you can compile by yourself with the command :
 	gcc -o om_sample om_sample.c -std=c99 -lopenmotion -lm -D_BSD_SOURCE
 	
 And execute with 
+
 	./om_sample -i imu_data.csv	
 
 The file imu_data.csv contains simulated and noisy values of a IMU such as we have access to the ground truth too.
