@@ -12,6 +12,10 @@ Code Example
 
 
 
+Android Example
+============
+
+
 Motivation
 ==========
 
@@ -96,9 +100,9 @@ Here are some usefull links fot those who want to study or understand deeper the
 - 3D geometry : http://sedris.org/wg8home/Documents/WG80485.pdf
 - Kalman filters : https://cse.sc.edu/~terejanu/files/tutorialKF.pdf
 - Kalman extended filters : https://homes.cs.washington.edu/~todorov/courses/cseP590/readings/tutorialEKF.pdf
-- CGO :
+- CGO : http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=4608934
 - USQUE : http://www.acsu.buffalo.edu/~johnc/uf_att.pdf
-- Particle filter :
+- Particle filter : http://arc.aiaa.org/doi/pdf/10.2514/1.47236
 - Nonlinear Attitude Estimation Filtering : http://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/20020060647.pdf
 
 
