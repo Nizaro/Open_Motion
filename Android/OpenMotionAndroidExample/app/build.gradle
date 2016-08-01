@@ -16,7 +16,7 @@ model {
 
     android.ndk {
         moduleName = "native_lib"
-        cppFlags.add("-I${file("/home/thomas/These/Library/OpenISF/android-native/jni/include")}".toString())
+        cppFlags.add("-I${file("/path/to/OpenMotion/android-native/jni/include")}".toString())
         cppFlags.add("-fpermissive")
         cppFlags.add("-fexceptions")
         ldLibs.addAll(['android','log','EGL','GLESv2'])
@@ -36,9 +36,9 @@ model {
 
         libs(PrebuiltLibraries) {
             openmotiondep{
-                headers.srcDir "/home/thomas/These/Library/OpenMotion/android-native/jni/include"
+                headers.srcDir "/path/to/OpenMotion/android-native/jni/include"
                 binaries.withType(SharedLibraryBinary) {
-                    sharedLibraryFile = file("/home/thomas/These/Library/OpenMotion/android-native/libs/${targetPlatform.getName()}/libopenmotion.so")
+                    sharedLibraryFile = file("/path/to/OpenMotion/android-native/libs/${targetPlatform.getName()}/libopenmotion.so")
                 }
             }
         }

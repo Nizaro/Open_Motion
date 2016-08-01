@@ -15,7 +15,7 @@
 
 void om_random_generateWhiteNoise(int n,double mu,double sigma,double seed,struct omVector* out);
 
-void om_random_generateWhiteNoise(int n,double mu,double sigma,double seed,struct omVector* out);
+void om_random_generateWhiteNoiseFromCovarianceMatrix(double mu,struct omMatrix *cov_L,double seed,struct omVector *out);
 /**
  * Gaussian white noise generator
  *

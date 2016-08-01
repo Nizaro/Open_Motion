@@ -7,14 +7,6 @@ OpenMotion is an open source library written in C providing data fusion and atti
 A set of functions are provided in order to help one implementing its own algortithms and to compare its results.
 The implemented algorithms use the output of an IMU composed by a 3D gyroscope, a 3D accelerometer and a 3D magnetometer and can be used in real-time applications on embedded systems.
 
-Code Example
-============
-
-
-
-Android Example
-============
-
 
 Motivation
 ==========
@@ -26,14 +18,14 @@ On the contary of must 3D libraries, OpenMotion library has been written in C la
 Installation
 ============
 
-Source code for OpenMotion is kept on GitHub : ***
+Source code for OpenMotion is kept on GitHub : https://github.com/Nizaro/Open_Motion
 
 Linux
 ------
 
 Clone the GitHub OpenMotion repository :
 
-	git clone *******
+	git clone https://github.com/Nizaro/Open_Motion
 
 Get into the corresponding folder and create a build repository :
 	
@@ -50,13 +42,18 @@ If cmake is not installed or is deprecated, you need to run the following lines 
 Or :
 	
 	sudo apt-get upgrade
+	
+In order to use OpenMotion as a linux library use this command after the build is complete
+	
+	sudo ldconfig -v
+	
 
 Windows
 -------
 
 First you need to install cmake : https://cmake.org/download/
 
-Then you need to clone GitHub OpenMotion repository: *****
+Then you need to clone GitHub OpenMotion repository: https://github.com/Nizaro/Open_Motion
 
 Create a "build" repository under OpenMotion repository.
 
@@ -67,15 +64,43 @@ Then press "Generate".
 Mac OS
 ------
 
+The library has not been tested in a Mac OS environment yet
+
 API Reference
 =============
 
 **Link towards API reference docs live** :
 
-Tests
-=====
+Code Example
+============
 
-In order to test the library, a **test.c** file is provided and illustrates a basic example of its operation.
+An sample of usage is available here in the folder ./OpenMotion/Fusion_Algorithms/samples/
+A makefile is provided. But you can compile by yourself with the command :
+	
+	gcc -o om_sample om_sample.c -std=c99 -lopenmotion -lm -D_BSD_SOURCE
+	
+And execute with 
+	./om_sample -i imu_data.csv	
+
+The file imu_data.csv contains simulated and noisy values of a IMU such as we have access to the ground truth too.
+However, you can use the library in a real situation.
+
+Android Example
+============
+
+An example of android application is available too. In this application, OpenMotion is used as a native library. 
+However, in order to use the code properly, several modifications must be done before. Otherwise the application will not compile and work in a optimal manner.
+
+- A compilation with ndk-build is required of the Library. Go to android-native and launch the command.
+- In the file OpenMotionAndroidExample/app/build.gradle, please replace the path to the OpenMotion library at line 19,39 and 41. Also in files Android.mk and Application.mk
+- The Library works only if all the component of the IMU (gyroscope, accelerometer and magnetometer) belong to the same reference frame. 
+Then, please check if the IMU of your smartphone or tablet verify this constraint. Do not hesite to change the axis if require.
+- The Library will transform the magnetic field (output of the magnetometer) into the geographic north. 
+This transformation is based on the declinaison and the inclinaison of the magnetic fiel. This values depends on your location.
+Go see http://www.ngdc.noaa.gov/geomag-web/#igrfwmm for more information
+- The Library need an estimate of the sensors biases and variances, this values provided here are not optimal for every systems
+
+This application has been tested on an Samsung galaxy tab S II with Android 5.0.2 API 21.
 
 Additional functionality
 ========================
