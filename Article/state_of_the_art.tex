@@ -129,44 +129,7 @@ J(\mathbi{q}) = \frac{1}{2} \sum_{i=1}^n a_i||b_i-R(\mathbi{q})r_i||^2
 \label{QUEST}
 \end{equation}
 
-The matrix $R(\mathbi{q})$, is the rotation matrix that corresponds to the quaternion $\mathbi{q}$ (equation \ref{quat_to_rot}). The Quatenion Estimator (QUEST) algorithm propose a solution to the Wahba's problem. Let :
-
-\begin{equation}
-B = \sum_{i=1}^N a_i\textbf{b}_i \textbf{r}_i^T
-\end{equation}
-
-Then, we can rewrite the equation (\ref{QUEST}) as follow
-
-\begin{equation}
-J(\mathbi{q}) = \frac{1}{2} \sum_{i=1}^n a_i  - tr(R(\mathbi{q})B^T)
-\label{QUEST_bis}
-\end{equation}
-
-Due to the fact that the representation of the attitude matrix is a homogenous quadratic function of $\mathbi{q}$, we can say that
-
-\begin{equation}
-tr(R(\mathbi{q})B^T) = \mathbi{q}^TK\mathbi{q}
-\label{QUEST_ter}
-\end{equation}
-
-where $K$ is the symmetric traceless matrix such as
-
-\begin{equation}
-K = \begin{pmatrix} S-tr(B)I_3 & \textbf{z} \\ \textbf{z}^T & tr(B)
-\end{pmatrix}
-\end{equation}
-
-with
-
-\begin{equation}
-\left\{\begin{array}{l}
-S = B + B^T\\
-\textbf{z} = \sum_ia_i\textbf{b}_i\times\textbf{r}_i
- \end{array}
-\right.
-\end{equation}
-
-The minimization problem from equation (\ref{QUEST_bis}) is now a maximization problem. thus, the solution $\mathbi{q}_{opt}$ is the eingen vector correspond to the highest eigen value of $K$ \cite{markley1999estimate}. The main problem of QUEST is that it does not take into account of all the previous observations performed since the beginning. Then, a REcursive-QUEST algorithm (REQUEST) proposed by Bar-Itzhack\cite{bar-itzhack_request-recursive_1996} manages this problem.  Contrary to other methods, solutions to Wahba's problem do not estimate the gyroscope bias. Which can make it less robust in some cases. There are also other methods based on Wahba's problem like the Davenport's q-method \cite{weighted1971nasa} proposed in 1971 considered more robust than QUEST. Or the method ESOQ proposed by Mortari \cite{mortari1997esoq}  in 1997. However, for this library, we limit our investigation to REQUEST.
+The matrix $R(\mathbi{q})$, is the rotation matrix that corresponds to the quaternion $\mathbi{q}$ (equation \ref{quat_to_rot}). The Quatenion Estimator (QUEST) algorithm propose a solution to the Wahba's problem. The main problem of QUEST is that it does not take into account of all the previous observations performed since the beginning. Then, a REcursive-QUEST algorithm (REQUEST) proposed by Bar-Itzhack\cite{bar-itzhack_request-recursive_1996} manages this problem.  Contrary to other methods, solutions to Wahba's problem do not estimate the gyroscope bias. Which can make it less robust in some cases. There are also other methods based on Wahba's problem like the Davenport's q-method \cite{weighted1971nasa} proposed in 1971 considered more robust than QUEST. Or the method ESOQ proposed by Mortari \cite{mortari1997esoq}  in 1997. However, for this library, we limit our investigation to REQUEST.
 
 
 
@@ -254,14 +217,7 @@ The mean of the error is given by :
 \label{mean_var_error_def}
 \end{equation}
 
-With $n$ the number of iteration at our disposal. We use this information (mean error) for our performance study. To differentiate the methods, we assigned  some scores in order to highlight the behaviour of these methods in different configurations defined as:
-
-%\begin{figure}[!h]
-%\centering
-%\includegraphics[scale=0.40]{images/test_method.png}
-%\caption{Algorithm designed to compute attitude estimation methods' performances}
-%\label{test_method}
-%\end{figure}
+With $n$ the number of iteration at our disposal. We use this information (mean error) for our performance study. To differentiate the methods, we assigned  some scores in order to highlight the behavior of these methods in different configurations defined as:
 
 
 
@@ -290,7 +246,7 @@ Magnetometer & $0.0023$ mGauss$/\sqrt{Hz}$ & 0.05 mGauss  \rule[-1.5pt]{0pt}{13p
 Accelerometer &  $0.002$ m.s$^{-2}/\sqrt{Hz} $ & 0.02 m.s$^{-2}$ \rule[-1.5pt]{0pt}{13pt}\\
  \hline
 \end{tabular}
-\caption{Calibrated IMU data performance specification, Gyrometer, Accelerometer, Magnetometer}
+\caption{Calibrated IMU data performance specification, Gyroscope, Accelerometer, Magnetometer}
 \label{spec_imu}
 \end{table}
 
@@ -379,5 +335,20 @@ We have designed a system that can be easily repeatable in laboratory. We used a
 \end{figure}
 
 All methods give an approximation of $\mathbi{q}^c_a$ , that are compared with the data from the camera. To estimate the error that can occur with the optical feedback. We were careful in the experimentation to avoid the occlusion of the marker that is required to estimate the orientation. During this experiment, we applied a rotation of 90 degree around the $z_c$  on the smartphone in clockwise direction. Then, another rotation of 90 degree around the $z_c$ on the smartphone but in anticlockwise direction to return to the initial state. In order to study possible divergence. The results is shown in figure ... 
+
+
+
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.35]{images/situation_validation.png}
+\caption{Representation of different reference frame used in this experiment. Here, only $ \text{\mathbi{q}}_w^a $  does not change.}
+\label{situation_validation}
+\end{figure}
+
+
+
+
+
 
 
