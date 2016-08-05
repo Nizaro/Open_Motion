@@ -64,7 +64,22 @@ Then press "Generate".
 Mac OS
 ------
 
-The library has not been tested in a Mac OS environment yet
+First you need to install homebrew :
+
+	/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+Then use homebrew to install cmake:
+
+	brew install cmake
+	
+Once cmake is installed, go into the corresponding folder and create a build repository :
+
+	cd OpenMotion/Fusion_Algorithms/Classic_algos
+
+Then execute the "build.sh"	script which will make use of cmake in odrer to create the OpenMotion library.
+
+	./build.sh
+
 
 API Reference
 =============
