@@ -1,0 +1,1 @@
+/usr/bin/cc  -fPIC --std=gnu99  -fopenmp -g   -shared -Wl,-soname,libopenmotion.so.1.0 -o lib/libopenmotion.so.1.0.0 CMakeFiles/openmotion.dir/geometry.c.o CMakeFiles/openmotion.dir/om.c.o CMakeFiles/openmotion.dir/algebra.c.o CMakeFiles/openmotion.dir/random.c.o 

@@ -1,11 +1,9 @@
 /**
- * @file algebra.h
- * @author Thomas BRAUD, Nizar OUARTI
- * @date 10 june 2016
- * @brief File containing linear algebra methods
+ * \file algebra.h
+ * \author Thomas BRAUD, Nizar OUARTI
+ * \date 10 june 2016
+ * \brief File containing linear algebra methods
  *
- * Here typically goes a more extensive explanation of what the header
- * defines. Doxygens tags are words preceeded by either a backslash @\
  */
 
 #ifndef ALGEBRA_H_
@@ -64,9 +62,9 @@
 ///////////////////////////////////////////////////////
 
 /**
- * @brief Use brief, otherwise the index won't have a brief explanation.
+ * \struct omVector
+ * \brief A vector of size n containing real values
  *
- * A vector of size n containing
  */
 typedef struct omVector{
 
@@ -76,18 +74,89 @@ typedef struct omVector{
 }omVector;
 
 /**
- * update the length of the vector (normally it will be unecessary
- * @param length the new length of the vector
+ * \fn void om_vector_create(struct omVector *vector,int size,...)
+ * \brief create a new vector with a fixed length
+ * \param vector the new length of the vector
+ * \param size the new length of the vector
+ *
  */
 void om_vector_create(struct omVector *vector,int size,...);
+
+/**
+ * \fn void om_vector_clone(struct omVector *in,struct omVector *out)
+ * \brief copy all values of a vector into a new one
+ * \param in the vector to copy
+ * \param out the new vector
+ *
+ */
 void om_vector_clone(struct omVector *in,struct omVector *out);
+
+/**
+ * \fn void om_vector_setValue(struct omVector *vector,int index,double value)
+ * \brief change a value of a vector
+ * \param vector the vector
+ * \param index the index of the value to change
+ * \param value the new value
+ *
+ */
 void om_vector_setValue(struct omVector *vector,int index,double value);
+
+/**
+ * \fn om_vector_setValue(struct omVector *vector,int index,double value)
+ * \brief change all values of a vector
+ * \param vector the vector
+ * \param size the new length of the vector
+ *
+ */
 void om_vector_setValues(struct omVector *vector,int size,...);
+
+/**
+ * \fn double om_vector_getValue(struct omVector *vector,int index)
+ * \brief get a value of a vector
+ * \param vector the vector
+ * \param index the index of the value to get
+ *
+ */
 double om_vector_getValue(struct omVector *vector,int index);
+
+/**
+ * \fn double om_vector_rms(struct omVector *vector)
+ * \brief get the root mean square of the vector
+ * \param vector the vector
+ *
+ */
 double om_vector_rms(struct omVector *vector);
+
+/**
+ * \fn double om_vector_norm(struct omVector *vector)
+ * \brief get the euclidian norm of the vector
+ * \param vector the vector
+ *
+ */
 double om_vector_norm(struct omVector *vector);
+
+/**
+ * \fn void om_vector_normalize(struct omVector *vector)
+ * \brief normalize a vector
+ * \param vector the vector
+ *
+ */
 void om_vector_normalize(struct omVector *vector);
+
+/**
+ * \fn void om_vector_normalize(struct omVector *vector)
+ * \brief display in a console the values of the vector
+ * \param vector the vector
+ *
+ */
 void om_vector_display(struct omVector *vector);
+
+/**
+ * \fn void om_vector_free(struct omVector *vector)
+ * \brief display in a console the values of the vector
+ * \param vector the vector
+ *
+ */
 void om_vector_free(struct omVector *vector);
 
 
@@ -95,6 +164,11 @@ void om_vector_free(struct omVector *vector);
 /////             Matrix class                    /////
 ///////////////////////////////////////////////////////
 
+/**
+ * \struct omMatrix
+ * \brief A Matrix of size n x m containing real values
+ *
+ */
 typedef struct omMatrix{
 
 	int _columns;
@@ -103,24 +177,135 @@ typedef struct omMatrix{
 
 }omMatrix;
 
+
+/**
+ * \fn void om_matrix_create(struct omMatrix *matrix,int rows,int columns)
+ * \brief create a matrix with n rows and m columns
+ * \param matrix the matrix
+ * \param rows the number of rows
+ * \param columns the number of columns
+ *
+ */
 void om_matrix_create(struct omMatrix *matrix,int rows,int columns);
 
+/**
+ * \fn double om_matrix_getValue(struct omMatrix *matrix,int i,int j)
+ * \brief get the (i x j)th value of a matrix
+ * \param matrix the matrix
+ * \param i the row index of the value to get
+ * \param j the column index of the value to get
+ *
+ */
 double om_matrix_getValue(struct omMatrix *matrix,int i,int j);
+
+/**
+ * \fn void om_matrix_getColumn(struct omMatrix *matrix,int column,struct omVector *out)
+ * \brief get the jth column of a matrix
+ * \param matrix the matrix
+ * \param column the column index to get
+ * \param out the column
+ *
+ */
 void om_matrix_getColumn(struct omMatrix *matrix,int column,struct omVector *out);
+
+/**
+ * \fn void om_matrix_getColumn(struct omMatrix *matrix,int column,struct omVector *out)
+ * \brief get the ith row of a matrix
+ * \param matrix the matrix
+ * \param row the row index to get
+ * \param out the row
+ *
+ */
 void om_matrix_getRow(struct omMatrix *matrix,int row,struct omVector *out);
 
+/**
+ * \fn void om_matrix_setValue(struct omMatrix *matrix,int i,int j,double value)
+ * \brief set the (i x j)th value of a matrix
+ * \param matrix the matrix
+ * \param i the row index of the value to change
+ * \param j the column index of the value to change
+ * \param value the new value
+ *
+ */
 void om_matrix_setValue(struct omMatrix *matrix,int i,int j,double value);
+
+/**
+ * \fn void om_matrix_setColumn(struct omMatrix *matrix,int column,struct omVector *in)
+ * \brief set the jth column of a matrix
+ * \param matrix the matrix
+ * \param j the column index of the value to change
+ * \param in the new values of the column
+ *
+ */
 void om_matrix_setColumn(struct omMatrix *matrix,int column,struct omVector *in);
+
+/**
+ * \fn void om_matrix_setRow(struct omMatrix *matrix,int row,struct omVector *in)
+ * \brief set the ith row of a matrix
+ * \param matrix the matrix
+ * \param i the column index of the value to change
+ * \param in the new values of the column
+ *
+ */
 void om_matrix_setRow(struct omMatrix *matrix,int row,struct omVector *in);
 
+
+/**
+ * \fn double om_matrix_norm(struct omMatrix *matrix)
+ * \brief compute the norm of a square matrix
+ * \param matrix the matrix
+ * \return the norm of the matrix
+ */
 double om_matrix_norm(struct omMatrix *matrix);
+
+
+/**
+ * \fn double om_matrix_determinant(struct omMatrix *matrix)
+ * \brief compute the determinant of a square matrix
+ * \param matrix the matrix
+ * \return the determinant of the matrix
+ */
 double om_matrix_determinant(struct omMatrix *matrix);
+
+/**
+ * \fn double om_matrix_trace(struct omMatrix *matrix)
+ * \brief compute the trace (sum of diagonal values) of a square matrix
+ * \param matrix the matrix
+ * \return the norm of the matrix
+ */
 double om_matrix_trace(struct omMatrix *matrix);
 
-void om_matrix_exponantial(struct omMatrix *matrix,struct omMatrix *m_exp,int N);
-void om_matrix_squareRoot(struct omMatrix *matrix,struct omMatrix *m_sqrt);
+/**
+ * \fn void om_matrix_exponantial(struct omMatrix *matrix,struct omMatrix *m_exp,int N)
+ * \brief compute the exponantial of a square matrix
+ * \param matrix the matrix
+ * \param m_exp the exponential matrix
+ * \param N number of iteration
+ */
+void om_matrix_exponential(struct omMatrix *matrix,struct omMatrix *m_exp,int N);
 
+/**
+ * \fn void om_matrix_squareRoot(struct omMatrix *matrix,struct omMatrix *m_sqrt)
+ * \brief compute the square root of a square matrix
+ * \param matrix the matrix
+ * \param m_sqrt the square root matrix
+ */
+void om_matrix_squareRoot(struct omMatrix *matrix,struct omMatrix *m_sqrt,int N);
+
+/**
+ * \fn int om_matrix_isSquare(struct omMatrix *matrix)
+ * \brief determine is a matrix is square or not. The function will test if the number of rows is equals to the number od
+ * \param matrix the matrix
+ * \return 1 if the matrix is square
+ */
 int om_matrix_isSquare(struct omMatrix *matrix);
+
+/**
+ * \fn int om_matrix_containsNaN(struct omMatrix *matrix)
+ * \brief determine is a matrix is square or not. The function will test if the number of rows is equals to the number od
+ * \param matrix the matrix
+ * \return 1 if the matrix is square
+ */
 int om_matrix_containsNaN(struct omMatrix *matrix);
 int om_matrix_isNull(struct omMatrix *matrix);
 
@@ -132,14 +317,14 @@ void om_matrix_adjugate(struct omMatrix *matrix,struct omMatrix *adjugate);
 void om_matrix_factorizationQR(struct omMatrix *matrix,struct omMatrix *Q,struct omMatrix *R);
 void om_matrix_factorizationLU(struct omMatrix *matrix,struct omMatrix *L,struct omMatrix *U);
 void om_matrix_choleskyDecomposition(struct omMatrix *matrix,struct omMatrix *L);
-void om_matrix_schurDecomposition(struct omMatrix *matrix,struct omMatrix *T,struct omMatrix *U);
+void om_matrix_schurDecomposition(struct omMatrix *matrix,struct omMatrix *T,struct omMatrix *U,int N);
 
 void om_matrix_display(struct omMatrix *matrix);
 void om_matrix_free(struct omMatrix *matrix);
 void om_matrix_clone(struct omMatrix *in,struct omMatrix *out);
 
 void om_matrix_getEingenValues(struct omMatrix *matrix,struct omVector **eigen_vectors,double **eigen_values,int N);
-void om_matrix_skewSymetricMatrix(struct omVector *in,struct omMatrix *out);
+void om_matrix_skewSymmetricMatrix(struct omVector *in,struct omMatrix *out);
 void om_matrix_createIdentity(struct omMatrix *I,int n);
 
 ///////////////////////////////////////////////////////

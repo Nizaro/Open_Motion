@@ -1,9 +1,11 @@
-/*
- * om.h
+/**
+ * \file om.h
+ * \author Thomas BRAUD, Nizar OUARTI
+ * \date 10 june 2016
+ * \brief File containing linear algebra methods
  *
- *  Created on: 25 May, 2016
- *      Author: thomas
  */
+
 
 #ifndef OM_H_
 #define OM_H_
@@ -59,6 +61,7 @@ union omAttitudeRepresentation{
 	omEulerAngle euler;
 	omAxisAngle axis_angle;
 	omMatrix matrix;
+
 };
 
 
@@ -103,6 +106,9 @@ typedef struct omNonLinearFilter_CGO{
 
 void om_cgo_initialization(struct omSensorFusionManager *manager,void *filter);
 void om_cgo_process(struct omSensorFusionManager *manager,void *filter);
+void om_cgo_prediction(struct omSensorFusionManager *manager,omNonLinearFilter_CGO *filter);
+void om_cgo_update(struct omSensorFusionManager *manager,omNonLinearFilter_CGO *filter);
+
 void om_cgo_free(void *filter);
 
 ///////////////////////////////////////////////////////

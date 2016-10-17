@@ -111,7 +111,7 @@ void om_vector_display(struct omVector *vector){
 	printf("]\n");
 }
 
-void om_vector_dispose(struct omVector *vector){
+void om_vector_free(struct omVector *vector){
 
 	if(vector->_values != 0){
 		free(vector->_values);
@@ -141,7 +141,7 @@ void om_matrix_create(struct omMatrix *matrix,int rows,int columns){
 }
 
 
-void om_matrix_dispose(struct omMatrix *matrix){
+void om_matrix_free(struct omMatrix *matrix){
 
 	if(matrix->_values != 0){
 
@@ -190,7 +190,7 @@ double om_matrix_determinant(struct omMatrix *matrix){
 
 	   double determinant = -1.0;
 
-	   if( om_matrix_isSquare(matrix) == TRUE ){
+	   if( om_matrix_isSquare(matrix) == 1 ){
 
 			omMatrix L;
 			omMatrix U;
@@ -217,7 +217,7 @@ double om_matrix_trace(struct omMatrix *matrix){
 
 	double trace = 0.0;
 
-	if( om_matrix_isSquare(matrix) == TRUE ){
+	if( om_matrix_isSquare(matrix) == 1 ){
 
 		for (int i = 0; i < matrix->_rows; i++)
 			trace += om_matrix_getValue(matrix,i,i);
@@ -230,7 +230,6 @@ double om_matrix_trace(struct omMatrix *matrix){
 
 void om_matrix_getEingenValues(struct omMatrix *matrix,struct omVector **eigen_vectors,double **eigen_values,int N){
 
-
 	omMatrix D;
 	omMatrix Q;
 	omMatrix R;
@@ -241,16 +240,32 @@ void om_matrix_getEingenValues(struct omMatrix *matrix,struct omVector **eigen_v
 
 	om_matrix_clone(&Q,&P);
 
-	omMatrix P_tmp;
+	/*
+	printf("\n eigen matrix D\n");
+	om_matrix_display(&D);
+	printf("\n eigen matrix P\n");
+	om_matrix_display(&P);
+	*/
 
-	for(int i=0;i<N;i++){
+	for(int index=0;index<N;index++){
+
+		omMatrix P_tmp;
+		om_matrix_create(&P_tmp,matrix->_rows,matrix->_columns);
 
 		om_operator_matrix_mul(&R,&Q,&D);
+
+		//free memory
+		om_matrix_free(&Q);
+		om_matrix_free(&R);
+
 		om_matrix_factorizationQR(&D,&Q,&R);
 		om_operator_matrix_mul(&P,&Q,&P_tmp);
 		om_matrix_clone(&P_tmp,&P);
 
+		om_matrix_free(&P_tmp);
 	}
+
+
 
 	(*eigen_values) = (double*)malloc(matrix->_columns*sizeof(double));
 	(*eigen_vectors) = (omVector*)malloc(matrix->_columns*sizeof(omVector));
@@ -262,11 +277,11 @@ void om_matrix_getEingenValues(struct omMatrix *matrix,struct omVector **eigen_v
 
 	}
 
-	om_matrix_dispose(&D);
-	om_matrix_dispose(&Q);
-	om_matrix_dispose(&R);
-	om_matrix_dispose(&P);
-	om_matrix_dispose(&P_tmp);
+	om_matrix_free(&D);
+	om_matrix_free(&Q);
+	om_matrix_free(&R);
+	om_matrix_free(&P);
+
 
 
 }
@@ -323,14 +338,14 @@ void om_matrix_exponantial(struct omMatrix *matrix,struct omMatrix *exp,int N){
 
 			om_operator_matrix_mul(&acc,matrix,&tmp);
 			om_matrix_clone(&tmp,&acc);
-			om_operator_matrix_const_div(&tmp,acc_n,&tmp);
+			om_operator_matrix_scal_div(&tmp,acc_n,&tmp);
 			om_operator_matrix_add(exp,&tmp,exp);
 
-			om_matrix_dispose(&tmp);
+			om_matrix_free(&tmp);
 		}
 
 
-		om_matrix_dispose(&acc);
+		om_matrix_free(&acc);
 
 	}
 
@@ -355,12 +370,12 @@ void om_matrix_squareRoot(struct omMatrix *matrix,struct omMatrix *m_sqrt){
 			double det = sqrt(om_matrix_determinant(matrix));
 			double tmp = sqrt(om_matrix_trace(matrix) + (2.0*det));
 
-			om_operator_matrix_const_mul(&I,det,&I);
+			om_operator_matrix_scal_mul(&I,det,&I);
 			om_operator_matrix_add(matrix,&I,m_sqrt);
 
-			om_operator_matrix_const_div(m_sqrt,tmp,m_sqrt);
+			om_operator_matrix_scal_div(m_sqrt,tmp,m_sqrt);
 
-			om_matrix_dispose(&I);
+			om_matrix_free(&I);
 
 		}else{
 
@@ -378,6 +393,7 @@ void om_matrix_squareRoot(struct omMatrix *matrix,struct omMatrix *m_sqrt){
 			om_matrix_clone(matrix,&D);
 			om_matrix_factorizationQR(&D,&Q,&R);
 			om_matrix_clone(&Q,&P);
+			om_matrix_create(&P_tmp,matrix->_rows,matrix->_rows);
 
 			for(int i=0;i<N;i++){
 
@@ -390,6 +406,7 @@ void om_matrix_squareRoot(struct omMatrix *matrix,struct omMatrix *m_sqrt){
 			}
 
 			om_matrix_create(&squareD,D._rows,D._columns);
+			om_matrix_create(&S_tmp,matrix->_rows,matrix->_rows);
 
 			for(int i=0;i< squareD._rows;i++)
 				om_matrix_setValue(&squareD,i,i,sqrt(om_matrix_getValue(&D,i,i)));
@@ -399,15 +416,14 @@ void om_matrix_squareRoot(struct omMatrix *matrix,struct omMatrix *m_sqrt){
 			om_operator_matrix_mul(&P,&squareD,&S_tmp);
 			om_operator_matrix_mul(&S_tmp,&P_inv,m_sqrt);
 
-
-			om_matrix_dispose(&P);
-			om_matrix_dispose(&P_inv);
-			om_matrix_dispose(&S_tmp);
-			om_matrix_dispose(&D);
-			om_matrix_dispose(&R);
-			om_matrix_dispose(&Q);
-			om_matrix_dispose(&squareD);
-			om_matrix_dispose(&P_tmp);
+			om_matrix_free(&P);
+			om_matrix_free(&P_inv);
+			om_matrix_free(&S_tmp);
+			om_matrix_free(&D);
+			om_matrix_free(&R);
+			om_matrix_free(&Q);
+			om_matrix_free(&squareD);
+			om_matrix_free(&P_tmp);
 
 		}
 
@@ -415,29 +431,29 @@ void om_matrix_squareRoot(struct omMatrix *matrix,struct omMatrix *m_sqrt){
 
 }
 
-bool om_matrix_isSquare(struct omMatrix *matrix){
+int om_matrix_isSquare(struct omMatrix *matrix){
 
 	if(matrix->_rows == matrix->_columns)
-		return TRUE;
+		return 1;
 	else
-		return FALSE;
+		return 0;
 
 }
 
-bool om_matrix_containsNaN(struct omMatrix *matrix){
+int om_matrix_containsNaN(struct omMatrix *matrix){
 
-	return FALSE;
+	return 0;
 }
 
-bool om_matrix_isNull(struct omMatrix *matrix){
+int om_matrix_isNull(struct omMatrix *matrix){
 
-	return FALSE;
+	return 0;
 
 }
 
 void om_matrix_comatrix(struct omMatrix *matrix,struct omMatrix *comatrix){
 
-	if( om_matrix_isSquare(matrix) == TRUE ){
+	if( om_matrix_isSquare(matrix) == 1 ){
 		 int NMAX=matrix->_rows;
 
 		 omMatrix b;
@@ -450,7 +466,8 @@ void om_matrix_comatrix(struct omMatrix *matrix,struct omMatrix *comatrix){
 				 int m = 0;
 				 int n = 0;
 
-				 //sous matrice
+				 // Sub matrix
+
 				 for (int i = 0; i < NMAX; i++) {
 					 for (int j = 0; j < NMAX; j++) {
 
@@ -473,7 +490,7 @@ void om_matrix_comatrix(struct omMatrix *matrix,struct omMatrix *comatrix){
 			 }
 		 }
 
-		 om_matrix_dispose(&b);
+		 om_matrix_free(&b);
 
 	}
 
@@ -529,7 +546,7 @@ void om_matrix_setRow(struct omMatrix *matrix,int row,struct omVector *in){
 
 void om_matrix_inverse(struct omMatrix *matrix,struct omMatrix *inverse){
 
-	if( om_matrix_isSquare(matrix) == TRUE ){
+	if( om_matrix_isSquare(matrix) == 1 ){
 
 		omMatrix L;
 		omMatrix U;
@@ -539,6 +556,13 @@ void om_matrix_inverse(struct omMatrix *matrix,struct omMatrix *inverse){
 		om_matrix_createIdentity(&I,matrix->_rows);
 		om_matrix_factorizationLU(matrix,&L,&U);
 
+		/*
+		printf("\nmatrix L \n");
+		om_matrix_display(&L);
+
+		printf("\nmatrix U \n");
+		om_matrix_display(&U);
+		 */
 
 		for(int i=0;i<matrix->_rows;++i){
 
@@ -548,14 +572,14 @@ void om_matrix_inverse(struct omMatrix *matrix,struct omMatrix *inverse){
 			om_matrix_getColumn(&I,i,&I_i);
 			om_solvingLinearSystemLU(&L,&U,&I_i,&x_i);
 			om_matrix_setColumn(inverse,i,&x_i);
-			om_vector_dispose(&x_i);
-			om_vector_dispose(&I_i);
+			om_vector_free(&x_i);
+			om_vector_free(&I_i);
 		}
 
 
-		om_matrix_dispose(&L);
-		om_matrix_dispose(&U);
-		om_matrix_dispose(&I);
+		om_matrix_free(&L);
+		om_matrix_free(&U);
+		om_matrix_free(&I);
 	}
 
 
@@ -569,12 +593,12 @@ void om_matrix_adjugate(struct omMatrix *matrix,struct omMatrix *adjugate){
 
 	om_matrix_transpose(&comatrix,adjugate);
 
-	om_matrix_dispose(&comatrix);
+	om_matrix_free(&comatrix);
 }
 
 void om_matrix_factorizationLU(struct omMatrix *matrix,struct omMatrix *L,struct omMatrix *U){
 
-	if( om_matrix_isSquare(matrix) == TRUE ){
+	if( om_matrix_isSquare(matrix) == 1 ){
 
 		 int n = matrix->_rows;
 
@@ -591,14 +615,14 @@ void om_matrix_factorizationLU(struct omMatrix *matrix,struct omMatrix *L,struct
 				 om_matrix_setValue(L,i,k,om_matrix_getValue(&A,i,k)/om_matrix_getValue(&A,k,k));
 
 				 for(int j=k+1;j<n;j++)
-					 om_matrix_setValue(&A,i,j,om_matrix_getValue(&A,i,j) - om_matrix_getValue(L,i,k)*om_matrix_getValue(&A,k,j));
+					 om_matrix_setValue(&A,i,j,om_matrix_getValue(&A,i,j) - (om_matrix_getValue(L,i,k)*om_matrix_getValue(&A,k,j)) );
 			 }
 
 			 for(int j=k;j<n;j++)
 				 om_matrix_setValue(U,k,j,om_matrix_getValue(&A,k,j));
 		 }
 
-		 om_matrix_dispose(&A);
+		 om_matrix_free(&A);
 
 	}
 
@@ -636,14 +660,17 @@ void om_matrix_factorizationQR(struct omMatrix *matrix,struct omMatrix *Q,struct
 
 			om_matrix_setValue(R,k,i,s);
 
-			for(int j=0;j<m;++j)
-				om_matrix_setValue(&A,j,i, om_matrix_getValue(&A,j,i) - (om_matrix_getValue(R,k,i) *om_matrix_getValue(R,j,k) ) );
+			for(int j=0;j<m;++j){
+				double value = om_matrix_getValue(&A,j,i) - (om_matrix_getValue(R,k,i) *om_matrix_getValue(Q,j,k) );
+				om_matrix_setValue(&A,j,i, value);
+			}
+
 
 		}
 
 	}
 
-	om_matrix_dispose(&A);
+	om_matrix_free(&A);
 
 }
 
@@ -651,7 +678,7 @@ void om_matrix_factorizationQR(struct omMatrix *matrix,struct omMatrix *Q,struct
 /* Cholesky decomposition of a matrix */
 void om_matrix_choleskyDecomposition(struct omMatrix *matrix,struct omMatrix *L){
 
-	if( om_matrix_isSquare(matrix) == TRUE ){
+	if( om_matrix_isSquare(matrix) == 1 ){
 
 		int n = matrix->_rows;
 
@@ -813,9 +840,6 @@ void om_operator_vector_add(struct omVector *a,struct omVector *b,struct omVecto
 
 	if (a->_length == b->_length){
 
-		if(out->_values == NULL)
-			om_vector_create(out,a->_length);
-
 		for(int i=0;i<out->_length;i++)
 			om_vector_setValue(out,i,a->_values[i] + b->_values[i]);
 
@@ -828,8 +852,6 @@ void om_operator_vector_sub(struct omVector *a,struct omVector *b,struct omVecto
 
 	if (a->_length == b->_length){
 
-		if(out->_values == NULL)
-			om_vector_create(out,a->_length);
 
 		for(int i=0;i<out->_length;i++)
 			om_vector_setValue(out,i,a->_values[i] - b->_values[i]);
@@ -839,34 +861,41 @@ void om_operator_vector_sub(struct omVector *a,struct omVector *b,struct omVecto
 
 }
 
-void om_operator_vector_const_mul(struct omVector *a,double b,struct omVector *out){
+void om_operator_vector_scal_mul(struct omVector *a,double b,struct omVector *out){
 
-	if(out->_values == NULL)
-		om_vector_create(out,a->_length);
 
 	for(int i=0;i<out->_length;i++)
 		om_vector_setValue(out,i,a->_values[i] * b);
 
 }
 
-void om_operator_vector_const_div(struct omVector *a,double b,struct omVector *out){
+void om_operator_vector_scal_div(struct omVector *a,double b,struct omVector *out){
 
-	if(out->_values == NULL)
-		om_vector_create(out,a->_length);
 
 	for(int i=0;i<out->_length;i++)
 		om_vector_setValue(out,i,a->_values[i] / b);
 
 }
 
+void om_operator_vector_outer_product (struct omVector* a, struct omVector* b, struct omMatrix* out)
+{
+    int i,j;
+
+    int m = a->_length;
+    int n = b->_length;
+
+    om_matrix_create(out,m,n);
+
+    for(i = 0; i < m; i++) {
+        for (j = 0; j < n; j++) {
+            om_matrix_setValue(out,i,j,om_vector_getValue(a,i) * om_vector_getValue(b,j));
+        }
+    }
+}
 
 void om_operator_matrix_add(struct omMatrix *a,struct omMatrix *b,struct omMatrix *out){
 
 	if( (a->_rows == b->_rows) && (a->_columns == b->_columns) ){
-
-		if(out->_values == NULL){
-			om_matrix_create(out,a->_rows,a->_columns);
-		}
 
 
 		for(int i=0;i<out->_rows;i++)
@@ -881,9 +910,6 @@ void om_operator_matrix_sub(struct omMatrix *a,struct omMatrix *b,struct omMatri
 
 	if( (a->_rows == b->_rows) && (a->_columns == b->_columns) ){
 
-		if(out->_values == NULL){
-			om_matrix_create(out,a->_rows,a->_columns);
-		}
 
 		for(int i=0;i<out->_rows;i++)
 			for(int j=0;j<out->_columns;j++)
@@ -898,9 +924,6 @@ void om_operator_matrix_mul(struct omMatrix *a,struct omMatrix *b,struct omMatri
 
 
 	if( a->_columns == b->_rows){
-
-		if(out->_values == NULL)
-			om_matrix_create(out,a->_rows,b->_columns);
 
 		for(int i=0;i<out->_rows;++i)
 			for(int j=0;j<out->_columns;++j){
@@ -919,10 +942,7 @@ void om_operator_matrix_mul(struct omMatrix *a,struct omMatrix *b,struct omMatri
 
 }
 
-void om_operator_matrix_const_mul(struct omMatrix *a,double b,struct omMatrix *out){
-
-	if(out->_values == NULL)
-		om_matrix_create(out,a->_rows,a->_columns);
+void om_operator_matrix_scal_mul(struct omMatrix *a,double b,struct omMatrix *out){
 
 	for(int i=0;i<out->_rows;i++)
 		for(int j=0;j<out->_columns;j++)
@@ -930,10 +950,8 @@ void om_operator_matrix_const_mul(struct omMatrix *a,double b,struct omMatrix *o
 
 }
 
-void om_operator_matrix_const_div(struct omMatrix *a,double b,struct omMatrix *out){
+void om_operator_matrix_scal_div(struct omMatrix *a,double b,struct omMatrix *out){
 
-	if(out->_values == NULL)
-		om_matrix_create(out,a->_rows,a->_columns);
 
 	for(int i=0;i<out->_rows;i++)
 		for(int j=0;j<out->_columns;j++)
@@ -945,9 +963,6 @@ void om_operator_matrix_const_div(struct omMatrix *a,double b,struct omMatrix *o
 void om_operator_matrix_vector_mul(struct omMatrix *a,struct omVector *b,struct omVector *out){
 
 	if (b->_length == a->_columns){
-
-		if(out->_values == NULL)
-			om_vector_create(out,b->_length);
 
 		for(int i=0;i<out->_length;++i){
 
@@ -990,13 +1005,13 @@ void om_operator_quat_mul(struct omQuaternion *a,struct omQuaternion *b,struct o
 
 }
 
-void om_operator_quat_const_mul(struct omQuaternion *a,double b,struct omQuaternion *out){
+void om_operator_quat_scal_mul(struct omQuaternion *a,double b,struct omQuaternion *out){
 
 	om_quat_create(out,a->_qw * b,a->_qx * b,a->_qy * b,a->_qz * b);
 
 }
 
-void om_operator_quat_const_div(struct omQuaternion *a,double b,struct omQuaternion *out){
+void om_operator_quat_scal_div(struct omQuaternion *a,double b,struct omQuaternion *out){
 
 	om_quat_create(out,a->_qw / b,a->_qx / b,a->_qy / b,a->_qz / b);
 }
@@ -1008,6 +1023,13 @@ void om_operator_quat_const_div(struct omQuaternion *a,double b,struct omQuatern
 /////                Divers                       /////
 ///////////////////////////////////////////////////////
 
+void om_convert_vector2matrix(struct omVector* a, struct omMatrix* out)
+{
+    if(out->_columns==1){
+          om_matrix_setColumn(out,0,a);
+    }
+    else  printf("The size of the matrix does not match a vector\n");
+}
 
 void om_vector_crossProduct(struct omVector *a,struct omVector *b,struct omVector *cross){
 
@@ -1065,8 +1087,8 @@ void om_solvingLinearSystem(struct omMatrix *A,struct omVector *b,struct omVecto
 	om_matrix_factorizationLU(A,&L,&U);
 	om_solvingLinearSystemLU(&L,&U,b,x);
 
-	om_matrix_dispose(&L);
-	om_matrix_dispose(&U);
+	om_matrix_free(&L);
+	om_matrix_free(&U);
 
 }
 
@@ -1106,9 +1128,127 @@ void om_solvingLinearSystemLU(struct omMatrix *L,struct omMatrix *U,struct omVec
 
 	}
 
-	om_vector_dispose(&d);
+	om_vector_free(&d);
 
 }
+
+
+/*
+    This function is an implementation of the least square method.
+
+    Parameters : - struct omMatrix *pX : data matrix
+                        - struct omVector *pY : response variable vector (Y=f(X))
+                        - struct omVector *pBeta : output vector of the estimation of the best coefficients
+
+    Algorithm : Beta = (X_Transposed . X)^(-1) . X_Transposed . Y
+
+*/
+
+void om_least_square_method (struct omMatrix *pX,struct omVector *pY,struct omVector *pBeta)
+{
+
+     /*Declaration of pointers*/
+
+    omMatrix* pX_transposed;
+    omMatrix* pX_transposed_Product_X;
+    omMatrix* p_Inverse_of_X_transposed_product_X;
+    omMatrix* p_Inverse_of_X_transposed_product_X_Multiplied_by_X_transposed;
+
+    /*Check the size of the vectors and matrices for the product*/
+
+    if (pBeta->_length != pY->_length){
+        printf("Error : Beta length and Y length are not the same size\n");
+        return;
+    }
+
+    if (pY->_length != pX->_rows){
+        printf("Error : Y length and X number of rows are not the same size\n");
+        return;
+    }
+
+    /*Dynamic creation of matrices*/
+
+    om_matrix_create(pX_transposed,pX->_columns,pX->_rows); // transposed of the X matrix
+    om_matrix_create(pX_transposed_Product_X,pX->_columns,pX->_columns); //  product of the X matrix and its transposed
+    om_matrix_create(p_Inverse_of_X_transposed_product_X,pX->_columns,pX->_columns); // Inverse of the product of the X matrix and its transposed
+    om_matrix_create(p_Inverse_of_X_transposed_product_X_Multiplied_by_X_transposed, pX->_columns, pX->_rows); // Product of the previous matrix and the transposed of X
+
+   /*Computation of intermediate matrices*/
+
+    om_matrix_transpose(pX, pX_transposed);
+    om_operator_matrix_mul(pX_transposed, pX, pX_transposed_Product_X);
+    om_matrix_inverse(pX_transposed_Product_X, p_Inverse_of_X_transposed_product_X);
+    om_operator_matrix_mul(p_Inverse_of_X_transposed_product_X, pX_transposed, p_Inverse_of_X_transposed_product_X_Multiplied_by_X_transposed);
+
+    /*Computing of the estimation of the coefficients of the Beta matrix*/
+
+    om_operator_matrix_vector_mul(p_Inverse_of_X_transposed_product_X_Multiplied_by_X_transposed, pY, pBeta);
+
+    /*Destruction of dynamically  created  structures*/
+
+    om_matrix_free(pX_transposed);
+    om_matrix_free(pX_transposed_Product_X);
+    om_matrix_free(p_Inverse_of_X_transposed_product_X);
+    om_matrix_free(p_Inverse_of_X_transposed_product_X_Multiplied_by_X_transposed);
+}
+
+/*
+   This function performs the integration of the function fnct between a and b applying the adaptive Simpson method.
+
+    Parameters : - (*fnct) : pointer to the function to integrate
+                        - a, b : lower and upper  limits of the integral
+                        - mid : midpoint of the interval integration (has to be computed outside the function because the simpsonadapt call itself recursively
+                        - epsilon : maximum allowable error
+                        - maxh, minh : maximum and minimum lengths of the subdivision
+                        - fa, fb, fmid : fnct values at a,b and mid
+                        - *bada, *badb : endpoints of the subinterval on which the calculation failed
+                        - success : variable equal to 1 if successful or 0 otherwise
+
+    Source : INTRODUCTION TO NUMERICAL ANALYSIS WITH C PROGRAMS, Attila MATE, Brooklyn College of the City University of New York
+*/
+
+
+double simpsonadapt(double (*fnct)(double), double a, double b, double mid, double epsilon, double maxh, double minh, double fa, double fb, double fmid, double *bada, double *badb, int *success)
+{
+   double integr1, integr2, integr = 0.0, mid1, mid2, fmid1, fmid2, h, s1, s2;
+
+    h = b - a;
+
+    if ( h >= minh )
+    {
+        mid1 = (a + mid)/2.0; fmid1 = (*fnct)(mid1);
+        mid2 = (mid + b)/2.0; fmid2 = (*fnct)(mid2);
+        s1 = (fa+4.0*fmid+fb)*h/6.0;
+        s2 = (fa+4.0*fmid1+2.0*fmid+4.0*fmid2+fb)*h/12.0;
+        if ( h<=maxh && absval(s2-s1)<= 15.0*epsilon )
+        {
+            integr = s2;
+            *success = 1;
+        }
+        else
+        {
+            integr1 = simpsonadapt(fnct, a, mid, mid1, epsilon/2.0,
+            maxh, minh, fa, fmid, fmid1, bada, badb, success);
+            if ( *success )
+            {
+                integr2 = simpsonadapt(fnct, mid, b, mid2, epsilon/2.0,
+                maxh, minh, fmid, fb, fmid2, bada, badb, success);
+
+            }
+            if ( *success )
+            {
+                  integr = integr1+integr2;
+            }
+        }
+    }
+    else
+    {
+        *success = 0; *bada = a; *badb = b;
+    }
+     return integr;
+}
+
+
 
 
 

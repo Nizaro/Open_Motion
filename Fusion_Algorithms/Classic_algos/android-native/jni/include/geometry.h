@@ -62,6 +62,7 @@ void om_convert_euler2quaternion(struct omEulerAngle *in,struct omQuaternion *ou
 /////                Operators                    /////
 ///////////////////////////////////////////////////////
 
+void om_operator_omega_kinematics(struct omVector *angular_velocity,struct omMatrix *out);
 void om_operator_vex(struct omMatrix *in,struct omVector *out);
 void om_operator_omega(struct omVector *in,struct omMatrix *out);
 void om_operator_gamma(struct omVector *in,struct omMatrix *out);

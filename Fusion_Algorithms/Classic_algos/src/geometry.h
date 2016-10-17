@@ -1,8 +1,9 @@
-/*
- * geometry.h
+/**
+ * \file geometry.h
+ * \author Thomas BRAUD, Nizar OUARTI
+ * \date 10 june 2016
+ * \brief File containing linear algebra methods
  *
- *  Created on: 17 May, 2016
- *      Author: thomas
  */
 
 #ifndef GEOMETRY_H_

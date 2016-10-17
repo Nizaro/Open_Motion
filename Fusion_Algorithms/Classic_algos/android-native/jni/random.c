@@ -27,9 +27,6 @@ void om_random_generateWhiteNoiseFromCovarianceMatrix(double mu,struct omMatrix 
 
 	int n = cov_L->_rows;
 
-	if(!out->_length)
-		om_vector_create(out,n);
-
 	omVector z;
 	omVector mu_vec;
 
@@ -39,11 +36,11 @@ void om_random_generateWhiteNoiseFromCovarianceMatrix(double mu,struct omMatrix 
 	for(int i=0;i<n;i++)
 		om_vector_setValue(&mu_vec,i,mu);
 
-	om_operator_matrix_vector_mul(cov_L,&z,&out);
-	om_operator_vector_add(&mu_vec,&out,&out);
+	om_operator_matrix_vector_mul(cov_L,&z,out);
+	om_operator_vector_add(&mu_vec,out,out);
 
-	om_vector_dispose(&z);
-	om_vector_dispose(&mu_vec);
+	om_vector_free(&z);
+	om_vector_free(&mu_vec);
 
 
 }
@@ -203,11 +200,6 @@ double om_random_normalDistribution(double mean,double variance,double seed){
 	srand(seed);
 
 	static double z0, z1;
-	static bool generate;
-	generate = !generate;
-
-	if (!generate)
-	   return z1 * variance + mean;
 
 	double u1, u2;
 	do{

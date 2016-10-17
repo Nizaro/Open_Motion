@@ -1,10 +1,11 @@
-
-/*
- * random.h
+/**
+ * \file random.h
+ * \author Thomas BRAUD, Nizar OUARTI
+ * \date 10 june 2016
+ * \brief File containing linear algebra methods
  *
- *  Created on: 17 May, 2016
- *      Author: thomas
  */
+
 
 #ifndef RANDOM_H_
 #define RANDOM_H_
@@ -12,10 +13,24 @@
 
 #include "algebra.h"
 
-
+/**
+ * Gaussian white noise generator
+ *
+ * @param mu : minimal value
+ * @param max : minimal value
+ */
 void om_random_generateWhiteNoise(int n,double mu,double sigma,double seed,struct omVector* out);
 
+
+/**
+ * Gaussian white noise generator
+ *
+ * @param mu : minimal value
+ * @param max : minimal value
+ */
 void om_random_generateWhiteNoiseFromCovarianceMatrix(double mu,struct omMatrix *cov_L,double seed,struct omVector *out);
+
+
 /**
  * Gaussian white noise generator
  *
@@ -24,14 +39,6 @@ void om_random_generateWhiteNoiseFromCovarianceMatrix(double mu,struct omMatrix 
  */
 double om_random_normalDistribution(double mu,double sigma,double seed);
 
-/**
- * Red (brownian) noise generator
- *
- * @return a number in the interval min and max
- * @param mu : minimal value
- * @param max : minimal value
- */
-double om_random_brownianMotion(double mean, double a,double seed);
 
 /**
  * Generate random value with bernouilli distribution

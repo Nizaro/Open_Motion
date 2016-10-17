@@ -376,7 +376,6 @@ int main(int argc,char** argv){
 	    	double gyroY = atof(tokens[9]);
 	    	double gyroZ = atof(tokens[10]);
 
-
 	    	// send values to the sensor fusion manager
 	        om_vector_setValues(&manager.imu_data.data_gyroscope,3,(double)gyroX, (double)gyroY, (double)gyroZ);
 
@@ -388,7 +387,6 @@ int main(int argc,char** argv){
 	    	// get ground truth
 	    	om_vector_setValues(&gt.position,3,atof(tokens[1]),atof(tokens[2]),atof(tokens[3]));
 	    	om_quat_create(&gt.q_true,atof(tokens[4]),atof(tokens[5]),atof(tokens[6]),atof(tokens[7]));
-
 
 	    	// get magnetometer values from csv file
 	    	double accX = atof(tokens[11]);

@@ -9,10 +9,10 @@
 #include "random.h"
 
 
-
+/* compute a vector with random values following a normal distribution with mean mu and variance sigma */
 void om_random_generateWhiteNoise(int n,double mu,double sigma,double seed,struct omVector *out){
 
-	om_vector_create(out,n);
+
 
 	for(int i=0;i<n;i++){
 
@@ -23,15 +23,17 @@ void om_random_generateWhiteNoise(int n,double mu,double sigma,double seed,struc
 
 }
 
+/* compute a vector with random values following a normal distribution with mean mu and covariance M */
 void om_random_generateWhiteNoiseFromCovarianceMatrix(double mu,struct omMatrix *cov_L,double seed,struct omVector *out){
 
 	int n = cov_L->_rows;
-
 	omVector z;
 	omVector mu_vec;
 
-	om_random_generateWhiteNoise(n,0.0,1.0,seed,&z);
+	om_vector_create(&z,n);
 	om_vector_create(&mu_vec,n);
+
+	om_random_generateWhiteNoise(n,0.0,1.0,seed,&z);
 
 	for(int i=0;i<n;i++)
 		om_vector_setValue(&mu_vec,i,mu);
@@ -47,7 +49,7 @@ void om_random_generateWhiteNoiseFromCovarianceMatrix(double mu,struct omMatrix 
 
 
 
-
+/* generate a random value following a weibull distribution */
 double om_random_weibullDistribution(double a, double lambda,double seed){
 
 	srand(seed);
@@ -58,7 +60,7 @@ double om_random_weibullDistribution(double a, double lambda,double seed){
 	return x;
 }
 
-
+/* generate a random value following a poisson distribution */
 double om_random_poissonDistribution(double lambda, int seed){
 
     srand(seed);
@@ -80,7 +82,7 @@ double om_random_poissonDistribution(double lambda, int seed){
 
 
 
-/* Generate random value with exponential distribution */
+/* generate a random value following a exponential distribution */
 double om_random_exponentialDistribution(double lambda,double seed){
 
 	srand(seed);
@@ -92,7 +94,7 @@ double om_random_exponentialDistribution(double lambda,double seed){
 
 }
 
-/* Generate random value with geometric distribution */
+/* generate a random value following a geometric distribution */
 double om_random_geometricDistribution(double p,double seed){
 
 	srand(seed);
@@ -103,7 +105,7 @@ double om_random_geometricDistribution(double p,double seed){
 	return x;
 }
 
-/* Generate random value with bernouilli distribution */
+/* generate a random value following a bernouilli distribution */
 double om_random_bernouilliDistribution(double p,double seed){
 
 	srand(seed);
@@ -120,7 +122,7 @@ double om_random_bernouilliDistribution(double p,double seed){
 	return x;
 }
 
-/* Generate random value with uniform distribution */
+/* generate a random value following a uniform distribution */
 double om_random_uniformDistribution(double seed){
 
 	srand(seed);
@@ -130,7 +132,7 @@ double om_random_uniformDistribution(double seed){
 
 
 
-
+/* generate a random value following a gamma distribution */
 double om_random_gammaDistribution(double alpha,double beta,double seed){
 
 	srand(seed);
@@ -191,7 +193,7 @@ double om_random_gammaDistribution(double alpha,double beta,double seed){
 
 }
 
-
+/* generate a random value following a normal distribution */
 double om_random_normalDistribution(double mean,double variance,double seed){
 
 
@@ -216,25 +218,6 @@ double om_random_normalDistribution(double mean,double variance,double seed){
 }
 
 
-double om_random_brownianMotion(double mean, double a,double seed){
-
-	  double z1, z2, r, d;
-	  double x = 0.0;
-
-	  srand(seed);
-
-	  do{
-	      z1 = 2.0*( rand() * (1.0 / RAND_MAX)) - 1.0;
-	      z2 = 2.0*( rand() * (1.0 / RAND_MAX)) - 1.0;
-	      r = (z1 * z1) + (z2 * z2);
-	  }while(r >= 1.0);
-
-	  d = a * sqrt(-2.0 * log(r) / r);
-	  x += mean + (d * z1);
-
-	  return x;
-
-}
 
 
 
