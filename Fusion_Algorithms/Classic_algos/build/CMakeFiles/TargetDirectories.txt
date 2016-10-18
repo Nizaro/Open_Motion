@@ -1,2 +1,0 @@
-/home/thomas/These/OM_c/Open_Motion/Fusion_Algorithms/Classic_algos/build/src/CMakeFiles/openmotion.dir
-/home/thomas/These/OM_c/Open_Motion/Fusion_Algorithms/Classic_algos/build/CMakeFiles/uninstall.dir
