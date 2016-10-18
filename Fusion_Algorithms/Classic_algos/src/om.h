@@ -283,6 +283,42 @@ void om_pf_quicksort(omNonLinearFilter_PF *filter,int left, int right);
 
 void om_pf_free(void *filter);
 
+
+///////////////////////////////////////////////////////
+/////           NonLinearFilter GDOF              /////
+///////////////////////////////////////////////////////
+
+typedef struct omNonLinearFilter_GDOF{
+
+	double _seed;
+	double _eta;
+	double _beta;
+
+	omQuaternion _q_est;
+	omVector _e_m;
+	omVector _e_b;
+
+	omVector _f_a;
+	omVector _f_b;
+
+	omMatrix _J_a;
+	omMatrix _J_b;
+
+	omVector _bias_est;
+
+
+
+}omNonLinearFilter_GDOF;
+
+void om_gdof_initialization(struct omSensorFusionManager *manager,void *filter);
+void om_gdof_process(struct omSensorFusionManager *manager,void *filter);
+void om_gdof_prediction(struct omSensorFusionManager *manager,omNonLinearFilter_GDOF *filter);
+void om_gdof_update(struct omSensorFusionManager *manager,omNonLinearFilter_GDOF *filter);
+
+void om_gdof_free(void *filter);
+
+
+
 #endif /* OM_H_ */
 
 

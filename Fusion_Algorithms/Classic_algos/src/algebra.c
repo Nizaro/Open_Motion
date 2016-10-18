@@ -517,6 +517,13 @@ void om_matrix_squareRoot(struct omMatrix *matrix,struct omMatrix *m_sqrt,int N)
 
 			}
 
+			/*
+			printf("D\n");
+			om_matrix_display(&D);
+			printf("P\n");
+			om_matrix_display(&P);
+			printf("\n");
+			*/
 
 			// as D is a diagonal matrix
 			// sqrt(D) = ( sqrt(d_{ii}) );
@@ -560,6 +567,7 @@ int om_matrix_isSquare(struct omMatrix *matrix){
 /* return 1 if the matrix contains NaN values, 0 otherwise */
 int om_matrix_containsNaN(struct omMatrix *matrix){
 
+
 	//variables
 	int i = 0;
 	int j = 0;
@@ -568,11 +576,14 @@ int om_matrix_containsNaN(struct omMatrix *matrix){
 	// test if at least one value is NaN
 	while(bool != 1 && i < matrix->_rows){
 		while(bool != 1 && j < matrix->_columns){
+
+
 			if(isnan(matrix->_values[i][j]))
 				bool = 1;
 
 			j++;
 		}
+		j=0;
 		i++;
 	}
 
@@ -852,7 +863,7 @@ void om_matrix_choleskyDecomposition(struct omMatrix *matrix,struct omMatrix *L)
 		om_matrix_setValue(L,0,0,L00);
 
 		for(int j=1;j<n;++j)
-			om_matrix_setValue(L,j,0,om_matrix_getValue(matrix,0,j)/L00);
+			om_matrix_setValue(L,j,0,om_matrix_getValue(matrix,j,0)/L00);
 
 		for(int i=1;i<n;++i){
 

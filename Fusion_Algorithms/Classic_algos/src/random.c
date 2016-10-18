@@ -12,8 +12,6 @@
 /* compute a vector with random values following a normal distribution with mean mu and variance sigma */
 void om_random_generateWhiteNoise(int n,double mu,double sigma,double seed,struct omVector *out){
 
-
-
 	for(int i=0;i<n;i++){
 
 		double normal_value = om_random_normalDistribution(mu,sigma,seed+((double)(i)*100.0));
@@ -46,6 +44,39 @@ void om_random_generateWhiteNoiseFromCovarianceMatrix(double mu,struct omMatrix 
 
 
 }
+
+
+/* generate a random value following a normal distribution */
+double om_random_normalDistribution(double mean,double variance,double seed){
+
+
+	const double epsilon = -DBL_MAX;
+
+	srand(seed);
+
+	static double z0, z1;
+	static int generate;
+	generate = !generate;
+
+	if (!generate)
+	   return z1 * variance + mean;
+
+	double u1, u2;
+	do{
+	   u1 = rand() * (1.0 / RAND_MAX);
+	   u2 =  rand() * (1.0 / RAND_MAX);
+	}while ( u1 <= epsilon );
+
+	z0 = sqrt(-2.0 * log(u1)) * cos(2.0*PI * u2);
+	z1 = sqrt(-2.0 * log(u1)) * sin(2.0*PI * u2);
+
+	return (z0 * variance) + mean;
+
+
+}
+
+
+
 
 
 
@@ -192,31 +223,6 @@ double om_random_gammaDistribution(double alpha,double beta,double seed){
 	return x*beta;
 
 }
-
-/* generate a random value following a normal distribution */
-double om_random_normalDistribution(double mean,double variance,double seed){
-
-
-	const double epsilon = -DBL_MAX;
-
-	srand(seed);
-
-	static double z0, z1;
-
-	double u1, u2;
-	do{
-	   u1 = rand() * (1.0 / RAND_MAX);
-	   u2 =  rand() * (1.0 / RAND_MAX);
-	}while ( u1 <= epsilon );
-
-	z0 = sqrt(-2.0 * log(u1)) * cos(2.0*PI * u2);
-	z1 = sqrt(-2.0 * log(u1)) * sin(2.0*PI * u2);
-
-	return (z0 * variance) + mean;
-
-
-}
-
 
 
 
