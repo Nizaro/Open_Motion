@@ -259,8 +259,8 @@ void om_convert_axisAngle2quaternion(struct omAxisAngle *in,struct omQuaternion 
 	double cos_a;
 	double sin_a;
 
-	cos_a = cos(in->_angle/2.0);
-	sin_a = sin(in->_angle/2.0);
+	cos_a = cosf(in->_angle/2.0);
+	sin_a = sinf(in->_angle/2.0);
 
 	// compute output such that
 	// q_w = cos(angle/2)

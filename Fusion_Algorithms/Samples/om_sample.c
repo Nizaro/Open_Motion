@@ -240,8 +240,8 @@ void modification_magneto(struct omVector *input,struct omVector* output,struct 
 	// represents the declinaison and the inclinaison of the magnetic field.
 	// this values works in Singapore
 	// go see http://www.ngdc.noaa.gov/geomag-web/ for more details
-	aa_y._angle = -14.36;
-	aa_z._angle = 0.23;
+	aa_y._angle = -14.36*DEG_TO_RAD;
+	aa_z._angle = 0.23*DEG_TO_RAD;
 
 	//allocation
 	om_vector_create(&aa_y._axis,3,0.0,1.0,0.0);
@@ -433,14 +433,14 @@ int main(int argc,char** argv){
 			mean_error += error;
 			mean_time += texec;
 
-	    	// get gyroscope values from csv file
-	    	double gyroX = atof(tokens[8]);
-	    	double gyroY = atof(tokens[9]);
-	    	double gyroZ = atof(tokens[10]);
+		    	// get gyroscope values from csv file
+		    	double gyroX = atof(tokens[8]);
+	    		double gyroY = atof(tokens[9]);
+		    	double gyroZ = atof(tokens[10]);
 
 
-	    	// send values to the sensor fusion manager
-	        om_vector_setValues(&manager.imu_data.data_gyroscope,3,(double)gyroX, (double)gyroY, (double)gyroZ);
+		    	// send values to the sensor fusion manager
+		        om_vector_setValues(&manager.imu_data.data_gyroscope,3,(double)gyroX, (double)gyroY, (double)gyroZ);
 
 	    }
 
