@@ -290,7 +290,6 @@ void om_pf_free(void *filter);
 
 typedef struct omNonLinearFilter_GDOF{
 
-	double _seed;
 	double _eta;
 	double _beta;
 
@@ -317,6 +316,32 @@ void om_gdof_update(struct omSensorFusionManager *manager,omNonLinearFilter_GDOF
 
 void om_gdof_free(void *filter);
 
+
+///////////////////////////////////////////////////////
+/////           NonLinearFilter CFA               /////
+///////////////////////////////////////////////////////
+
+
+typedef struct omNonLinearFilter_CFA{
+
+	double _lambda;
+	double _beta;
+
+	omQuaternion _q_est;
+	omQuaternion _q_pred;
+
+	omVector _v_acc_pred;
+	omVector _v_mag_pred;
+
+}omNonLinearFilter_CFA;
+
+
+void om_cfa_initialization(struct omSensorFusionManager *manager,void *filter);
+void om_cfa_process(struct omSensorFusionManager *manager,void *filter);
+void om_cfa_prediction(struct omSensorFusionManager *manager,omNonLinearFilter_CFA *filter);
+void om_cfa_update(struct omSensorFusionManager *manager,omNonLinearFilter_CFA *filter);
+
+void om_cfa_free(void *filter);
 
 
 #endif /* OM_H_ */

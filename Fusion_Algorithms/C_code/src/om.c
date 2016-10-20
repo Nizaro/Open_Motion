@@ -8,7 +8,6 @@
 #include "om.h"
 
 // global variables
-omVector ned_magnetic_field;
 omVector ned_gravity;
 omVector ned_geographic_north;
 
@@ -17,7 +16,6 @@ omVector ned_geographic_north;
 void init_ned_frame(){
 
 	om_vector_create(&ned_geographic_north,3,1.0,0.0,0.0);
-	om_vector_create(&ned_magnetic_field,3,0.9687632386,0.003889250977,-0.2479569747);
 	om_vector_create(&ned_gravity,3,0.0,0.0,1.0);
 
 }
@@ -2701,7 +2699,6 @@ void om_pf_quicksort(omNonLinearFilter_PF *filter,int left, int right){
 void om_gdof_initialization(struct omSensorFusionManager *manager,void *filter){
 
 	// constant initialization
-	(*(omNonLinearFilter_GDOF*)filter)._seed = 0;
 	(*(omNonLinearFilter_GDOF*)filter)._eta = 0.003;
 	(*(omNonLinearFilter_GDOF*)filter)._beta = 0.005;
 
@@ -2912,8 +2909,6 @@ void om_gdof_update(struct omSensorFusionManager *manager,omNonLinearFilter_GDOF
 
 	}
 
-
-
 	// free memory
 	om_vector_free(&gain_a);
 	om_vector_free(&gain_b);
@@ -2937,6 +2932,197 @@ void om_gdof_free(void *filter){
 	om_vector_free(&(*(omNonLinearFilter_GDOF*)filter)._f_a);
 	om_matrix_free(&(*(omNonLinearFilter_GDOF*)filter)._J_a);
 	om_matrix_free(&(*(omNonLinearFilter_GDOF*)filter)._J_b);
+
+}
+///////////////////////////////////////////////////////
+/////           NonLinearFilter CFA               /////
+///////////////////////////////////////////////////////
+
+
+
+/* initialization of all component used by the nonlinear filter CGO */
+void om_cfa_initialization(struct omSensorFusionManager *manager,void *filter){
+
+	// constant initialization
+	(*(omNonLinearFilter_CFA*)filter)._lambda = 0.00001;
+	(*(omNonLinearFilter_CFA*)filter)._beta = 0.5;
+
+	om_quat_create(&(*(omNonLinearFilter_CFA*)filter)._q_est,1.0,0.0,0.0,0.0);
+	// attitude initialization
+	switch(manager->type){
+
+	// convertion according to user choices
+	case Quarternion:
+		om_quat_create(&(*(omNonLinearFilter_CFA*)filter)._q_est,manager->output.quaternion._qw,manager->output.quaternion._qx,manager->output.quaternion._qy,manager->output.quaternion._qz);
+		break;
+
+	case Matrix:
+		om_convert_matrix2quaternion(&manager->output.matrix,&(*(omNonLinearFilter_CFA*)filter)._q_est);
+		break;
+
+	case EulerAngle:
+		om_convert_euler2quaternion(&manager->output.euler,&(*(omNonLinearFilter_CFA*)filter)._q_est);
+		break;
+
+	default:
+		om_quat_create(&(*(omNonLinearFilter_CFA*)filter)._q_est,1.0,0.0,0.0,0.0);
+		break;
+
+	}
+
+	om_vector_create(&(*(omNonLinearFilter_CFA*)filter)._v_acc_pred,3);
+	om_vector_create(&(*(omNonLinearFilter_CFA*)filter)._v_mag_pred,3);
+
+	// initialization of North East Down frame vector
+	init_ned_frame();
+
+}
+
+/* process function of the nonlinear filter CGO */
+void om_cfa_process(struct omSensorFusionManager *manager,void *filter){
+
+	om_cfa_prediction(manager,(omNonLinearFilter_CFA*)filter);
+	om_cfa_update(manager,(omNonLinearFilter_CFA*)filter);
+
+}
+
+
+
+void om_cfa_prediction(struct omSensorFusionManager *manager,omNonLinearFilter_CFA *filter){
+
+	if(  om_vector_norm(&manager->imu_data.data_accelerometer) - G < 0.03 )
+		filter->_beta = 0.05;
+	else
+		filter->_beta = 0.5;
+
+	om_kinematics_quaternion(&filter->_q_est,&manager->imu_data.data_gyroscope,&filter->_q_pred);
+
+	om_rotate_vector_quaternion(&filter->_q_pred,&ned_gravity,&filter->_v_acc_pred);
+	om_rotate_vector_quaternion(&filter->_q_pred,&ned_geographic_north,&filter->_v_mag_pred);
+
+	om_operator_vector_scal_mul(&filter->_v_acc_pred,G,&filter->_v_acc_pred);
+
+
+}
+
+
+void om_cfa_update(struct omSensorFusionManager *manager,omNonLinearFilter_CFA *filter){
+
+	omMatrix X;
+	omMatrix K;
+	omMatrix K_tmp;
+	omMatrix K_inv;
+	omMatrix I;
+	omMatrix X_t;
+	omMatrix S_mag;
+	omMatrix S_acc;
+	omVector s_acc;
+	omVector s_mag;
+	omVector s;
+	omVector gain;
+	omQuaternion dq;
+
+	om_vector_create(&s_acc,3);
+	om_vector_create(&s_mag,3);
+	om_vector_create(&s,6);
+	om_vector_create(&gain,3);
+
+	om_matrix_create(&X,3,6);
+	om_matrix_create(&K,3,6);
+	om_matrix_createIdentity(&I,3);
+	om_matrix_create(&X_t,6,3);
+	om_matrix_create(&S_acc,3,3);
+	om_matrix_create(&S_mag,3,3);
+	om_matrix_create(&K_tmp,3,3);
+	om_matrix_create(&K_inv,3,3);
+
+	om_matrix_skewSymmetricMatrix(&filter->_v_acc_pred,&S_acc);
+	om_matrix_skewSymmetricMatrix(&filter->_v_mag_pred,&S_mag);
+
+	for(int i=0;i<3;i++)
+		for(int j=0;j<3;j++){
+				om_matrix_setValue(&X,i,j,om_matrix_getValue(&S_acc,i,j)*(-2.0));
+				om_matrix_setValue(&X,i,j+3,om_matrix_getValue(&S_mag,i,j)*(-2.0));
+		}
+
+
+	// compute K = ( (X*X.transpose()) + (identity(3)*_lambda)).inverse()*X;
+	om_matrix_transpose(&X,&X_t);
+	om_operator_matrix_mul(&X,&X_t,&K_tmp);
+	om_operator_matrix_scal_mul(&I,filter->_lambda,&I);
+	om_operator_matrix_add(&K_tmp,&I,&K_tmp);
+	om_matrix_inverse(&K_tmp,&K_inv);
+	om_operator_matrix_mul(&K_inv,&X,&K);
+
+	//compute gain
+	om_operator_vector_sub(&manager->imu_data.data_accelerometer,&filter->_v_acc_pred,&s_acc);
+	om_operator_vector_sub(&manager->imu_data.data_magnetometer,&filter->_v_mag_pred,&s_mag);
+
+	for(int i=0;i<3;i++){
+		om_vector_setValue(&s,i,om_vector_getValue(&s_acc,i));
+		om_vector_setValue(&s,i+3,om_vector_getValue(&s_mag,i));
+	}
+
+	om_operator_matrix_vector_mul(&K,&s,&gain);
+	om_quat_create(&dq,1.0,om_vector_getValue(&gain,0),om_vector_getValue(&gain,1),om_vector_getValue(&gain,2));
+
+	om_operator_quat_scal_mul(&dq,filter->_beta,&dq);
+	om_operator_quat_mul(&filter->_q_pred,&dq,&filter->_q_est);
+	om_quat_normalize(&filter->_q_est);
+
+	// set output
+	double qw = filter->_q_est._qw;
+	double qx = filter->_q_est._qx;
+	double qy = filter->_q_est._qy;
+	double qz = filter->_q_est._qz;
+
+	switch(manager->type){
+
+	case Quarternion:
+		om_quat_create(&manager->output.quaternion,qw,qx,qy,qz);
+		break;
+
+	case Matrix:
+		om_convert_quaternion2matrix(&filter->_q_est,&manager->output.matrix);
+		break;
+
+	case EulerAngle:
+		om_convert_quaternion2euler(&filter->_q_est,&manager->output.euler);
+		break;
+	case AxisAngle:
+		om_convert_quaternion2axisAngle(&filter->_q_est,&manager->output.axis_angle);
+		break;
+	default:
+		om_quat_create(&filter->_q_est,1.0,0.0,0.0,0.0);
+		break;
+
+	}
+
+
+	// free memory
+	om_matrix_free(&X);
+	om_matrix_free(&K);
+	om_matrix_free(&K_inv);
+	om_matrix_free(&K_tmp);
+	om_matrix_free(&X_t);
+	om_matrix_free(&I);
+	om_matrix_free(&S_acc);
+	om_matrix_free(&S_mag);
+	om_vector_free(&s_mag);
+	om_vector_free(&s_acc);
+	om_vector_free(&s);
+	om_vector_free(&gain);
+
+}
+
+
+
+/* release all component used for the nonlinear filter GDOF */
+void om_cfa_free(void *filter){
+
+	//free memory
+	om_vector_free(&(*(omNonLinearFilter_CFA*)filter)._v_acc_pred);
+	om_vector_free(&(*(omNonLinearFilter_CFA*)filter)._v_mag_pred);
 
 }
 
