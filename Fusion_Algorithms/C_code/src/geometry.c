@@ -164,7 +164,6 @@ void om_convert_quaternion2euler(struct omQuaternion *in,struct omEulerAngle* ou
 	out->_yaw = psy;
 
 
-
 }
 
 /* convert a quaternion into axis angle representation  */

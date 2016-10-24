@@ -122,6 +122,8 @@ void om_cgo_update(struct omSensorFusionManager *manager,omNonLinearFilter_CGO *
 	omVector omega;
 	omVector omega_q;
 
+	double signAcc;
+	double signMag;
 
 	// allocation
 	om_vector_create(&z_acc,3);
@@ -132,7 +134,6 @@ void om_cgo_update(struct omSensorFusionManager *manager,omNonLinearFilter_CGO *
 	om_vector_create(&omega_q,3);
 	om_vector_create(&cross_acc,3);
 	om_vector_create(&cross_mag,3);
-
 
 	// compute v_acc = R(q_(k+1)^-)g^a
 	om_rotate_vector_quaternion(&filter->_q_pred,&ned_gravity,&v_acc_pred);
@@ -154,8 +155,8 @@ void om_cgo_update(struct omSensorFusionManager *manager,omNonLinearFilter_CGO *
 	om_vector_crossProduct(&z_acc,&v_acc_pred,&cross_acc);
 	om_vector_crossProduct(&z_mag,&v_mag_pred,&cross_mag);
 
-	om_operator_vector_scal_mul(&cross_acc,filter->_k_acc/2.0,&cross_acc);
-	om_operator_vector_scal_mul(&cross_mag,filter->_k_mag/2.0,&cross_mag);
+	om_operator_vector_scal_mul(&cross_acc,(filter->_k_acc)/2.0,&cross_acc);
+	om_operator_vector_scal_mul(&cross_mag,(filter->_k_mag)/2.0,&cross_mag);
 
 	// compute gain omega
 	om_operator_vector_add(&cross_acc,&cross_mag,&omega);
@@ -174,10 +175,11 @@ void om_cgo_update(struct omSensorFusionManager *manager,omNonLinearFilter_CGO *
 	om_kinematics_quaternion(&filter->_q_est,&angular_velocity,&filter->_q_est);
 
 	// set output
-	double qw = filter->_q_est._qw;
-	double qx = filter->_q_est._qx;
-	double qy = filter->_q_est._qy;
-	double qz = filter->_q_est._qz;
+	double signQw = filter->_q_est._qw < 0.0? -1.0 : 1.0;
+	double qw = filter->_q_est._qw * signQw;
+	double qx = filter->_q_est._qx * signQw;
+	double qy = filter->_q_est._qy * signQw;
+	double qz = filter->_q_est._qz * signQw;
 
 	switch(manager->type){
 
@@ -583,7 +585,7 @@ void om_usque_update(struct omSensorFusionManager *manager,omNonLinearFilter_USQ
 	om_operator_vector_sub(&manager->imu_data.data_magnetometer,&manager->imu_params.bias_magnetometer,&z_mag);
 
 	om_vector_normalize(&z_mag);
-
+	om_vector_normalize(&z_acc);
 
 	omVector z_k;
 	om_vector_create(&z_k,6,om_vector_getValue(&z_acc,0),om_vector_getValue(&z_acc,1),om_vector_getValue(&z_acc,2),
@@ -610,7 +612,7 @@ void om_usque_update(struct omSensorFusionManager *manager,omNonLinearFilter_USQ
 		om_rotate_vector_quaternion(&sigma_quaternion[i],&ned_gravity,&tmp_res_a);
 		om_rotate_vector_quaternion(&sigma_quaternion[i],&ned_geographic_north,&tmp_res_m);
 
-		om_operator_vector_scal_mul(&tmp_res_a,G,&tmp_res_a);
+		//om_operator_vector_scal_mul(&tmp_res_a,G,&tmp_res_a);
 
 
 		om_vector_create(&sigma_z[i],6,om_vector_getValue(&tmp_res_a,0),om_vector_getValue(&tmp_res_a,1),om_vector_getValue(&tmp_res_a,2),
@@ -816,11 +818,17 @@ void om_usque_update(struct omSensorFusionManager *manager,omNonLinearFilter_USQ
 
 	om_operator_quat_mul(&dq,&filter->_q_pred,&filter->_q_est);
 
-	//set output
+	// set output
+	double signQw = filter->_q_est._qw < 0.0 ? -1.0 :1.0;
+	double qw = filter->_q_est._qw * signQw;
+	double qx = filter->_q_est._qx * signQw;
+	double qy = filter->_q_est._qy * signQw;
+	double qz = filter->_q_est._qz * signQw;
+
 	switch(manager->type){
 
 	case Quarternion:
-		om_quat_create(&manager->output.quaternion,filter->_q_est._qw,filter->_q_est._qx,filter->_q_est._qy,filter->_q_est._qz);
+		om_quat_create(&manager->output.quaternion,qw,qx,qy,qz);
 		break;
 
 	case Matrix:
@@ -915,8 +923,8 @@ void om_mekf_initialization(struct omSensorFusionManager *manager,void *filter){
 
 	for(int i=0;i<3;++i){
 
-		om_matrix_setValue(&(*(omNonLinearFilter_MEKF*)filter)._Q,i,i,var_v);
-		om_matrix_setValue(&(*(omNonLinearFilter_MEKF*)filter)._Q,i+3,i+3,var_u);
+		om_matrix_setValue(&(*(omNonLinearFilter_MEKF*)filter)._Q,i,i,var_v*0.1);
+		om_matrix_setValue(&(*(omNonLinearFilter_MEKF*)filter)._Q,i+3,i+3,var_u*0.1);
 
 	}
 
@@ -1034,7 +1042,7 @@ void om_mekf_h_function(struct omSensorFusionManager *manager,omNonLinearFilter_
 
 	om_rotate_vector_quaternion(&q_var,&ned_geographic_north,&tmp_res_m);
 	om_rotate_vector_quaternion(&q_var,&ned_gravity,&tmp_res_a);
-	om_operator_vector_scal_mul(&tmp_res_a,9.81,&tmp_res_a);
+	//om_operator_vector_scal_mul(&tmp_res_a,9.81,&tmp_res_a);
 
 
 	for(int i=0;i<3;i++){
@@ -1203,13 +1211,22 @@ void om_mekf_update(struct omSensorFusionManager *manager,omNonLinearFilter_MEKF
 	// compute the jacobian matrix of function h
 	om_mekf_h_jacobian(manager,filter);
 
-	// get the measurement vector
+	//measurement vector;
+	omVector z_acc;
+	omVector z_mag;
+	om_vector_create(&z_acc,3);
+	om_vector_create(&z_mag,3);
+
+	om_operator_vector_sub(&manager->imu_data.data_accelerometer,&manager->imu_params.bias_accelerometer,&z_acc);
+	om_operator_vector_sub(&manager->imu_data.data_magnetometer,&manager->imu_params.bias_magnetometer,&z_mag);
+
+	om_vector_normalize(&z_mag);
+	om_vector_normalize(&z_acc);
+
 	omVector z;
-	om_vector_create(&z,6);
-	for(int i=0;i<3;++i){
-		om_vector_setValue(&z,i,om_vector_getValue(&manager->imu_data.data_accelerometer,i) - om_vector_getValue(&manager->imu_params.bias_accelerometer,i));
-		om_vector_setValue(&z,i+3,om_vector_getValue(&manager->imu_data.data_magnetometer,i));
-	}
+	om_vector_create(&z,6,om_vector_getValue(&z_acc,0),om_vector_getValue(&z_acc,1),om_vector_getValue(&z_acc,2),
+							om_vector_getValue(&z_mag,0),om_vector_getValue(&z_mag,1),om_vector_getValue(&z_mag,2));
+
 
 	// estimate the measurement vector
 	omVector z_pred;
@@ -1300,13 +1317,18 @@ void om_mekf_update(struct omSensorFusionManager *manager,omNonLinearFilter_MEKF
 	for(int i=0;i<3;++i)
 		om_vector_setValue(&filter->_x_k,i,0.0);
 
-	//set output
+	// set output
+	double signQw = filter->_q_est._qw < 0.0 ? -1.0 :1.0;
+	double qw = filter->_q_est._qw * signQw;
+	double qx = filter->_q_est._qx * signQw;
+	double qy = filter->_q_est._qy * signQw;
+	double qz = filter->_q_est._qz * signQw;
+
 	switch(manager->type){
 
 	case Quarternion:
-		om_quat_create(&manager->output.quaternion,filter->_q_est._qw,filter->_q_est._qx,filter->_q_est._qy,filter->_q_est._qz);
+		om_quat_create(&manager->output.quaternion,qw,qx,qy,qz);
 		break;
-
 	case Matrix:
 		om_convert_quaternion2matrix(&filter->_q_est,&manager->output.matrix);
 		break;
@@ -1782,11 +1804,17 @@ void om_request_update(struct omSensorFusionManager *manager,omNonLinearFilter_R
 	}
 
 
-	//set output
+	// set output
+	double signQw = filter->_q_est._qw < 0.0 ? -1.0 :1.0;
+	double qw = filter->_q_est._qw * signQw;
+	double qx = filter->_q_est._qx * signQw;
+	double qy = filter->_q_est._qy * signQw;
+	double qz = filter->_q_est._qz * signQw;
+
 	switch(manager->type){
 
 	case Quarternion:
-		om_quat_create(&manager->output.quaternion,filter->_q_est._qw,filter->_q_est._qx,filter->_q_est._qy,filter->_q_est._qz);
+		om_quat_create(&manager->output.quaternion,qw,qx,qy,qz);
 		break;
 
 	case Matrix:
@@ -1827,8 +1855,6 @@ void om_request_computeR(struct omSensorFusionManager *manager,omNonLinearFilter
 		for(int j=0;j<4;++j)
 			om_matrix_setValue(&filter->_R,i,j,0.0);
 
-
-
 	/* computation of R22 */
 	double R22 = (2.0*filter->_mu_k)/n_k;
 
@@ -1855,10 +1881,16 @@ void om_request_computeR(struct omSensorFusionManager *manager,omNonLinearFilter
 		omMatrix R11_i_b;
 		omMatrix tmp;
 
-		om_matrix_create(&S_ri,3,1);
+		//allocation
+		om_matrix_create(&tmp_bi_bi,3,3);
+		om_matrix_create(&tmp_ri_bi,3,3);
+		om_matrix_create(&tmp_bi_ri,3,3);
+		om_matrix_create(&R11_i_a,3,3);
+		om_matrix_create(&R11_i_b,3,3);
+		om_matrix_create(&tmp,3,3);
+		om_matrix_create(&S_ri,3,3);
 		om_matrix_create(&m_bi,3,1);
 		om_matrix_create(&m_ri,3,1);
-
 		om_matrix_create(&m_bi_t,1,3);
 		om_matrix_create(&m_ri_t,1,3);
 		om_matrix_create(&S_ri_t,3,3);
@@ -1881,13 +1913,7 @@ void om_request_computeR(struct omSensorFusionManager *manager,omNonLinearFilter
 		om_matrix_transpose(&m_ri,&m_ri_t);
 		om_matrix_transpose(&S_ri,&S_ri_t);
 
-		//allocation
-		om_matrix_create(&tmp_bi_bi,3,3);
-		om_matrix_create(&tmp_ri_bi,3,3);
-		om_matrix_create(&tmp_bi_ri,3,3);
-		om_matrix_create(&R11_i_a,3,3);
-		om_matrix_create(&R11_i_b,3,3);
-		om_matrix_create(&tmp,3,3);
+
 
 		// compute tmp_bi_ri = m_bi*m_ri.transpose()
 		om_operator_matrix_mul(&m_bi,&m_ri_t,&tmp_bi_ri);
@@ -1911,8 +1937,6 @@ void om_request_computeR(struct omSensorFusionManager *manager,omNonLinearFilter
 		//compute R11 = R11 + ( I + ( ( (m_bi*m_ri.transpose()) +(m_ri*m_bi.transpose())   )*dotProduct(_b[i],_r[i]) )  + (S_ri*(m_bi*m_bi.transpose())*S_ri.transpose())  );
 		om_operator_matrix_add(&R11_i_a,&R11_i_b,&tmp);
 		om_operator_matrix_add(&R11,&tmp,&R11);
-
-
 
 		//free memory
 		om_matrix_free(&m_bi);
@@ -2466,11 +2490,17 @@ void om_pf_update(struct omSensorFusionManager *manager,omNonLinearFilter_PF *fi
 	om_operator_quat_mul(&dq,&filter->_q_pred,&filter->_q_est);
 
 
-	//set output
+	// set output
+	double signQw = filter->_q_est._qw < 0.0 ? -1.0 :1.0;
+	double qw = filter->_q_est._qw * signQw;
+	double qx = filter->_q_est._qx * signQw;
+	double qy = filter->_q_est._qy * signQw;
+	double qz = filter->_q_est._qz * signQw;
+
 	switch(manager->type){
 
 	case Quarternion:
-		om_quat_create(&manager->output.quaternion,filter->_q_est._qw,filter->_q_est._qx,filter->_q_est._qy,filter->_q_est._qz);
+		om_quat_create(&manager->output.quaternion,qw,qx,qy,qz);
 		break;
 
 	case Matrix:
@@ -2759,8 +2789,15 @@ void om_gdof_prediction(struct omSensorFusionManager *manager,omNonLinearFilter_
 	omVector acc;
 	omVector mag;
 
+	omVector v_acc;
+	omVector v_mag;
+
 	om_vector_create(&acc,3);
 	om_vector_create(&mag,3);
+
+	om_vector_create(&v_acc,3);
+	om_vector_create(&v_mag,3);
+
 
 	om_vector_clone(&manager->imu_data.data_accelerometer,&acc);
 	om_vector_clone(&manager->imu_data.data_magnetometer,&mag);
@@ -2784,6 +2821,10 @@ void om_gdof_prediction(struct omSensorFusionManager *manager,omNonLinearFilter_
 	double q3 = filter->_q_est._qy;
 	double q4 = filter->_q_est._qz;
 
+
+	om_rotate_vector_quaternion(&filter->_q_est,&ned_gravity,&v_acc);
+	om_rotate_vector_quaternion(&filter->_q_est,&ned_geographic_north,&v_mag);
+	/*/
 	double f_a_x = (2.0*( (q2*q4) - (q1*q3) ))       - om_vector_getValue(&acc,0);
 	double f_a_y = (2.0*( (q1*q2) + (q4*q3) ))       - om_vector_getValue(&acc,1);
 	double f_a_z = (2.0*( 0.5 - (q2*q2) - (q3*q3) )) - om_vector_getValue(&acc,2);
@@ -2791,6 +2832,18 @@ void om_gdof_prediction(struct omSensorFusionManager *manager,omNonLinearFilter_
 	double f_b_x = (2.0*b_x*(0.5 - (q3*q3) -(q4*q4))) + (2.0*b_z*( (q2*q4) - (q1*q3) )) - om_vector_getValue(&mag,0);
 	double f_b_y = (2.0*b_x*( (q2*q3) - (q1*q4) )) + (2.0*b_z*( (q1*q2) + (q4*q3) ))    - om_vector_getValue(&mag,1);
 	double f_b_z = (2.0*b_x*( (q1*q3) + (q2*q4))) + (2.0*b_z*(0.5 - (q3*q3) -(q2*q2)))  - om_vector_getValue(&mag,2);
+
+	/*/
+	double f_a_x = om_vector_getValue(&v_acc,0) - om_vector_getValue(&acc,0);
+	double f_a_y = om_vector_getValue(&v_acc,1) - om_vector_getValue(&acc,1);
+	double f_a_z = om_vector_getValue(&v_acc,2) - om_vector_getValue(&acc,2);
+
+	double f_b_x = om_vector_getValue(&v_mag,0) - om_vector_getValue(&mag,0);
+	double f_b_y = om_vector_getValue(&v_mag,1) - om_vector_getValue(&mag,1);
+	double f_b_z = om_vector_getValue(&v_mag,2) - om_vector_getValue(&mag,2);
+
+	//*/
+
 
 	om_vector_setValues(&filter->_f_a,3,f_a_x,f_a_y,f_a_z);
 	om_vector_setValues(&filter->_f_b,3,f_b_x,f_b_y,f_b_z);
@@ -2858,8 +2911,10 @@ void om_gdof_update(struct omSensorFusionManager *manager,omNonLinearFilter_GDOF
 
 	om_operator_matrix_vector_mul(&J_a_t,&filter->_f_a,&gain_a);
 	om_operator_matrix_vector_mul(&J_b_t,&filter->_f_b,&gain_b);
-	om_operator_vector_add(&gain_a,&gain_b,&gain);
 
+	//om_operator_vector_scal_mul(&gain_b,0.0,&gain_b);
+
+	om_operator_vector_add(&gain_a,&gain_b,&gain);
 	om_quat_create(&dq,om_vector_getValue(&gain,0),om_vector_getValue(&gain,1),om_vector_getValue(&gain,2),om_vector_getValue(&gain,3));
 
 	//compute gyro bias estimation
@@ -2882,10 +2937,11 @@ void om_gdof_update(struct omSensorFusionManager *manager,omNonLinearFilter_GDOF
 
 
 	// set output
-	double qw = filter->_q_est._qw;
-	double qx = filter->_q_est._qx;
-	double qy = filter->_q_est._qy;
-	double qz = filter->_q_est._qz;
+	double signQw = filter->_q_est._qw < 0.0 ? -1.0 :1.0;
+	double qw = filter->_q_est._qw * signQw;
+	double qx = filter->_q_est._qx * signQw;
+	double qy = filter->_q_est._qy * signQw;
+	double qz = filter->_q_est._qz * signQw;
 
 	switch(manager->type){
 
@@ -2995,12 +3051,19 @@ void om_cfa_prediction(struct omSensorFusionManager *manager,omNonLinearFilter_C
 	else
 		filter->_beta = 0.5;
 
-	om_kinematics_quaternion(&filter->_q_est,&manager->imu_data.data_gyroscope,&filter->_q_pred);
+	if(om_vector_norm(&manager->imu_data.data_gyroscope) > 0.0)
+		om_kinematics_quaternion(&filter->_q_est,&manager->imu_data.data_gyroscope,&filter->_q_pred);
+	else
+		om_quat_create(&filter->_q_pred,filter->_q_est._qw,filter->_q_est._qx,filter->_q_est._qy,filter->_q_est._qz);
+
+	om_vector_normalize(&manager->imu_data.data_accelerometer);
+	om_vector_normalize(&manager->imu_data.data_magnetometer);
 
 	om_rotate_vector_quaternion(&filter->_q_pred,&ned_gravity,&filter->_v_acc_pred);
 	om_rotate_vector_quaternion(&filter->_q_pred,&ned_geographic_north,&filter->_v_mag_pred);
 
-	om_operator_vector_scal_mul(&filter->_v_acc_pred,G,&filter->_v_acc_pred);
+	//om_operator_vector_scal_mul(&filter->_v_acc_pred,G,&filter->_v_acc_pred);
+
 
 
 }
@@ -3051,7 +3114,11 @@ void om_cfa_update(struct omSensorFusionManager *manager,omNonLinearFilter_CFA *
 	om_operator_matrix_mul(&X,&X_t,&K_tmp);
 	om_operator_matrix_scal_mul(&I,filter->_lambda,&I);
 	om_operator_matrix_add(&K_tmp,&I,&K_tmp);
+
 	om_matrix_inverse(&K_tmp,&K_inv);
+
+
+
 	om_operator_matrix_mul(&K_inv,&X,&K);
 
 	//compute gain
@@ -3071,10 +3138,11 @@ void om_cfa_update(struct omSensorFusionManager *manager,omNonLinearFilter_CFA *
 	om_quat_normalize(&filter->_q_est);
 
 	// set output
-	double qw = filter->_q_est._qw;
-	double qx = filter->_q_est._qx;
-	double qy = filter->_q_est._qy;
-	double qz = filter->_q_est._qz;
+	double signQw = filter->_q_est._qw < 0.0 ? -1.0 :1.0;
+	double qw = filter->_q_est._qw * signQw;
+	double qx = filter->_q_est._qx * signQw;
+	double qy = filter->_q_est._qy * signQw;
+	double qz = filter->_q_est._qz * signQw;
 
 	switch(manager->type){
 
@@ -3095,9 +3163,7 @@ void om_cfa_update(struct omSensorFusionManager *manager,omNonLinearFilter_CFA *
 	default:
 		om_quat_create(&filter->_q_est,1.0,0.0,0.0,0.0);
 		break;
-
 	}
-
 
 	// free memory
 	om_matrix_free(&X);
@@ -3117,7 +3183,7 @@ void om_cfa_update(struct omSensorFusionManager *manager,omNonLinearFilter_CFA *
 
 
 
-/* release all component used for the nonlinear filter GDOF */
+/* release all component used for the nonlinear filter CFA */
 void om_cfa_free(void *filter){
 
 	//free memory
