@@ -16,9 +16,8 @@
 
 extern omVector ned_magnetic_field;
 extern omVector ned_gravity;
-extern omVector ned_geographic_north;
 
-void init_ned_frame();
+
 
 
 ///////////////////////////////////////////////////////
@@ -133,14 +132,57 @@ typedef struct omNonLinearFilter_USQUE{
 	omMatrix _Q;
 	omMatrix _R;
 
+	omVector *sigma_points;
+	omQuaternion* sigma_quaternion;
 
 }omNonLinearFilter_USQUE;
 
 void om_usque_initialization(struct omSensorFusionManager *manager,void *filter);
 void om_usque_process(struct omSensorFusionManager *manager,void *filter);
 void om_usque_prediction(struct omSensorFusionManager *manager,omNonLinearFilter_USQUE *filter);
-void om_usque_update(struct omSensorFusionManager *manager,omNonLinearFilter_USQUE *filter,omVector *sigma_points,omQuaternion* sigma_quaternion);
+void om_usque_update(struct omSensorFusionManager *manager,omNonLinearFilter_USQUE *filter);
 void om_usque_free(void *filter);
+
+
+///////////////////////////////////////////////////////
+/////           NonLinearFilter USQUE             /////
+///////////////////////////////////////////////////////
+
+typedef struct omNonLinearFilter_CSP{
+
+	double _seed;
+	double _f;
+	double _a;
+	double _lambda;
+
+	omQuaternion _q_est;
+	omQuaternion _q_pred;
+
+	omVector _x_k;
+	omVector _x_k_pred;
+	omMatrix _P_k;
+	omMatrix _P_k_pred;
+
+	omMatrix _Q;
+	omMatrix _R;
+
+	double _k_mag;
+	double _k_acc;
+	double _k_I;
+	double _k_P;
+
+	omVector *sigma_points;
+	omQuaternion* sigma_quaternion;
+
+}omNonLinearFilter_CSP;
+
+void om_csp_initialization(struct omSensorFusionManager *manager,void *filter);
+void om_csp_process(struct omSensorFusionManager *manager,void *filter);
+void om_csp_prediction(struct omSensorFusionManager *manager,omNonLinearFilter_CSP *filter);
+void om_csp_update(struct omSensorFusionManager *manager,omNonLinearFilter_CSP *filter);
+void om_csp_free(void *filter);
+
+
 
 ///////////////////////////////////////////////////////
 /////           NonLinearFilter MEKF              /////
@@ -342,6 +384,32 @@ void om_cfa_prediction(struct omSensorFusionManager *manager,omNonLinearFilter_C
 void om_cfa_update(struct omSensorFusionManager *manager,omNonLinearFilter_CFA *filter);
 
 void om_cfa_free(void *filter);
+
+
+
+///////////////////////////////////////////////////////
+/////           NonLinearFilter QUEST             /////
+///////////////////////////////////////////////////////
+
+
+typedef struct omNonLinearFilter_QUEST{
+
+	omQuaternion _q_est;
+
+	double* _a;
+	omVector* _r;
+	omVector* _b;
+
+}omNonLinearFilter_QUEST;
+
+
+void om_quest_initialization(struct omSensorFusionManager *manager,void *filter);
+void om_quest_process(struct omSensorFusionManager *manager,void *filter);
+void om_quest_prediction(struct omSensorFusionManager *manager,omNonLinearFilter_QUEST *filter);
+void om_quest_update(struct omSensorFusionManager *manager,omNonLinearFilter_QUEST *filter);
+
+void om_quest_free(void *filter);
+
 
 
 #endif /* OM_H_ */

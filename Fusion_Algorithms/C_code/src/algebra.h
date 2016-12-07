@@ -41,7 +41,7 @@
 #define PI 3.14159265359
 
 // Time variation
-#define DELTA_T 0.001
+#define DELTA_T 0.01
 
 // Gravitational constant.
 #define G 9.81
