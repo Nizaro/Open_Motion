@@ -1,5 +1,6 @@
 #include "algebra.h"
 
+double DELTA_T = 0;
 
 ///////////////////////////////////////////////////////
 /////             Vector class                    /////
@@ -101,6 +102,83 @@ double om_vector_rms(struct omVector *vector){
 	return sqrt(rms);
 
 }
+
+
+/* compute the mean value of the vector */
+double om_vector_mean(struct omVector *vector){
+
+	// set mean value to zero
+	double mean = 0.0;
+
+	// get sum of all vector values
+	for(int i = 0; i < vector->_length;++i)
+		mean += vector->_values[i];
+
+	// return the sum divide by the number of elements
+	return mean / (double)(vector->_length);
+}
+
+/* get the number of elements */
+int om_vector_getLength(struct omVector *vector){
+	return vector->_length;
+}
+
+
+/* compute the median value of the vector */
+double om_vector_median(struct omVector *vector){
+
+	// set mean value to zero
+	double median = 0.0;
+
+	// if there is an odd number of elements
+	if(vector->_length % 2 == 1){
+		double tmp = ((double)(vector->_length) + 1.0)/2.0;
+		int upper = (int)(ceil(tmp)) - 1;
+		int lower = (int)(floor(tmp)) - 1;
+
+		median = (vector->_values[upper] + vector->_values[lower])/2.0;
+
+	}
+	// even number of elements
+	else{
+		int index = ((vector->_length + 1) / 2) - 1;
+		median = vector->_values[index];
+	}
+
+	//return median
+	return median;
+}
+
+
+/* interpolation */
+double om_vector_interpolation(omVector *x,omVector *y,double xq){
+
+	double res;
+
+	for(int i=0;i<x->_length-1;++i){
+
+		double x0 = om_vector_getValue(x, i);
+		double x1 = om_vector_getValue(x, i+1);
+
+		if(xq >= x0 && xq <= x1){
+
+			double y0 = om_vector_getValue(y, i);
+			double y1 = om_vector_getValue(y, i+1);
+
+			res = y0 + ( ((y1 - y0)/(x1 - x0))*(xq - x0)  );
+
+			break;
+		}
+
+	}
+
+
+	return res;
+
+}
+
+
+
 
 /* compute the norm of a vector */
 double om_vector_norm(struct omVector *vector){
@@ -204,29 +282,136 @@ double om_matrix_getValue(struct omMatrix *matrix,int i,int j){
 	return matrix->_values[i][j];
 }
 
+
+/**
+ *
+ */
+void om_matrix_convolution2D(omMatrix *A,omMatrix *B,omMatrix *C){
+
+	int nA = A->_rows;
+	int mA = A->_columns;
+
+	int nB = B->_rows;
+	int mB = B->_columns;
+
+	int nC = nA + nB - 1;
+	int mC = mA + mB - 1;
+
+	//printf("nc = %d mc = %d\n",nC,mC);
+	om_matrix_create(C,nC,mC);
+
+
+	for(int i=0;i<nC;i++){
+		for(int j=0;j<mC;j++){
+
+			double value = 0.0;
+
+			for(int p=0;p<nA;p++){
+				for(int q=0;q<mA;q++){
+
+					if(i - p >= 0 && j - q >= 0 && i - p < nB && j - q < mB)
+						value += om_matrix_getValue(A, p, q)*om_matrix_getValue(B, i - p , j - q );
+
+					//printf("idx_1 = %d idx_2 = %d\n",i - p,j - q);
+				}
+			}
+			om_matrix_setValue(C, i, j, value);
+		}
+	}
+
+}
+
+
+/**
+ *
+ */
+void om_matrix_convolution2D_valid(omMatrix *A,omMatrix *B,omMatrix *C){
+
+	int nA = A->_rows;
+	int mA = A->_columns;
+
+	int nB = B->_rows;
+	int mB = B->_columns;
+
+	int nC = nA + nB - 1;
+	int mC = mA + mB - 1;
+
+	om_matrix_create(C,nA - nB + 1,mA - mB + 1);
+
+	for(int i=0;i<nC;i++){
+		for(int j=0;j<mC;j++){
+
+			if( i >= nB-1 && i<nC - nB + 1 && j >= mB-1 && j < mC - mB + 1 ){
+				double value = 0.0;
+
+				for(int p=0;p<nA;p++){
+					for(int q=0;q<mA;q++){
+
+						if(i - p  >= 0 && j - q >= 0 && i - p < nB && j - q < mB)
+							value += om_matrix_getValue(A, p, q)*om_matrix_getValue(B, i - p , j - q );
+					}
+				}
+
+				om_matrix_setValue(C, i - nB + 1, j- mB + 1, value);
+			}
+		}
+	}
+
+}
+
+
+
+
 /* compute the norm of a matrix */
 double om_matrix_norm(struct omMatrix *matrix){
 
 	// set max to zero
-	double max = 0.0;
+	double sum=0.0;
 
+	// compute the sum of all values
 	for(int j=0;j<matrix->_columns;++j){
 
-		// compute the sum of the ith row values
-		double sum=0.0;
 		for(int i=0;i<matrix->_rows;++i)
-			sum += om_matrix_getValue(matrix,i,j);
-
-		// get the max
-		max = max < sum ? sum : max;
+			sum += om_matrix_getValue(matrix,i,j)*om_matrix_getValue(matrix,i,j);
 
 	}
 
 	//return the norm
-	return max;
+	return sqrt(sum);
 
 
 }
+
+
+int om_matrix_isSymmetric(struct omMatrix *matrix){
+
+	int bool;
+
+	if(om_matrix_isSquare(matrix) == 1){
+		omMatrix transpose;
+		omMatrix diff;
+		om_matrix_create(&transpose,matrix->_columns,matrix->_rows);
+		om_matrix_create(&diff,matrix->_columns,matrix->_rows);
+
+		om_matrix_transpose(matrix,&transpose);
+		om_operator_matrix_sub(matrix,&transpose,&diff);
+
+		if(om_matrix_norm(&diff) < EPSILON)
+			bool=1;
+		else
+			bool=0;
+
+		om_matrix_free(&transpose);
+		om_matrix_free(&diff);
+
+	}else{
+		bool = 0;
+	}
+
+
+	return bool;
+}
+
 
 /* compute the determinant of a matrix */
 double om_matrix_determinant(struct omMatrix *matrix){
@@ -259,6 +444,9 @@ double om_matrix_determinant(struct omMatrix *matrix){
 		   // Indeed det(AB) = det(A)det(B)
 		   determinant = detL*detU;
 
+		   om_matrix_free(&L);
+		   om_matrix_free(&U);
+
 	   }
 
 	   // return the determinant
@@ -288,69 +476,1087 @@ double om_matrix_trace(struct omMatrix *matrix){
 /* get all eigen values and associated eigen vector of a matrix */
 void om_matrix_getEingenValues(struct omMatrix *matrix,struct omVector **eigen_vectors,double **eigen_values,int N){
 
-	// variables
-	omMatrix D;
-	omMatrix Q;
-	omMatrix R;
-	omMatrix P;
-	int m=matrix->_rows;
-	int n=matrix->_columns;
 
-	//allocation
-	om_matrix_create(&Q,m,n);
-	om_matrix_create(&R,m,n);
-	om_matrix_create(&D,m,n);
-	om_matrix_create(&P,m,n);
+	// if the matrix  symmetric, apply the Jacobi cyclic method
+	if(om_matrix_isSymmetric(matrix)== 1){
 
-	// initialization of D
-	om_matrix_clone(matrix,&D);
+		//*/
+        // Initialize the eigenvalues to the identity matrix.
+		int row, i, j, k, m;
+		double *pAk, *pAm, *p_r, *p_e;
+		double threshold_norm;
+		double threshold;
+		double tan_phi, sin_phi, cos_phi, tan2_phi, sin2_phi, cos2_phi;
+		double sin_2phi, cos_2phi, cot_2phi;
+		double dum1;
+		double dum2;
+		double dum3;
+		double r;
+		double max;
+		int n = matrix->_columns;
+		double* eigenvectors = (double*)malloc(n*n*sizeof(double));
+		double* A = (double*)malloc(n*n*sizeof(double));
 
-	// initialization of Q,R and P
-	om_matrix_factorizationQR(&D,&Q,&R);
-	om_matrix_clone(&Q,&P);
+		for(int i2=0;i2<n;i2++)
+			for(int j2=0;j2<n;j2++)
+				A[i2*n + j2]=om_matrix_getValue(matrix, i2, j2);
 
-	// for each iteration
-	for(int index=0;index<N;index++){
 
-		//some variables
-		omMatrix P_tmp;
-		om_matrix_create(&P_tmp,matrix->_rows,matrix->_columns);
+		for (p_e = eigenvectors, i = 0; i < n; i++)
+			for (j = 0; j < n; p_e++, j++)
+				if (i == j) *p_e = 1.0; else *p_e = 0.0;
 
-		// compute D = R*Q
-		om_operator_matrix_mul(&R,&Q,&D);
+		// Calculate the threshold and threshold_norm.
 
-		// QR factorization of D
-		om_matrix_factorizationQR(&D,&Q,&R);
+		for (threshold = 0.0, pAk = A, i = 0; i < ( n - 1 ); pAk += n, i++)
+			for (j = i + 1; j < n; j++) threshold += *(pAk + j) * *(pAk + j);
 
-		// compute P_tp1 = P_t*Q
-		om_operator_matrix_mul(&P,&Q,&P_tmp);
-		om_matrix_clone(&P_tmp,&P);
 
-		//free memory
-		om_matrix_free(&P_tmp);
+		threshold = sqrt(threshold + threshold);
+		threshold_norm = threshold * DBL_EPSILON;
+		max = threshold + 1.0;
+
+		while (threshold > threshold_norm) {
+
+			threshold /= 10.0;
+
+			if (max < threshold) continue;
+			max = 0.0;
+
+			for (pAk = A, k = 0; k < (n-1); pAk += n, k++) {
+				for (pAm = pAk + n, m = k + 1; m < n; pAm += n, m++) {
+					if ( fabs(*(pAk + m)) < threshold ) continue;
+
+					// Calculate the sin and cos of the rotation angle which
+					// annihilates A[k][m].
+
+					cot_2phi = 0.5 * ( *(pAk + k) - *(pAm + m) ) / *(pAk + m);
+					dum1 = sqrt( cot_2phi * cot_2phi + 1.0);
+					if (cot_2phi < 0.0) dum1 = -dum1;
+
+					tan_phi = -cot_2phi + dum1;
+					tan2_phi = tan_phi * tan_phi;
+					sin2_phi = tan2_phi / (1.0 + tan2_phi);
+					cos2_phi = 1.0 - sin2_phi;
+					sin_phi = sqrt(sin2_phi);
+
+					if (tan_phi < 0.0) sin_phi = - sin_phi;
+
+					cos_phi = sqrt(cos2_phi);
+					sin_2phi = 2.0 * sin_phi * cos_phi;
+					cos_2phi = cos2_phi - sin2_phi;
+
+				   // Rotate columns k and m for both the matrix A
+				   //     and the matrix of eigenvectors.
+
+					p_r = A;
+					dum1 = *(pAk + k);
+					dum2 = *(pAm + m);
+					dum3 = *(pAk + m);
+					*(pAk + k) = dum1 * cos2_phi + dum2 * sin2_phi + dum3 * sin_2phi;
+					*(pAm + m) = dum1 * sin2_phi + dum2 * cos2_phi - dum3 * sin_2phi;
+					*(pAk + m) = 0.0;
+					*(pAm + k) = 0.0;
+					for (i = 0; i < n; p_r += n, i++) {
+						if ( (i == k) || (i == m) ) continue;
+						if ( i < k ) dum1 = *(p_r + k); else dum1 = *(pAk + i);
+						if ( i < m ) dum2 = *(p_r + m); else dum2 = *(pAm + i);
+						dum3 = dum1 * cos_phi + dum2 * sin_phi;
+						if ( i < k ) *(p_r + k) = dum3; else *(pAk + i) = dum3;
+						dum3 = - dum1 * sin_phi + dum2 * cos_phi;
+						if ( i < m ) *(p_r + m) = dum3; else *(pAm + i) = dum3;
+					}
+					for (p_e = eigenvectors, i = 0; i < n; p_e += n, i++) {
+						dum1 = *(p_e + k);
+						dum2 = *(p_e + m);
+						*(p_e + k) = dum1 * cos_phi + dum2 * sin_phi;
+						*(p_e + m) = - dum1 * sin_phi + dum2 * cos_phi;
+					}
+				}
+				for (i = 0; i < n; i++)
+					if ( i == k ) continue;
+					else if ( max < fabs(*(pAk + i))) max = fabs(*(pAk + i));
+			}
+		}
+
+		(*eigen_values) = (double*)malloc(matrix->_columns*sizeof(double));
+		(*eigen_vectors) = (omVector*)malloc(matrix->_columns*sizeof(omVector));
+
+		for (pAk = A, k = 0; k < n; pAk += n, k++) (*eigen_values)[k] = *(pAk + k);
+
+
+		for(int l=0;l<n;++l){
+
+			//eigen vector are the column values of matrix P
+			om_vector_create(&(*eigen_vectors)[l],n);
+		}
+
+
+		for(int l=0;l<n;++l)
+			for(int k=0;k<n;++k)
+				//om_vector_setValue(&(*eigen_vectors)[l],k,  k== 0? eigenvectors[k*n + l]*(-1.0) : eigenvectors[k*n + l] );
+				om_vector_setValue(&(*eigen_vectors)[l],k,   eigenvectors[k*n + l] );
+
+
+		free(A);
+		free(eigenvectors);
+		A = 0;
+		eigenvectors = 0;
+		//free(pAk);
+		//free(pAm);
+		//free(p_r);
+		//free(p_e);
+
+
+
+		/*/
+		// variables
+		omMatrix A;
+		omMatrix Q;
+		omMatrix R;
+		omMatrix P;
+
+		int m = matrix->_rows;
+		int n = matrix->_columns;
+
+		//allocation
+		om_matrix_create(&Q,m,n);
+		om_matrix_create(&R,m,n);
+		om_matrix_create(&A,m,n);
+		om_matrix_createIdentity(&P,m);
+
+		// initialization of D
+		om_matrix_clone(matrix,&A);
+
+		// for each iteration
+		for(int index=0;index<N;index++){
+
+			//some variables
+			omMatrix P_tmp;
+			om_matrix_create(&P_tmp,matrix->_rows,matrix->_columns);
+
+			// QR factorization of A
+			om_matrix_factorizationQR(&A,&Q,&R);
+
+
+			// compute A = R*Q
+			om_operator_matrix_mul(&R,&Q,&A);
+
+			// compute P_tp1 = P_t*Q
+			om_operator_matrix_mul(&P,&Q,&P_tmp);
+			om_matrix_clone(&P_tmp,&P);
+
+
+
+			//free memory
+			om_matrix_free(&P_tmp);
+		}
+
+		// allocation of eigen values and eigen vector
+		(*eigen_values) = (double*)malloc(matrix->_columns*sizeof(double));
+		(*eigen_vectors) = (omVector*)malloc(matrix->_columns*sizeof(omVector));
+
+		for(int l=0;l<matrix->_columns;++l){
+
+			//eigen values are the diagonal values of matrix D
+			(*eigen_values)[l] = om_matrix_getValue(&A,l,l);
+
+			//eigen vector are the column values of matrix P
+			om_vector_create(&(*eigen_vectors)[l],n);
+			om_matrix_getColumn(&P,l,&(*eigen_vectors)[l]);
+
+		}
+
+		// free memory
+		om_matrix_free(&A);
+		om_matrix_free(&Q);
+		om_matrix_free(&R);
+		om_matrix_free(&P);
+		//*/
+
+
+	}else{
+
+
+		int n = matrix->_columns;
+		omMatrix H;
+		omMatrix V;
+		omVector o;
+		omVector d;
+		omVector e;
+
+		om_vector_create(&o,n);
+		om_vector_create(&d,n);
+		om_vector_create(&e,n);
+		om_matrix_create(&H,n,n);
+		om_matrix_create(&V,n,n);
+		om_matrix_clone(matrix,&H);
+
+
+		for(int index=0;index<n;index++){
+			om_vector_setValue(&d,index,0.0);
+			om_vector_setValue(&e,index,0.0);
+		}
+
+		//Nonsymmetric reduction to Hessenberg form
+		//  This is derived from the Algol procedures orthes and ortran,
+		//  by Martin and Wilkinson, Handbook for Auto. Comp.,
+		//  Vol.ii-Linear Algebra, and the corresponding
+		//  Fortran subroutines in EISPACK.
+
+		int low = 0;
+		int high = n-1;
+
+		for (int m = low+1; m <= high-1; m++) {
+
+			// Scale column.
+			double scale = 0.0;
+			for (int i = m; i <= high; i++) {
+				 //scale = scale + Math.abs(H[i][m-1]);
+				scale = scale + fabs(om_matrix_getValue(&H,i,m-1));
+
+			}
+			if (scale != 0.0) {
+
+				// Compute Householder transformation.
+				double h = 0.0;
+				for (int i = high; i >= m; i--) {
+
+					//ort[i] = H[i][m-1]/scale;
+					om_vector_setValue(&o,i,om_matrix_getValue(&H,i,m-1)/scale);
+
+					//h += ort[i] * ort[i];
+					h += om_vector_getValue(&o,i)*om_vector_getValue(&o,i);
+
+				}
+
+				double g = sqrt(h);
+				if (om_vector_getValue(&o,m) > 0) {
+					g *= -1.0;
+				}
+
+				//h = h - ort[m] * g;
+				h = h - (om_vector_getValue(&o,m) * g);
+
+				//ort[m] = ort[m] - g;
+				om_vector_setValue(&o,m,om_vector_getValue(&o,m) - g);
+
+				// Apply Householder similarity transformation
+				// H = (I-u*u'/h)*H*(I-u*u')/h)
+
+				for (int j = m; j < n; j++) {
+					double f = 0.0;
+
+					for (int i = high; i >= m; i--) {
+						//f += ort[i]*H[i][j];
+						f += om_vector_getValue(&o,i)*om_matrix_getValue(&H,i,j);
+					}
+
+					f /= h;
+
+					for (int i = m; i <= high; i++) {
+						//H[i][j] -= f*ort[i];
+						om_matrix_setValue(&H,i,j,om_matrix_getValue(&H,i,j) - (f*om_vector_getValue(&o,i)));
+
+					}
+				}
+
+				for (int i = 0; i <= high; i++) {
+					double f = 0.0;
+					for (int j = high; j >= m; j--) {
+						//f += ort[j]*H[i][j];
+						f += om_vector_getValue(&o,j)*om_matrix_getValue(&H,i,j);
+					}
+					f /= h;
+					for (int j = m; j <= high; j++) {
+						//H[i][j] -= f*ort[j];
+						om_matrix_setValue(&H,i,j,om_matrix_getValue(&H,i,j) - (f*om_vector_getValue(&o,j)));
+
+					}
+				}
+				//ort[m] = scale*ort[m];
+				om_vector_setValue(&o,m,scale*om_vector_getValue(&o,m));
+
+				//H[m][m-1] = scale*g;
+				om_matrix_setValue(&H,m,m-1,scale*g);
+			}
+		}
+
+		// Accumulate transformations (Algol's ortran).
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				//V[i][j] = (i == j ? 1.0 : 0.0);
+				om_matrix_setValue(&V,i,j,(i == j ? 1.0 : 0.0));
+			}
+		}
+
+		for (int m = high-1; m >= low+1; m--) {
+
+			//if (H[m][m-1] != 0.0) {
+			if (om_matrix_getValue(&H,m,m-1) != 0.0) {
+
+				for (int i = m+1; i <= high; i++) {
+					//ort[i] = H[i][m-1];
+					om_vector_setValue(&o,i,om_matrix_getValue(&H,i,m-1));
+				}
+
+				for (int j = m; j <= high; j++) {
+					double g = 0.0;
+					for (int i = m; i <= high; i++) {
+						//g += ort[i] * V[i][j];
+						g += om_vector_getValue(&o,i)*om_matrix_getValue(&V,i,j);
+					}
+
+					// Double division avoids possible underflow
+					//g = (g / ort[m]) / H[m][m-1];
+					g = (g / om_vector_getValue(&o,m))/om_matrix_getValue(&H,m,m-1);
+					for (int i = m; i <= high; i++) {
+						//V[i][j] += g * ort[i];
+						om_matrix_setValue(&V,i,j,om_matrix_getValue(&V,i,j) + (g * om_vector_getValue(&o,i) ));
+					}
+
+				}
+			}
+		}
+
+
+
+
+
+		//  This is derived from the Algol procedure hqr2,
+		//  by Martin and Wilkinson, Handbook for Auto. Comp.,
+		//  Vol.ii-Linear Algebra, and the corresponding
+		//  Fortran subroutine in EISPACK.
+
+		// Initialize
+
+		int nn = n;
+		n = nn-1;
+		low = 0;
+		high = nn - 1;
+
+		double eps = pow(2.0,-52.0);
+		double exshift = 0.0;
+		double p=0,q=0,r=0,s=0,z=0,t,w,x,y;
+
+
+		// Store roots isolated by balanc and compute matrix norm
+
+		double norm = 0.0;
+		for (int i = 0; i < nn; i++) {
+			if ( (i < low) | (i > high) ) {
+				//d[i] = H[i][i];
+				om_vector_setValue(&d,i,om_matrix_getValue(&H,i,i));
+
+				//e[i] = 0.0;
+				om_vector_setValue(&e,i,0.0);
+			}
+
+			//for (int j = max(i-1, 0) ; j < nn; j++) {
+			for (int j = (i-1 > 0 ? i-1 : 0) ; j < nn; j++) {
+				//norm = norm + fabs(H[i][j]);
+				norm = norm + fabs(om_matrix_getValue(&H,i,j));
+			}
+		}
+
+
+
+		// Outer loop over eigenvalue index
+
+		int iter = 0;
+		while (n >= low) {
+
+			// Look for single small sub-diagonal element
+			int l = n;
+			while (l > low) {
+				//s = fabs(H[l-1][l-1]) + fabs(H[l][l]);
+				s = fabs(om_matrix_getValue(&H,l-1,l-1)) + fabs(om_matrix_getValue(&H,l,l));
+
+				if (s == 0.0) {
+					s = norm;
+				}
+				//if (fabs(H[l][l-1]) < eps * s) {
+				if (fabs(om_matrix_getValue(&H,l,l-1)) < eps * s) {
+					break;
+				}
+				l--;
+			}
+
+
+
+			// Check for convergence
+			// One root found
+
+			if (l == n) {
+
+
+
+				//H[n][n] = H[n][n] + exshift;
+				om_matrix_setValue(&H,n,n,om_matrix_getValue(&H,n,n) + exshift);
+
+				//d[n] = H[n][n];
+				om_vector_setValue(&d,n,om_matrix_getValue(&H,n,n));
+
+				//e[n] = 0.0;
+				om_vector_setValue(&e,n,0.0);
+
+				n--;
+				iter = 0;
+
+			// Two roots found
+			} else if (l == n-1) {
+
+				//w = H[n][n-1] * H[n-1][n];
+				w = om_matrix_getValue(&H,n,n-1)*om_matrix_getValue(&H,n-1,n);
+
+				//p = (H[n-1][n-1] - H[n][n]) / 2.0;
+				p = (om_matrix_getValue(&H,n-1,n-1) - om_matrix_getValue(&H,n,n)) / 2.0;
+
+				q = (p * p) + w;
+
+				z = sqrt(fabs(q));
+
+				//H[n][n] = H[n][n] + exshift;
+				om_matrix_setValue(&H,n,n,om_matrix_getValue(&H,n,n) + exshift);
+
+				//H[n-1][n-1] = H[n-1][n-1] + exshift;
+				om_matrix_setValue(&H,n-1,n-1,om_matrix_getValue(&H,n-1,n-1) + exshift);
+
+				//x = H[n][n];
+				x = om_matrix_getValue(&H,n,n);
+
+				// Real pair
+				if (q >= 0) {
+					if (p >= 0) {
+						z = p + z;
+					} else {
+						z = p - z;
+					}
+
+					//d[n-1] = x + z;
+					om_vector_setValue(&d,n-1,x + z);
+
+					//d[n] = d[n-1];
+					om_vector_setValue(&d,n,x + z);
+
+					if (z != 0.0) {
+						//d[n] = x - w / z;
+						om_vector_setValue(&d,n,x - w / z);
+					}
+
+					//e[n-1] = 0.0;
+					om_vector_setValue(&e,n-1,0.0);
+
+					//e[n] = 0.0;
+					om_vector_setValue(&e,n,0.0);
+
+					//x = H[n][n-1];
+					x = om_matrix_getValue(&H,n,n-1);
+
+					s = fabs(x) + fabs(z);
+					q = z / s;
+
+					r = sqrt(p * p + q * q);
+					p = p / r;
+					q = q / r;
+
+					// Row modification
+
+					for (int j = n-1; j < nn; j++) {
+						//z = H[n-1][j];
+						z = om_matrix_getValue(&H,n-1,j);
+
+						//H[n-1][j] = q * z + p * H[n][j];
+						om_matrix_setValue(&H,n-1,j, (q * z) + (p * om_matrix_getValue(&H,n,j)));
+
+						//H[n][j] = q * H[n][j] - p * z;
+						om_matrix_setValue(&H,n,j,(q * om_matrix_getValue(&H,n,j)) - (p * z));
+					}
+
+					// Column modification
+
+					for (int i = 0; i <= n; i++) {
+						//z = H[i][n-1];
+						z = om_matrix_getValue(&H,i,n-1);
+
+						//H[i][n-1] = q * z + p * H[i][n];
+						om_matrix_setValue(&H,i,n-1, (q * z) + (p * om_matrix_getValue(&H,i,n)));
+
+						//H[i][n] = q * H[i][n] - p * z;
+						om_matrix_setValue(&H,i,n, (q * om_matrix_getValue(&H,i,n)) - (p * z));
+					}
+
+					// Accumulate transformations
+
+					for (int i = low; i <= high; i++) {
+
+						//z = V[i][n-1];
+						z = om_matrix_getValue(&V,i,n-1);
+
+						//V[i][n-1] = q * z + p * V[i][n];
+						om_matrix_setValue(&V,i,n-1, (q * z) + (p * om_matrix_getValue(&V,i,n)));
+
+						//V[i][n] = q * V[i][n] - p * z;
+						om_matrix_setValue(&V,i,n, (q * om_matrix_getValue(&V,i,n)) - (p * z));
+					}
+
+				// Complex pair
+				} else {
+
+					//d[n-1] = x + p;
+					om_vector_setValue(&d,n-1, x + p);
+
+					//d[n] = x + p;
+					om_vector_setValue(&d,n, x + p);
+
+					//e[n-1] = z;
+					om_vector_setValue(&e,n-1,z);
+
+					//e[n] = -z;
+					om_vector_setValue(&e,n,-z);
+				}
+				n = n - 2;
+				iter = 0;
+
+
+
+
+			// No convergence yet
+			} else {
+				// Form shift
+
+				//x = H[n][n];
+				x = om_matrix_getValue(&H,n,n);
+				y = 0.0;
+				w = 0.0;
+
+				if (l < n) {
+					//y = H[n-1][n-1];
+					y = om_matrix_getValue(&H,n-1,n-1);
+
+					//w = H[n][n-1] * H[n-1][n];
+					w = om_matrix_getValue(&H,n,n-1) * om_matrix_getValue(&H,n-1,n);
+				}
+
+
+				// Wilkinson's original ad hoc shift
+
+				if (iter == 10) {
+					exshift += x;
+					for (int i = low; i <= n; i++) {
+						//H[i][i] -= x;
+						om_matrix_setValue(&H,i,i, om_matrix_getValue(&H,i,i) - x);
+
+					}
+					//s = fabs(H[n][n-1]) + fabs(H[n-1][n-2]);
+					s = fabs(om_matrix_getValue(&H,n,n-1)) + fabs(om_matrix_getValue(&H,n-1,n-2));
+
+					x = y = 0.75 * s;
+					w = -0.4375 * s * s;
+				}
+
+
+				// MATLAB's new ad hoc shift
+				if (iter == 30) {
+					s = (y - x) / 2.0;
+					s = s * s + w;
+					if (s > 0) {
+						s = sqrt(s);
+						if (y < x) {
+							s = -s;
+						}
+						s = x - w / ((y - x) / 2.0 + s);
+						for (int i = low; i <= n; i++) {
+							//H[i][i] -= s;
+							om_matrix_setValue(&H,i,i, om_matrix_getValue(&H,i,i) - s);
+						}
+						exshift += s;
+						x = y = w = 0.964;
+					}
+				}
+
+				iter = iter + 1;   // (Could check iteration count here.)
+
+				// Look for two consecutive small sub-diagonal elements
+
+				int m = n-2;
+				while (m >= l) {
+					//z = H[m][m];
+					z = om_matrix_getValue(&H,m,m);
+
+					r = x - z;
+					s = y - z;
+					//p = (r * s - w) / H[m+1][m] + H[m][m+1];
+					p = (r * s - w) / om_matrix_getValue(&H,m+1,m) + om_matrix_getValue(&H,m,m+1);
+
+					//q = H[m+1][m+1] - z - r - s;
+					q = om_matrix_getValue(&H,m+1,m+1) - z - r - s;
+
+					//r = H[m+2][m+1];
+					r = om_matrix_getValue(&H,m+2,m+1);
+
+					s = fabs(p) + fabs(q) + fabs(r);
+
+					p = p / s;
+					q = q / s;
+					r = r / s;
+
+					if (m == l) {
+						break;
+					}
+
+					double tmp = fabs( om_matrix_getValue(&H,m,m-1) ) * (fabs(q) + fabs(r));
+					double tmp2 = (fabs(p) * ( fabs( om_matrix_getValue(&H,m-1,m-1) ) + fabs(z) + fabs(om_matrix_getValue(&H,m+1,m+1)) ) );
+					if (  tmp < eps * tmp2 ) {
+						break;
+					}
+					m--;
+				}
+
+				for (int i = m+2; i <= n; i++) {
+					//H[i][i-2] = 0.0;
+					om_matrix_setValue(&H,i,i-2,0.0);
+
+					if (i > m+2) {
+						//H[i][i-3] = 0.0;
+						om_matrix_setValue(&H,i,i-3,0.0);
+					}
+
+
+				}
+
+					// Double QR step involving rows l:n and columns m:n
+
+					for (int k = m; k <= n-1; k++) {
+						int notlast = (k != n-1) ? 1 : 0 ;
+
+						if (k != m) {
+							//p = H[k][k-1];
+							p = om_matrix_getValue(&H,k,k-1);
+
+		                	//q = H[k+1][k-1];
+		                	q = om_matrix_getValue(&H,k+1,k-1);
+
+		                	//r = (notlast ? H[k+2][k-1] : 0.0);
+		                	r = (notlast == 1 ? om_matrix_getValue(&H,k+2,k-1) : 0.0);
+
+		                	x = fabs(p) + fabs(q) + fabs(r);
+		                	if (x != 0.0) {
+		                		p = p / x;
+		                		q = q / x;
+		                		r = r / x;
+		                	}
+						}
+		                if (x == 0.0) {
+		                   break;
+		                }
+
+		                s = sqrt(p * p + q * q + r * r);
+
+		                if (p < 0) {
+		                   s = -s;
+		                }
+
+		                if (s != 0) {
+		                   if (k != m) {
+		                      //H[k][k-1] = -s * x;
+		                	   om_matrix_setValue(&H,k,k-1,-s * x);
+
+		                   } else if (l != m) {
+		                      //H[k][k-1] = -H[k][k-1];
+		                	   om_matrix_setValue(&H,k,k-1, om_matrix_getValue(&H,k,k-1)*(-1.0) );
+		                   }
+		                   p = p + s;
+		                   x = p / s;
+		                   y = q / s;
+		                   z = r / s;
+		                   q = q / p;
+		                   r = r / p;
+
+		                   // Row modification
+
+		                   for (int j = k; j < nn; j++) {
+		                      //p = H[k][j] + q * H[k+1][j];
+		                      p = om_matrix_getValue(&H,k,j) + (q * om_matrix_getValue(&H,k+1,j));
+
+		                      if (notlast == 1) {
+		                         //p = p + r * H[k+2][j];
+		                    	  p = p + (r * om_matrix_getValue(&H,k+2,j));
+
+		                         //H[k+2][j] = H[k+2][j] - p * z;
+		                         om_matrix_setValue(&H,k+2,j,om_matrix_getValue(&H,k+2,j) - (p*z));
+		                      }
+
+		                      //H[k][j] = H[k][j] - p * x;
+		                      om_matrix_setValue(&H,k,j,om_matrix_getValue(&H,k,j) - (p*x));
+
+		                      //H[k+1][j] = H[k+1][j] - p * y;
+		                      om_matrix_setValue(&H,k+1,j,om_matrix_getValue(&H,k+1,j) - (p*y));
+		                   }
+
+		                   // Column modification
+
+		                   //for (int i = 0; i <= min(n,k+3); i++) {
+		                   for (int i = 0; i <= (n < k+3 ? n : k+3); i++) {
+
+		                	   //p = x * H[i][k] + y * H[i][k+1];
+		                      p = (x * om_matrix_getValue(&H,i,k)) + (y * om_matrix_getValue(&H,i,k+1));
+
+		                      if (notlast == 1) {
+		                         //p = p + z * H[i][k+2];
+		                    	  p = p + (z * om_matrix_getValue(&H,i,k+2));
+
+		                    	  //H[i][k+2] = H[i][k+2] - p * r;
+		                    	  om_matrix_setValue(&H,i,k+2,om_matrix_getValue(&H,i,k+2) - (p*r));
+		                      }
+
+		                      //H[i][k] = H[i][k] - p;
+		                      om_matrix_setValue(&H,i,k,om_matrix_getValue(&H,i,k) - p);
+
+		                      //H[i][k+1] = H[i][k+1] - p * q;
+		                      om_matrix_setValue(&H,i,k+1,om_matrix_getValue(&H,i,k+1) - (p*q));
+		                   }
+
+		                   // Accumulate transformations
+
+		                   for (int i = low; i <= high; i++) {
+		                      //p = x * V[i][k] + y * V[i][k+1];
+		                	   p = (x * om_matrix_getValue(&V,i,k)) + (y * om_matrix_getValue(&V,i,k+1));
+
+		                	   if (notlast == 1) {
+		                         //p = p + z * V[i][k+2];
+		                		   p = p + (z * om_matrix_getValue(&V,i,k+2));
+
+		                         //V[i][k+2] = V[i][k+2] - p * r;
+		                		   om_matrix_setValue(&V,i,k+2,om_matrix_getValue(&V,i,k+2) - (p*r));
+
+		                      }
+
+		                      //V[i][k] = V[i][k] - p;
+		                	   om_matrix_setValue(&V,i,k,om_matrix_getValue(&V,i,k) - p);
+
+		                      //V[i][k+1] = V[i][k+1] - p * q;
+		                      om_matrix_setValue(&V,i,k+1,om_matrix_getValue(&V,i,k+1) - (p*q));
+		                   }
+		                }  // (s != 0)
+		             }  // k loop
+		          }  // check convergence
+		       }  // while (n >= low)
+
+		       // Backsubstitute to find vectors of upper triangular form
+
+		       if (norm == 0.0) {
+		          return;
+		       }
+
+		       for (n = nn-1; n >= 0; n--) {
+		          //p = d[n];
+		    	  p = om_vector_getValue(&d,n);
+		    	  //q = e[n];
+		    	  q = om_vector_getValue(&e,n);
+
+		    	  // Real vector
+
+		          if (q == 0.0) {
+		             int l = n;
+
+		             //H[n][n] = 1.0;
+		             om_matrix_setValue(&H,n,n,1.0);
+
+		             for (int i = n-1; i >= 0; i--) {
+		                //w = H[i][i] - p;
+		            	w = om_matrix_getValue(&H,i,i) - p;
+		                r = 0.0;
+
+		                for (int j = l; j <= n; j++) {
+		                   //r = r + H[i][j] * H[j][n];
+		                	r = r + (om_matrix_getValue(&H,i,j) * om_matrix_getValue(&H,j,n));
+
+		                }
+		                //if (e[i] < 0.0) {
+		                if (om_vector_getValue(&e,i) < 0.0) {
+		                   z = w;
+		                   s = r;
+		                } else {
+		                   l = i;
+		                   //if (e[i] == 0.0) {
+		                   if (om_vector_getValue(&e,i) == 0.0) {
+
+		                      if (w != 0.0) {
+		                         //H[i][n] = -r / w;
+		                    	 om_matrix_setValue(&H,i,n,-r / w);
+		                      } else {
+		                         //H[i][n] = -r / (eps * norm);
+		                    	  om_matrix_setValue(&H,i,n,-r / (eps*norm));
+		                      }
+
+		                   // Solve real equations
+
+		                   } else {
+		                      //x = H[i][i+1];
+		                	  x = om_matrix_getValue(&H,i,i+1);
+
+		                      //y = H[i+1][i];
+		                	  y = om_matrix_getValue(&H,i+1,i);
+
+		                      //q = (d[i] - p) * (d[i] - p) + e[i] * e[i];
+		                	  q = (om_vector_getValue(&d,i) - p) * (om_vector_getValue(&d,i) - p) + (om_vector_getValue(&e,i) * om_vector_getValue(&e,i));
+
+		                      t = (x * s - z * r) / q;
+
+		                      //H[i][n] = t;
+		                      om_matrix_setValue(&H,i,n,t);
+
+		                      if (fabs(x) > fabs(z)) {
+		                         //H[i+1][n] = (-r - w * t) / x;
+		                    	  om_matrix_setValue(&H,i+1,n,(-r - w * t) / x);
+		                      } else {
+		                         //H[i+1][n] = (-s - y * t) / z;
+		                    	  om_matrix_setValue(&H,i+1,n,(-s - y * t) / z);
+		                      }
+		                   }
+
+		                   // Overflow control
+
+		                   //t = fabs(H[i][n]);
+		                   t = fabs(om_matrix_getValue(&H,i,n));
+
+		                   if ((eps * t) * t > 1.0) {
+		                      for (int j = i; j <= n; j++) {
+		                    	  //H[j][n] = H[j][n] / t;
+		                    	  om_matrix_setValue(&H,j,n,om_matrix_getValue(&H,j,n)/t);
+		                      }
+		                   }
+		                }
+		             }
+
+		          // Complex vector
+
+		          } else if (q < 0.0) {
+		             int l = n-1;
+
+		             // Last vector component imaginary so matrix is triangular
+
+		             //if (fabs(H[n][n-1]) > fabs(H[n-1][n])) {
+		             if (fabs(om_matrix_getValue(&H,n,n-1)) > fabs(om_matrix_getValue(&H,n-1,n))) {
+
+		            	 //H[n-1][n-1] = q / H[n][n-1];
+		            	 om_matrix_setValue(&H,n-1,n-1,q / om_matrix_getValue(&H,n,n-1));
+
+		            	 //H[n-1][n] = -(H[n][n] - p) / H[n][n-1];
+		            	 om_matrix_setValue(&H,n-1,n, (om_matrix_getValue(&H,n,n) - p) / om_matrix_getValue(&H,n,n-1));
+		             } else {
+		            	 double cdivr,cdivi;
+
+		                //cdiv(0.0,-H[n-1][n]  ,H[n-1][n-1]-p,q,&cdivr,&cdivi);
+		            	 cdiv(0.0,-om_matrix_getValue(&H,n-1,n) , om_matrix_getValue(&H,n-1,n-1) - p ,q,&cdivr,&cdivi);
+
+		            	 //H[n-1][n-1] = cdivr;
+		            	 om_matrix_setValue(&H,n-1,n-1,cdivr);
+
+		            	 //H[n-1][n] = cdivi;
+		            	 om_matrix_setValue(&H,n-1,n,cdivi);
+		             }
+
+		             //H[n][n-1] = 0.0;
+		             om_matrix_setValue(&H,n,n-1,0.0);
+
+		             //H[n][n] = 1.0;
+		             om_matrix_setValue(&H,n,n,1.0);
+
+		             for (int i = n-2; i >= 0; i--) {
+		                double ra,sa,vr,vi;
+		                ra = 0.0;
+		                sa = 0.0;
+		                for (int j = l; j <= n; j++) {
+		                   //ra = ra + H[i][j] * H[j][n-1];
+		                	ra = ra + (om_matrix_getValue(&H,i,j) * om_matrix_getValue(&H,j,n-1));
+
+		                	//sa = sa + H[i][j] * H[j][n];
+		                	sa = sa + (om_matrix_getValue(&H,i,j) * om_matrix_getValue(&H,j,n));
+		                }
+
+		                //w = H[i][i] - p;
+		                w = om_matrix_getValue(&H,i,i) - p;
+
+		                //if (e[i] < 0.0) {
+		                if (om_vector_getValue(&e,i) < 0.0) {
+		                   z = w;
+		                   r = ra;
+		                   s = sa;
+		                } else {
+		                   l = i;
+
+		                   //if (e[i] == 0) {
+		                   if (om_vector_getValue(&e,i) == 0.0) {
+		                	   double cdivr,cdivi;
+		                	  cdiv(-ra,-sa,w,q,&cdivr,&cdivi);
+
+		                	  //H[i][n-1] = cdivr;
+		                	  om_matrix_setValue(&H,i,n-1,cdivr);
+
+		                	  //H[i][n] = cdivi;
+		                	  om_matrix_setValue(&H,i,n,cdivi);
+		                   } else {
+
+		                      // Solve complex equations
+
+		                      //x = H[i][i+1];
+		                      x =  om_matrix_getValue(&H,i,i+1);
+
+		                	  //y = H[i+1][i];
+		                      y = om_matrix_getValue(&H,i+1,i);
+
+		                	  //vr = (d[i] - p) * (d[i] - p) + e[i] * e[i] - q * q;
+		                      vr = (om_vector_getValue(&d,i) - p) * (om_vector_getValue(&d,i) - p) + (om_vector_getValue(&e,i) * om_vector_getValue(&e,i)) - (q * q);
+
+		                	  //vi = (d[i] - p) * 2.0 * q;
+		                      vi = (om_vector_getValue(&d,i) - p) * 2.0 * q;
+
+
+		                	  if ( (vr == 0.0) & (vi == 0.0)) {
+		                         vr = eps * norm * (fabs(w) + fabs(q) + fabs(x) + fabs(y) + fabs(z));
+		                      }
+
+		                	  double cdivr,cdivi;
+		                	  cdiv(x*r-z*ra+q*sa,x*s-z*sa-q*ra,vr,vi,&cdivr,&cdivi);
+
+		                	  //H[i][n-1] = cdivr;
+		                	  om_matrix_setValue(&H,i,n-1,cdivr);
+
+		                	  //H[i][n] = cdivi;
+		                	  om_matrix_setValue(&H,i,n,cdivi);
+
+		                      if (fabs(x) > (fabs(z) + fabs(q))) {
+
+		                    	 //H[i+1][n-1] = (-ra - w * H[i][n-1] + q * H[i][n]) / x;
+		                    	 double tmp =  (-ra - w *om_matrix_getValue(&H,i,n-1) + q * om_matrix_getValue(&H,i,n)) / x;
+		                    	 om_matrix_setValue(&H,i+1,n-1,tmp);
+
+		                         //H[i+1][n] = (-sa - w * H[i][n] - q * H[i][n-1]) / x;
+		                    	 tmp =  (-sa - w *om_matrix_getValue(&H,i,n) + q * om_matrix_getValue(&H,i,n-1)) / x;
+		                    	 om_matrix_setValue(&H,i+1,n,tmp);
+
+		                      } else {
+
+		                         //cdiv(-r-y*H[i][n-1],-s-y*H[i][n],z,q,&cdivr,&cdivi);
+		                    	 cdiv(-r - y * om_matrix_getValue(&H,i,n-1) ,-s-y * om_matrix_getValue(&H,i,n),z,q,&cdivr,&cdivi);
+
+		                    	 //H[i+1][n-1] = cdivr;
+			                	 om_matrix_setValue(&H,i+1,n-1,cdivr);
+
+			                	 //H[i+1][n] = cdivi;
+			                	 om_matrix_setValue(&H,i+1,n,cdivi);
+		                      }
+		                   }
+
+		                   // Overflow control
+
+		                   //t = Math.max(fabs(H[i][n-1]),fabs(H[i][n]));
+		                   t = fabs(om_matrix_getValue(&H,i,n-1)) > fabs(om_matrix_getValue(&H,i,n)) ? fabs(om_matrix_getValue(&H,i,n-1)) : fabs(om_matrix_getValue(&H,i,n));
+
+
+		                   if ((eps * t) * t > 1) {
+		                      for (int j = i; j <= n; j++) {
+		                         //H[j][n-1] = H[j][n-1] / t;
+		                    	 om_matrix_setValue(&H,j,n-1,om_matrix_getValue(&H,j,n-1)/t);
+
+		                    	 //H[j][n] = H[j][n] / t;
+		                    	 om_matrix_setValue(&H,j,n,om_matrix_getValue(&H,j,n)/t);
+		                      }
+		                   }
+		                }
+		             }
+		          }
+		       }
+
+		       // Vectors of isolated roots
+
+		       for (int i = 0; i < nn; i++) {
+		          if ( (i < low) | (i > high) ) {
+		             for (int j = i; j < nn; j++) {
+		                //V[i][j] = H[i][j];
+		            	om_matrix_setValue(&V,i,j,om_matrix_getValue(&H,i,j));
+		             }
+		          }
+		       }
+
+		       // Back transformation to get eigenvectors of original matrix
+
+		       for (int j = nn-1; j >= low; j--) {
+		          for (int i = low; i <= high; i++) {
+		             z = 0.0;
+		             //for (int k = low; k <= min(j,high); k++) {
+		             for (int k = low; k <= (j < high ? j : high); k++) {
+		                //z = z + V[i][k] * H[k][j];
+		            	 z = z + (om_matrix_getValue(&V,i,k) * om_matrix_getValue(&H,k,j));
+		             }
+		             //V[i][j] = z;
+		             om_matrix_setValue(&V,i,j,z);
+		          }
+		       }
+		
+
+		// allocation of eigen values and eigen vector
+		(*eigen_values) = (double*)malloc(matrix->_columns*sizeof(double));
+		(*eigen_vectors) = (omVector*)malloc(matrix->_columns*sizeof(omVector));
+
+		for(int l=0;l<matrix->_columns;++l){
+
+			//eigen values are the diagonal values of matrix D
+			(*eigen_values)[l] = om_vector_getValue(&d,l);
+
+			//eigen vector are the column values of matrix P
+			om_vector_create(&(*eigen_vectors)[l],matrix->_columns);
+			om_matrix_getColumn(&V,l,&(*eigen_vectors)[l]);
+
+		}
+
+		om_vector_free(&o);
+		om_vector_free(&d);
+		om_vector_free(&e);
+
+		om_matrix_free(&H);
+		om_matrix_free(&V);
+
+
+
 	}
 
+	// test
+	/*/
+	for(int l=0;l<matrix->_columns;l++){
+		omMatrix lL;
 
-	// allocation of eigen values and eigen vector
-	(*eigen_values) = (double*)malloc(matrix->_columns*sizeof(double));
-	(*eigen_vectors) = (omVector*)malloc(matrix->_columns*sizeof(omVector));
+		om_matrix_createIdentity(&lL,3);
+		om_operator_matrix_scal_mul(&lL,(*eigen_values)[l],&lL);
+		om_operator_matrix_sub(matrix,&lL,&lL);
 
-	for(int l=0;l<matrix->_columns;++l){
+		omVector u_test_a;
+		omVector u_test_b;
 
-		//eigen values are the diagonal values of matrix D
-		(*eigen_values)[l] = om_matrix_getValue(&D,l,l);
+		om_vector_create(&u_test_a,3);
+		om_vector_create(&u_test_b,3);
 
-		//eigen vector are the column values of matrix P
-		om_vector_create(&(*eigen_vectors)[l],4);
-		om_matrix_getColumn(&P,l,&(*eigen_vectors)[l]);
+		om_operator_matrix_vector_mul(matrix,&(*eigen_vectors)[l],&u_test_a);
+		om_operator_vector_scal_mul(&(*eigen_vectors)[l],(*eigen_values)[l],&u_test_b);
 
+		printf("\n\nl = %d values test a = ",l) ;
+		om_vector_display(&u_test_a);
+
+		printf("l = %d values test b = ",l) ;
+		om_vector_display(&u_test_b);
+
+		printf("l = %d det(N - lL) = %f\n",l,om_matrix_determinant(&lL));
+		printf("l = %d lambda = %f\n",l,(*eigen_values)[l]);
+
+		om_matrix_free(&lL);
+		om_vector_free(&u_test_b);
+		om_vector_free(&u_test_a);
 	}
+	//*/
 
-	// free memory
-	om_matrix_free(&D);
-	om_matrix_free(&Q);
-	om_matrix_free(&R);
-	om_matrix_free(&P);
+
 
 
 
@@ -443,9 +1649,6 @@ void om_matrix_squareRoot(struct omMatrix *matrix,struct omMatrix *m_sqrt,int N)
 	// if the matrix is square
 	if(matrix->_rows == matrix->_columns){
 
-		// allocation
-		//om_matrix_create(m_sqrt,matrix->_rows,matrix->_columns);
-
 		// if the matrix is (1 x 1)
 		if(matrix->_rows == 1){
 
@@ -491,7 +1694,6 @@ void om_matrix_squareRoot(struct omMatrix *matrix,struct omMatrix *m_sqrt,int N)
 			om_matrix_create(&squareD,D._rows,D._columns);
 			om_matrix_create(&S_tmp,matrix->_rows,matrix->_rows);
 
-
 			// initialization
 			// D = A
 			om_matrix_clone(matrix,&D);
@@ -517,18 +1719,10 @@ void om_matrix_squareRoot(struct omMatrix *matrix,struct omMatrix *m_sqrt,int N)
 
 			}
 
-			/*
-			printf("D\n");
-			om_matrix_display(&D);
-			printf("P\n");
-			om_matrix_display(&P);
-			printf("\n");
-			*/
-
 			// as D is a diagonal matrix
 			// sqrt(D) = ( sqrt(d_{ii}) );
 			for(int i=0;i< squareD._rows;i++)
-				om_matrix_setValue(&squareD,i,i,sqrt(om_matrix_getValue(&D,i,i)));
+				om_matrix_setValue(&squareD, i, i, sqrt(om_matrix_getValue(&D, i, i)));
 
 			// get inverse of P
 			om_matrix_inverse(&P,&P_inv);
@@ -536,6 +1730,9 @@ void om_matrix_squareRoot(struct omMatrix *matrix,struct omMatrix *m_sqrt,int N)
 			// sqrt(A) = P*sqrt(D)*P^{-1}
 			om_operator_matrix_mul(&P,&squareD,&S_tmp);
 			om_operator_matrix_mul(&S_tmp,&P_inv,m_sqrt);
+
+
+
 
 			// free memory
 			om_matrix_free(&P);
@@ -577,7 +1774,6 @@ int om_matrix_containsNaN(struct omMatrix *matrix){
 	while(bool != 1 && i < matrix->_rows){
 		while(bool != 1 && j < matrix->_columns){
 
-
 			if(isnan(matrix->_values[i][j]))
 				bool = 1;
 
@@ -601,7 +1797,7 @@ int om_matrix_isNull(struct omMatrix *matrix){
 	// test if at least one value is different than 0.0
 	while(bool != 0 && i < matrix->_rows){
 		while(bool != 0 && j < matrix->_columns){
-			if(abs(matrix->_values[i][j]) > 0.0)
+			if(fabs(matrix->_values[i][j]) > 0.0)
 				bool = 0;
 
 			j++;
@@ -783,7 +1979,7 @@ void om_matrix_factorizationLU(struct omMatrix *matrix,struct omMatrix *L,struct
 		 om_matrix_create(&A,n,n);
 		 om_matrix_clone(matrix,&A);
 
-
+		 //*/
 		 for(int k=0;k<n;k++){
 			 om_matrix_setValue(L,k,k,1.0);
 
@@ -797,6 +1993,63 @@ void om_matrix_factorizationLU(struct omMatrix *matrix,struct omMatrix *L,struct
 			 for(int j=k;j<n;j++)
 				 om_matrix_setValue(U,k,j,om_matrix_getValue(&A,k,j));
 		 }
+		 /*/
+		for(int j=0; j<n; j++)
+		{
+			for(int i=0; i<n; i++)
+			{
+			if(i <= j)
+			{
+				//U[i][j]=A[i][j];
+				om_matrix_setValue(U,i,j,om_matrix_getValue(&A,i,j));
+
+				for(int k=0; k<i-1; k++){
+					//U[i][j] -= L[i][k]*U[k][j];
+					double tmp = om_matrix_getValue(L,i,k)*om_matrix_getValue(U,k,j);
+					om_matrix_setValue(U,i,j,om_matrix_getValue(U,i,j) - tmp);
+
+				}
+
+				if(i==j){
+					//L[i][j]=1;
+					om_matrix_setValue(L,i,j,1.0);
+				}
+
+				else{
+					//L[i][j]=0;
+					om_matrix_setValue(L,i,j,0.0);
+				}
+
+
+			}
+			else
+			{
+
+				//L[i][j]=A[i][j];
+				om_matrix_setValue(L,i,j,om_matrix_getValue(&A,i,j));
+
+				for(int k=0; k <= j-1; k++){
+
+					//L[i][j]-= L[i][k]*U[k][j];
+					double tmp = om_matrix_getValue(L,i,k)*om_matrix_getValue(U,k,j);
+					om_matrix_setValue(L,i,j,om_matrix_getValue(L,i,j) - tmp);
+
+				}
+
+				if(om_matrix_getValue(U,j,j) == 0.0){
+					printf("WTF\n");
+				}
+
+				//L[i][j]/=U[j][j];
+				om_matrix_setValue(L,i,j,om_matrix_getValue(L,i,j)/om_matrix_getValue(U,j,j));
+
+				//U[i][j]=0;
+				om_matrix_setValue(U,i,j,0.0);
+			}
+		}
+	}
+
+		 //*/
 
 		 // free memory
 		 om_matrix_free(&A);
@@ -1056,6 +2309,12 @@ void om_quat_display(struct omQuaternion *quat){
 	printf(", %.*f ",numberofdecimals,quat->_qy);
 	printf(", %.*f ]\n",numberofdecimals,quat->_qz);
 
+}
+
+
+/* display a quaternion into the terminal */
+void om_quat_clone(struct omQuaternion *in,struct omQuaternion *out){
+	om_quat_create(out,in->_qw,in->_qx,in->_qy,in->_qz);
 }
 
 ///////////////////////////////////////////////////////
@@ -1489,7 +2748,7 @@ double simpsonadapt(double (*fnct)(double), double a, double b, double mid, doub
         mid2 = (mid + b)/2.0; fmid2 = (*fnct)(mid2);
         s1 = (fa+4.0*fmid+fb)*h/6.0;
         s2 = (fa+4.0*fmid1+2.0*fmid+4.0*fmid2+fb)*h/12.0;
-        if ( h<=maxh && absval(s2-s1)<= 15.0*epsilon )
+        if ( h<=maxh && fabs(s2-s1)<= 15.0*epsilon )
         {
             integr = s2;
             *success = 1;
@@ -1516,3 +2775,54 @@ double simpsonadapt(double (*fnct)(double), double a, double b, double mid, doub
     }
      return integr;
 }
+
+// Complex scalar division.
+void cdiv(double xr, double xi, double yr, double yi,double* cdivr,double* cdivi) {
+      double r,d;
+      if (fabs(yr) > fabs(yi)) {
+         r = yi/yr;
+         d = yr + r*yi;
+         (*cdivr) = (xr + r*xi)/d;
+         (*cdivi) = (xi - r*xr)/d;
+      } else {
+         r = yr/yi;
+         d = yi + r*yr;
+         (*cdivr) = (r*xr + xi)/d;
+         (*cdivi) = (r*xi - xr)/d;
+      }
+   }
+
+
+
+
+double om_maths_erfinv( double y)
+{
+        double x,z,num,dem; /*working variables */
+        /* coefficients in rational expansion */
+        double a[4]={ 0.886226899, -1.645349621,  0.914624893, -0.140543331};
+        double b[4]={-2.118377725,  1.442710462, -0.329097515,  0.012229801};
+        double c[4]={-1.970840454, -1.624906493,  3.429567803,  1.641345311};
+        double d[2]={ 3.543889200,  1.637067800};
+        if(fabs(y) > 1.0) return (atof("NaN"));  /* This needs IEEE constant*/
+        if(fabs(y) == 1.0) return((copysign(1.0,y))*DBL_MAX);
+        if( fabs(y) <= CENTRAL_RANGE )
+        {
+                z = y*y;
+                num = (((a[3]*z + a[2])*z + a[1])*z + a[0]);
+                dem = ((((b[3]*z + b[2])*z + b[1])*z +b[0])*z + 1.0);
+                x = y*num/dem;
+        }
+        else if( (fabs(y) > CENTRAL_RANGE) && (fabs(y) < 1.0) )
+        {
+                z = sqrt(-log((1.0-fabs(y))/2.0));
+                num = ((c[3]*z + c[2])*z + c[1])*z + c[0];
+                dem = (d[1]*z + d[0])*z + 1.0;
+                x = (copysign(1.0,y))*num/dem;
+        }
+        /* Two steps of Newton-Raphson correction */
+        x = x - (erf(x) - y)/( (2.0/sqrt(PI))*exp(-x*x));
+        x = x - (erf(x) - y)/( (2.0/sqrt(PI))*exp(-x*x));
+
+        return(x);
+}
+

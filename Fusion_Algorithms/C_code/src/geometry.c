@@ -25,7 +25,7 @@ void om_rotate_vector_quaternion(struct omQuaternion *q,struct omVector *in,stru
 	om_quat_inverse(q,&q_inv);
 
 	// transform the vector into quaternion
-	om_quat_create(&q_vec,0.0,in->_values[0],in->_values[1],in->_values[2]);
+	om_quat_create(&q_vec,0.0,om_vector_getValue(in,0),om_vector_getValue(in,1),om_vector_getValue(in,2));
 
 	// compute v_b = imaginary( q^{-1} * q_va * q)
 	om_operator_quat_mul(&q_inv,&q_vec,&q_tmp);
@@ -77,7 +77,7 @@ void om_kinematics_quaternion(struct omQuaternion *q_t,struct omVector *angular_
 	om_operator_matrix_vector_mul(&Omega,&q_t_vec,&q_tp1_vec);
 
 	// set output
-	om_quat_create(q_tp1,q_tp1_vec._values[3],q_tp1_vec._values[0],q_tp1_vec._values[1],q_tp1_vec._values[2]);
+	om_quat_create(q_tp1,om_vector_getValue(&q_tp1_vec,3),om_vector_getValue(&q_tp1_vec,0),om_vector_getValue(&q_tp1_vec,1),om_vector_getValue(&q_tp1_vec,2));
 
 	// free memory
 	om_matrix_free(&Omega);
@@ -292,6 +292,9 @@ void om_convert_axisAngle2matrix(struct omAxisAngle *in,struct omMatrix *out){
 	om_operator_matrix_scal_mul(&S,sin_a,&S);
 	om_operator_matrix_add(&S,&S_tmp,out);
 	om_operator_matrix_add(out,&I,out);
+
+	//timestamp,xAccelerometer,yAccelerometer,zAccelerometer,xAngularRate,yAngularRate,zAngularRate,roll,pitch,yaw,xMagnetometer,yMagnetometer,zMagnetometer
+
 
 	// free memory
 	om_matrix_free(&I);

@@ -11,13 +11,13 @@
 #define OM_H_
 
 
-#include "geometry.h"
 
+#include "geometry.h"
 
 extern omVector ned_magnetic_field;
 extern omVector ned_gravity;
-
-
+extern omVector ned_magnetic_field_normalized;
+extern omVector ned_gravity_normalized;
 
 
 ///////////////////////////////////////////////////////
@@ -33,10 +33,11 @@ typedef struct omIMUParams{
 	double variance_magnetometer;
 
 	omVector bias_accelerometer;
-	omVector bias_gyroscope;
 	omVector bias_magnetometer;
+	omVector bias_gyroscope;
 
 }omIMUParams;
+
 
 typedef struct omIMUData{
 
@@ -235,32 +236,24 @@ void om_mekf_free(void *filter);
 ///////////////////////////////////////////////////////
 
 
+///////////////////////////////////////////////////////
+/////           NonLinearFilter REQUEST           /////
+///////////////////////////////////////////////////////
+
+
 typedef struct omNonLinearFilter_REQUEST{
 
 	double _seed;
-	double _lambda_m_k;
-	double _mu_k;
 	double _m_k;
+
+	int _n;
+	int _index;
+	int _bool_start;
 
 	omQuaternion _q_est;
 
-	omMatrix _P_k;
-	omMatrix _P_k_pred;
-
 	omMatrix _K_k;
 	omMatrix _K_k_pred;
-	omMatrix _d_K_k;
-
-	omMatrix _d_B_k;
-	omMatrix _d_S_k;
-	omVector _d_z_k;
-	double _d_m_k;
-	double _d_sigma_k;
-
-
-	omMatrix _R;
-	omMatrix _Q;
-
 
 	double* _a;
 	omVector* _r;
@@ -275,9 +268,6 @@ void om_request_process(struct omSensorFusionManager *manager,void *filter);
 void om_request_preprocess(struct omSensorFusionManager *manager,omNonLinearFilter_REQUEST *filter);
 void om_request_prediction(struct omSensorFusionManager *manager,omNonLinearFilter_REQUEST *filter);
 void om_request_update(struct omSensorFusionManager *manager,omNonLinearFilter_REQUEST *filter);
-
-void om_request_computeR(struct omSensorFusionManager *manager,omNonLinearFilter_REQUEST *filter);
-void om_request_computeQ(struct omSensorFusionManager *manager,omNonLinearFilter_REQUEST *filter);
 
 void om_request_free(void *filter);
 
@@ -395,6 +385,9 @@ void om_cfa_free(void *filter);
 typedef struct omNonLinearFilter_QUEST{
 
 	omQuaternion _q_est;
+	int _n;
+	int _index;
+	int _bool_start;
 
 	double* _a;
 	omVector* _r;
@@ -405,10 +398,65 @@ typedef struct omNonLinearFilter_QUEST{
 
 void om_quest_initialization(struct omSensorFusionManager *manager,void *filter);
 void om_quest_process(struct omSensorFusionManager *manager,void *filter);
+void om_quest_preprocess(struct omSensorFusionManager *manager,omNonLinearFilter_QUEST *filter);
 void om_quest_prediction(struct omSensorFusionManager *manager,omNonLinearFilter_QUEST *filter);
 void om_quest_update(struct omSensorFusionManager *manager,omNonLinearFilter_QUEST *filter);
 
 void om_quest_free(void *filter);
+
+
+///////////////////////////////////////////////////////
+/////           NonLinearFilter PF                /////
+///////////////////////////////////////////////////////
+
+typedef struct omNonLinearFilter_EnKPF{
+
+	double _seed;
+	omQuaternion _q_est;
+	omQuaternion _q_pred;
+
+
+	double _k_mag;
+	double _k_acc;
+	double _k_I;
+	double _k_P;
+
+	double _sum_w;
+	double _sum_n_eff;
+
+	double _n;
+	double _threeshold;
+	double _f;
+	double _h;
+	double _lambda;
+
+	int _resample;
+
+	omMatrix _R;
+	omMatrix _L;
+
+	omVector _x_k;
+
+
+	double* _particle_w;
+	omVector* _particle_wn;
+	omVector* _particle_x;
+	omVector* _particle_z;
+	omQuaternion* _particle_q;
+
+
+}omNonLinearFilter_EnKPF;
+
+void om_enkpf_initialization(struct omSensorFusionManager *manager,void *filter);
+void om_enkpf_process(struct omSensorFusionManager *manager,void *filter);
+void om_enkpf_prediction(struct omSensorFusionManager *manager,omNonLinearFilter_EnKPF *filter);
+void om_enkpf_update(struct omSensorFusionManager *manager,omNonLinearFilter_EnKPF *filter);
+void om_enkpf_resampling(omNonLinearFilter_EnKPF *filter);
+void om_enkpf_swap(omNonLinearFilter_EnKPF *filter,int i,int j);
+void om_enkpf_quicksort(omNonLinearFilter_EnKPF *filter,int left, int right);
+
+void om_enkpf_free(void *filter);
+
 
 
 

@@ -37,25 +37,25 @@
 /////            Global constants                 /////
 ///////////////////////////////////////////////////////
 
+#define CENTRAL_RANGE 0.7
+
 // PI Variable
 #define PI 3.14159265359
 
-// Time variation
-#define DELTA_T 0.01
-
 // Gravitational constant.
-#define G 9.81
+#define G 9.80665
 
 // Convert radian to degree
 #define RAD_TO_DEG 180.0/PI
 
 // Convert degree to radian
-#define DEG_TO_RAD PI/180
+#define DEG_TO_RAD PI/180.0
 
 #define EPSILON 0.000000001
 
-#define absval(x) ((x) >= 0.0 ? (x) : (-(x)))
 
+// Time variation
+extern double DELTA_T;
 
 ///////////////////////////////////////////////////////
 /////             Vector class                    /////
@@ -119,6 +119,16 @@ void om_vector_setValues(struct omVector *vector,int size,...);
  */
 double om_vector_getValue(struct omVector *vector,int index);
 
+
+/**
+ * \fn double om_vector_getValue(struct omVector *vector,int index)
+ * \brief get a value of a vector
+ * \param vector the vector
+ * \param index the index of the value to get
+ *
+ */
+int om_vector_getLength(struct omVector *vector);
+
 /**
  * \fn double om_vector_rms(struct omVector *vector)
  * \brief get the root mean square of the vector
@@ -152,13 +162,55 @@ void om_vector_normalize(struct omVector *vector);
 void om_vector_display(struct omVector *vector);
 
 /**
- * \fn void om_vector_free(struct omVector *vector)
+ * \fn double om_vector_mean(struct omVector *vector)
  * \brief display in a console the values of the vector
+ * \param vector the vector
+ *
+ */
+double om_vector_mean(struct omVector *vector);
+
+/**
+ * \fn double om_vector_median(struct omVector *vector)
+ * \brief display in a console the values of the vector
+ * \param vector the vector
+ *
+ */
+double om_vector_median(struct omVector *vector);
+
+
+
+/**
+ * \fn void om_vector_free(struct omVector *vector)
+ * \brief free the memory allocated by the vector
+ * \param vector the vector
+ *
+ */
+double om_vector_interpolation(omVector *x,omVector *y,double xq);
+
+
+/**
+ * \fn void om_vector_free(struct omVector *vector)
+ * \brief free the memory allocated by the vector
  * \param vector the vector
  *
  */
 void om_vector_free(struct omVector *vector);
 
+/**
+ * \fn void om_vector_crossProduct(struct omVector *vector)
+ * \brief free the memory allocated by the vector
+ * \param vector the vector
+ *
+ */
+void om_vector_crossProduct(struct omVector *a,struct omVector *b,struct omVector *cross);
+
+/**
+ * \fn void om_vector_dotProduct(struct omVector *vector)
+ * \brief free the memory allocated by the vector
+ * \param vector the vector
+ *
+ */
+double om_vector_dotProduct(struct omVector *a,struct omVector *b);
 
 ///////////////////////////////////////////////////////
 /////             Matrix class                    /////
@@ -228,6 +280,19 @@ void om_matrix_getRow(struct omMatrix *matrix,int row,struct omVector *out);
  *
  */
 void om_matrix_setValue(struct omMatrix *matrix,int i,int j,double value);
+
+
+/**
+ *
+ */
+void om_matrix_convolution2D(omMatrix *A,omMatrix *B,omMatrix *C);
+
+
+/**
+ *
+ */
+void om_matrix_convolution2D_valid(omMatrix *A,omMatrix *B,omMatrix *C);
+
 
 /**
  * \fn void om_matrix_setColumn(struct omMatrix *matrix,int column,struct omVector *in)
@@ -301,12 +366,23 @@ void om_matrix_squareRoot(struct omMatrix *matrix,struct omMatrix *m_sqrt,int N)
 int om_matrix_isSquare(struct omMatrix *matrix);
 
 /**
+ * \fn int om_matrix_isSquare(struct omMatrix *matrix)
+ * \brief determine is a matrix is square or not. The function will test if the number of rows is equals to the number od
+ * \param matrix the matrix
+ * \return 1 if the matrix is square
+ */
+int om_matrix_isSymmetric(struct omMatrix *matrix);
+
+
+
+/**
  * \fn int om_matrix_containsNaN(struct omMatrix *matrix)
  * \brief determine is a matrix is square or not. The function will test if the number of rows is equals to the number od
  * \param matrix the matrix
  * \return 1 if the matrix is square
  */
 int om_matrix_containsNaN(struct omMatrix *matrix);
+
 int om_matrix_isNull(struct omMatrix *matrix);
 
 void om_matrix_submatrix(struct omMatrix *matrix,struct omMatrix *submatrix,int row, int column,int n, int m);
@@ -349,7 +425,7 @@ void om_quat_imaginary(struct omQuaternion *quat,struct omVector *imaginary);
 void om_quat_normalize(struct omQuaternion *quat);
 double om_quat_norm(struct omQuaternion *quat);
 void om_quat_display(struct omQuaternion *quat);
-
+void om_quat_clone(struct omQuaternion *in,struct omQuaternion *out);
 
 ///////////////////////////////////////////////////////
 /////              Operators                      /////
@@ -379,17 +455,18 @@ void om_operator_quat_scal_div(struct omQuaternion *a,double b,struct omQuaterni
 /////                Divers                       /////
 ///////////////////////////////////////////////////////
 
+double om_maths_erfinv( double y);
+
+
 void om_convert_vector2matrix(struct omVector* a, struct omMatrix* out);
 
-void om_vector_crossProduct(struct omVector *a,struct omVector *b,struct omVector *cross);
-double om_vector_dotProduct(struct omVector *a,struct omVector *b);
 double om_quat_dotProduct(struct omQuaternion *a,struct omQuaternion *b);
 
 void om_solvingLinearSystem(struct omMatrix *A,struct omVector *b,struct omVector *x);
 void om_solvingLinearSystemLU(struct omMatrix *L,struct omMatrix *U,struct omVector *b,struct omVector *x);
 
 void om_least_square_method (struct omMatrix *pX,struct omVector *pY,struct omVector *pBeta);
-
 double simpsonadapt(double (*fnct)(double), double a,double b, double mid, double epsilon, double maxh,double minh, double fa, double fb, double fmid, double *bada, double *badb,int *success);
+void cdiv(double xr, double xi, double yr, double yi,double* cdivr,double* cdivi);
 
 #endif /* ALGEBRA_H_ */
