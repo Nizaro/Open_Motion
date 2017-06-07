@@ -16,13 +16,9 @@
 #include <sys/types.h>
 #include <openmotion/om.h>
 
-
-
 /////////////////////////////
 //   FILE READER Manager   //
 /////////////////////////////
-
-
 
 /*
  * File reader
@@ -105,8 +101,6 @@ void lr_free(struct line_reader *lr){
 	lr->siz = 0;
 }
 
-
-
 /*
  * Split a string into a array of string according to a delimitor
  */
@@ -158,10 +152,17 @@ char** str_split(char* a_str, const char a_delim)
     return result;
 }
 
-
 /////////////////////////////
 //   OPENMOTION EXAMPLE    //
 /////////////////////////////
+
+/*
+ * The different data fusion algorithm present in the library
+ */
+typedef enum MethodType{
+    MEKF,REQUEST,QUEST,USQUE,CGO,PF,GDOF,CFA,CSP
+}MethodType;
+
 
 
 /*
@@ -204,6 +205,9 @@ double calculErrorOrientation(omQuaternion *q_real,omQuaternion *q_est){
 	omQuaternion dq;
 	omVector dp;
 
+	// allocation
+	om_vector_create(&dp,3);
+
 	// compute dq = q_real*q_est.inverse();
 	om_quat_inverse(q_est,&q_est_inv);
 	om_operator_quat_mul(q_real,&q_est_inv,&dq);
@@ -213,91 +217,56 @@ double calculErrorOrientation(omQuaternion *q_real,omQuaternion *q_est){
 	om_quat_imaginary(&dq,&dp);
 	om_operator_vector_scal_mul(&dp,tmp,&dp);
 
-	// return the rms attitude error
-	return om_vector_rms(&dp);
+	// compute the rms attitude error
+	double rms = om_vector_rms(&dp);
+
+	// free memory
+	om_vector_free(&dp);
+
+	// return the error
+	return rms;
 
 }
-
 
 
 /*
- * Transform the magnetic field into an estimate of the geographic north
+ * initialization of the gravity vector and magnetic field vector in the reference frame North-East-Down
  */
-void modification_magneto(struct omVector *input,struct omVector* output,struct omQuaternion *q_est){
+void init_ned(){
 
-	// variables
-	omQuaternion q_y;
-	omQuaternion q_z;
-	omQuaternion q_y_inv;
-	omQuaternion q_z_inv;
-	omMatrix M;
-	omVector tmp;
-	omVector tmp2;
-	omVector tmp3;
-	omAxisAngle aa_y;
-	omAxisAngle aa_z;
+    // magnetic field in singapore ( according to https://www.ngdc.noaa.gov/geomag-web/ )
+    om_vector_create(&ned_magnetic_field,3,40.8101,0.1609,10.2636);
+    om_vector_create(&ned_magnetic_field_normalized,3);
+    om_vector_clone(&ned_magnetic_field, &ned_magnetic_field_normalized);
+    om_vector_normalize(&ned_magnetic_field_normalized);
 
-	// represents the declinaison and the inclinaison of the magnetic field.
-	// this values works in Singapore
-	// go see http://www.ngdc.noaa.gov/geomag-web/ for more details
-	aa_y._angle = -14.36*DEG_TO_RAD;
-	aa_z._angle = 0.23*DEG_TO_RAD;
-
-	//allocation
-	om_vector_create(&aa_y._axis,3,0.0,1.0,0.0);
-	om_vector_create(&aa_z._axis,3,0.0,0.0,1.0);
-	om_matrix_create(&M,3,3);
-	om_convert_quaternion2matrix(q_est,&M);
-	om_vector_create(&tmp,3,0.0,0.0,0.0);
-	om_vector_create(&tmp2,3,0.0,0.0,0.0);
-	om_vector_create(&tmp3,3,0.0,0.0,0.0);
-	om_vector_create(output,3,0.0,0.0,0.0);
-
-	// convert the declinaison and inclinaison into quaternion
-	om_convert_axisAngle2quaternion(&aa_y,&q_y);
-	om_convert_axisAngle2quaternion(&aa_z,&q_z);
-
-	// get the inverse
-	om_quat_inverse(&q_y,&q_y_inv);
-	om_quat_inverse(&q_z,&q_z_inv);
-
-	// transform the magnetic field defined in the reference frame relative to the IMU into the North-East-Down(NED) frame
-	om_operator_matrix_vector_mul(&M,input,&tmp);
-
-	// correct the magnetic field to get the geographic north defined in the NED frame
-	om_rotate_vector_quaternion(&q_z_inv,&tmp,&tmp2);
-	om_rotate_vector_quaternion(&q_y_inv,&tmp2,&tmp3);
-
-	// transform the geographic north defined in in the NED frame into the reference frame relative to the IMU
-	om_rotate_vector_quaternion(q_est,&tmp3,output);
-
-	// free memory
-	om_matrix_free(&M);
-	om_vector_free(&tmp);
-	om_vector_free(&tmp2);
-	om_vector_free(&tmp3);
-	om_vector_free(&aa_y._axis);
-	om_vector_free(&aa_z._axis);
-
+    // gravity vector	
+    om_vector_create(&ned_gravity,3,0.0,0.0,G);
+    om_vector_create(&ned_gravity_normalized,3,0.0,0.0,1.0);
 
 }
-
 
 
 /*
  * initialization of the manager components and the nonlinear filter
  */
-void init_manager(omSensorFusionManager *manager,void* filter){
+void init_manager(omSensorFusionManager *manager,void* filter, MethodType type){
+
+    // time gap between 2 sensor recording (here the sensor rate is 33hz)
+    DELTA_T = 0.03;    
+
+    // initialization of the reference frame
+    init_ned();
 
     // allocation for sensor bias
     om_vector_create(&manager->imu_params.bias_accelerometer,3,0.0,0.0,0.0);
     om_vector_create(&manager->imu_params.bias_magnetometer,3,0.0,0.0,0.0);
-    om_vector_create(&manager->imu_params.bias_gyroscope,3,0.00031623,0.00031623,0.00031623);
+    om_vector_create(&manager->imu_params.bias_gyroscope,3,0.000031623,0.000031623,0.000031623);
 
     // temporary values for sensor variance (this won't work on every device)
-    manager->imu_params.variance_accelerometer = 0.05;
-    manager->imu_params.variance_magnetometer = 0.023;
-    manager->imu_params.variance_gyroscope = 0.0031623;
+    manager->imu_params.variance_accelerometer = 0.75;
+    manager->imu_params.variance_magnetometer = 0.075;
+    manager->imu_params.variance_gyroscope = 0.031623;
 
     // quaternion representation has been chosen here
     manager->type = Quarternion;
@@ -307,11 +276,83 @@ void init_manager(omSensorFusionManager *manager,void* filter){
     om_vector_create(&manager->imu_data.data_magnetometer,3);
     om_vector_create(&manager->imu_data.data_gyroscope,3);
 
-    // set the appropriate function
-    manager->initialization_filter = &om_usque_initialization;
-    manager->process_filter = &om_usque_process;
-    manager->free_filter = &om_usque_free;
+    // set the appropriate function according to the type of sensor fusion algorithm chosen
+    switch(type){
 
+	// UnScented Quaternion Estimator 
+	// (ref : J.L Crassidism F.L Markley "Unscented filtering for spacecraft attitude  estimation" 2003)
+	case USQUE:
+	    manager->initialization_filter = &om_usque_initialization;
+	    manager->process_filter = &om_usque_process;
+	    manager->free_filter = &om_usque_free;
+   	    break;
+
+	// Multiplicatif Extended Kalman Filter
+	// (ref : F.L Markley "Attitude Error Representation for Kalman Filtering" 2003)
+	case MEKF:
+	    manager->initialization_filter = &om_mekf_initialization;
+	    manager->process_filter = &om_mekf_process;
+	    manager->free_filter = &om_mekf_free;
+   	    break;
+
+	// Constrained Sigma Point
+	// (ref : T. BRAUD, N. OUARTI "Constrained Sigma Points fo Attitude Estimation" 2016)
+	case CSP:
+	    manager->initialization_filter = &om_csp_initialization;
+	    manager->process_filter = &om_csp_process;
+	    manager->free_filter = &om_csp_free;
+   	    break;
+
+	// QUaternion ESTimator
+	// (ref : M. D SHUSTER, S. OH "Three-Axis attitude determination from vector observation" 2012)
+	case QUEST:
+	    manager->initialization_filter = &om_quest_initialization;
+	    manager->process_filter = &om_quest_process;
+	    manager->free_filter = &om_quest_free;
+   	    break;
+
+	// REcursive QUaternion ESTimator
+	// (ref : I. Y BAR-ITZHACK "REQUEST-A  recursive  QUEST  algorithm  for sequential attitude determination" 1996)
+	case REQUEST:
+	    manager->initialization_filter = &om_request_initialization;
+	    manager->process_filter = &om_request_process;
+	    manager->free_filter = &om_request_free;
+   	    break;
+
+	// Constant Gain Observer
+	// (ref : R. MAHONY, T. HAMEL, and J.-M. PFLIMLIN,  "Nonlinear complementary filters  on  the  special  orthogonal  group" 2008)
+	case CGO:
+	    manager->initialization_filter = &om_cgo_initialization;
+	    manager->process_filter = &om_cgo_process;
+	    manager->free_filter = &om_cgo_free;
+   	    break;
+
+	// Complementary Filter Algorithm
+	// (ref : H. FOURATI  "Heterogeneous data fusion algorithm for pedestrian navigation  via  foot-mounted  inertial  measurement  unit  and  complementary filter" 1996)
+	case CFA:
+	    manager->initialization_filter = &om_cfa_initialization;
+	    manager->process_filter = &om_cfa_process;
+	    manager->free_filter = &om_cfa_free;
+   	    break;
+
+	// Gradient Descent Orientation Filter
+	// (ref : S. O. MADGWICK, A. J. HARRISON, and R. VAIDYANATHAN, “Estimation of imu and marg orientation using a gradient descent algorithm")
+	case GDOF:
+	    manager->initialization_filter = &om_gdof_initialization;
+	    manager->process_filter = &om_gdof_process;
+	    manager->free_filter = &om_gdof_free;
+   	    break;
+
+	// Particle Filter
+	// (ref : Y. CHENG and J. L. CRASSIDIS, “Particle filtering for attitude estimation using  a  minimal  local-error  representation" 2010)
+	case PF:
+	    manager->initialization_filter = &om_gdof_initialization;
+	    manager->process_filter = &om_gdof_process;
+	    manager->free_filter = &om_gdof_free;
+   	    break;
+
+    }// switch
+    
     // initialization of the quaternion
     om_quat_create(&manager->output.quaternion,1.0,0.0,0.0,0.0);
 
@@ -325,26 +366,31 @@ void init_manager(omSensorFusionManager *manager,void* filter){
  */
 int main(int argc,char** argv){
 
-	//variables
+	//variables file I/O
 	char csvfile_input[100];
 	struct line_reader lr;
 	FILE *f;
 	size_t len;
 	char *line;
+
+	// variable performance
 	struct timeval tbegin_tot,tend_tot;
 	struct Groundtruth gt;
 	int index = 0;
 	double mean_error = 0.0;
 	double mean_time = 0.0;
-	omSensorFusionManager manager;
-	omNonLinearFilter_USQUE filter_usque;
 
+	// variable for data fusion
+	omSensorFusionManager manager;
+	omNonLinearFilter_USQUE filter;
+	
 	// get the input csv file
 	strcpy(csvfile_input,argv[2]);
 
 	// initialization of the sensor fusion manager and the nonlinear filter
-	init_manager(&manager,&filter_usque);
-
+	init_manager(&manager,&filter,USQUE);
+	
+	
 	// open the input file
 	f = fopen(csvfile_input, "r");
 	if (f == NULL) {
@@ -378,7 +424,6 @@ int main(int argc,char** argv){
 
 	    	// send values to the sensor fusion manager
 	        om_vector_setValues(&manager.imu_data.data_gyroscope,3,(double)gyroX, (double)gyroY, (double)gyroZ);
-
 	    }
 	    // for the rest
 	    else if (index > 1 && tokens)
@@ -394,53 +439,47 @@ int main(int argc,char** argv){
 	    	double accZ = atof(tokens[13]);
 
 	    	// set accelerometer data
-	    	om_vector_setValues(&manager.imu_data.data_accelerometer,3,accX,accY,accZ);
+	    	om_vector_setValues(&manager.imu_data.data_accelerometer,3,(double)accX,(double)accY,(double)accZ);
 
 	    	// get magnetometer values from csv file
 	    	double magX = atof(tokens[14]);
 	    	double magY = atof(tokens[15]);
 	    	double magZ = atof(tokens[16]);
 
-			// set magnetometer data
-			omVector mag;
-			om_vector_create(&mag,3,magX,magY,magZ);
+		// set magnetometer data
+		om_vector_setValues(&manager.imu_data.data_magnetometer,3,(double)magX,(double)magY,(double)magZ);
+
+		// Chronometer variables
+		double texec=0.0;
+		struct timeval tbegin,tend;
+
+		// Start timer
+		gettimeofday(&tbegin,NULL);
+
+		// process filtering
+		manager.process_filter(&manager,&filter);
+	
+		// Stop timer
+		gettimeofday(&tend,NULL);
 
 
-			// rectification magnetometer
-			modification_magneto(&mag,&manager.imu_data.data_magnetometer,&manager.output.quaternion);
+		// Compute execution time
+		texec=((double)(1000.0*(tend.tv_sec-tbegin.tv_sec)+((tend.tv_usec-tbegin.tv_usec)/1000.0)))/1000.0;
 
-			// Chronometer variables
-			double texec=0.0;
-			struct timeval tbegin,tend;
+		// Compute error attitude
+		double error = calculErrorOrientation(&gt.q_true,&manager.output.quaternion);
 
-			// Start timer
-			gettimeofday(&tbegin,NULL);
+		// Compute mean error and mean time
+		mean_error += error;
+		mean_time += texec;
 
-			// process filtering
-			manager.process_filter(&manager,&filter_usque);
+	    	// get gyroscope values from csv file
+	    	double gyroX = atof(tokens[8]);
+    		double gyroY = atof(tokens[9]);
+	    	double gyroZ = atof(tokens[10]);
 
-			// Stop timer
-			gettimeofday(&tend,NULL);
-
-
-			// Compute execution time
-			texec=((double)(1000.0*(tend.tv_sec-tbegin.tv_sec)+((tend.tv_usec-tbegin.tv_usec)/1000.0)))/1000.0;
-
-			// Compute error attitude
-			double error = calculErrorOrientation(&gt.q_true,&manager.output.quaternion);
-
-			// Update
-			mean_error += error;
-			mean_time += texec;
-
-		    	// get gyroscope values from csv file
-		    	double gyroX = atof(tokens[8]);
-	    		double gyroY = atof(tokens[9]);
-		    	double gyroZ = atof(tokens[10]);
-
-
-		    	// send values to the sensor fusion manager
-		        om_vector_setValues(&manager.imu_data.data_gyroscope,3,(double)gyroX, (double)gyroY, (double)gyroZ);
+	    	// send values to the sensor fusion manager
+	        om_vector_setValues(&manager.imu_data.data_gyroscope,3,(double)gyroX, (double)gyroY, (double)gyroZ);
 
 	    }
 
@@ -453,7 +492,7 @@ int main(int argc,char** argv){
 	    index++;
 
 	    // show the advancements
-		displayLoadingBar(index);
+	    displayLoadingBar(index);
 
 	}
 
@@ -484,7 +523,8 @@ int main(int argc,char** argv){
 	//free file reader
 	lr_free(&lr);
 
-
+	// end program
+	return EXIT_SUCCESS;
 }
 
 

@@ -118,6 +118,45 @@ Go see http://www.ngdc.noaa.gov/geomag-web/#igrfwmm for more information
 
 This application has been tested on an Samsung galaxy tab S II with Android 5.0.2 API 21.
 
+Comparative Framework
+============
+
+This tool aims to compare the performance of the algorithm on several aspect. Not only on the accuracy, but also on the computation time requirement.
+
+Preliminary
+------
+
+In order to use the framework, few intallation is required. The framework had been developped under Linux environment. Thus, the following description concern only Linux user. Windows and Mac OS adaptation will come in future version.
+Here the required package:
+
+- csvkit 1.0.2(or newer) http://csvkit.readthedocs.io/en/1.0.2/index.html
+- R package 'limma' https://bioconductor.org/packages/release/bioc/html/limma.html
+
+How to use it
+------
+
+Once everything is installed the framework is quite easy to use. All script files are in the folder /Comparative_framework/scripts/
+
+To launch the simulation of a IMU, use this commande
+	
+	./generate_data -n number_of_simulation
+
+This will generate csv file in the folder /Comparative_framework/data/csv/ and the associated png showing the data in /Comparative_framework/data/png/
+
+Then, to generate all the performance results, use this commande
+
+	./generate_results 
+
+All the results will be located in /Comparative_framework/results/current-date_current-hour/ 
+This folder contains other folder:
+
+- perfo/hist/ : the histogram showing the different score 
+- perfo/table/  : the table showing the different score
+- plots_angle : contains all plot showing the true and the estimate angle for all methods
+- plots_error : contains all plot showing the error for all methods
+
+Do not take into account the other folder
+
 Additional functionality
 ========================
 
