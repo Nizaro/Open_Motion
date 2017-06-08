@@ -234,13 +234,13 @@ double calculErrorOrientation(omQuaternion *q_real,omQuaternion *q_est){
  */
 void init_ned(){
 
-    // magnetic field in singapore ( according to https://www.ngdc.noaa.gov/geomag-web/ )
+    // magnetic field in singapore in micro Tesla ( according to https://www.ngdc.noaa.gov/geomag-web/ )
     om_vector_create(&ned_magnetic_field,3,40.8101,0.1609,10.2636);
     om_vector_create(&ned_magnetic_field_normalized,3);
     om_vector_clone(&ned_magnetic_field, &ned_magnetic_field_normalized);
     om_vector_normalize(&ned_magnetic_field_normalized);
 
-    // gravity vector	
+    // gravity vector in m.s^{-2}	
     om_vector_create(&ned_gravity,3,0.0,0.0,G);
     om_vector_create(&ned_gravity_normalized,3,0.0,0.0,1.0);
 
@@ -285,6 +285,9 @@ void init_manager(omSensorFusionManager *manager,void* filter, MethodType type){
 	    manager->initialization_filter = &om_usque_initialization;
 	    manager->process_filter = &om_usque_process;
 	    manager->free_filter = &om_usque_free;
+		    
+            // initialization of the nonlinear filter
+	    manager->initialization_filter(manager,(omNonLinearFilter_USQUE*)filter);
    	    break;
 
 	// Multiplicatif Extended Kalman Filter
@@ -293,6 +296,10 @@ void init_manager(omSensorFusionManager *manager,void* filter, MethodType type){
 	    manager->initialization_filter = &om_mekf_initialization;
 	    manager->process_filter = &om_mekf_process;
 	    manager->free_filter = &om_mekf_free;
+
+            // initialization of the nonlinear filter
+	    manager->initialization_filter(manager,(omNonLinearFilter_MEKF*)filter);
+
    	    break;
 
 	// Constrained Sigma Point
@@ -301,6 +308,10 @@ void init_manager(omSensorFusionManager *manager,void* filter, MethodType type){
 	    manager->initialization_filter = &om_csp_initialization;
 	    manager->process_filter = &om_csp_process;
 	    manager->free_filter = &om_csp_free;
+
+            // initialization of the nonlinear filter
+	    manager->initialization_filter(manager,(omNonLinearFilter_CSP*)filter);
+
    	    break;
 
 	// QUaternion ESTimator
@@ -309,6 +320,10 @@ void init_manager(omSensorFusionManager *manager,void* filter, MethodType type){
 	    manager->initialization_filter = &om_quest_initialization;
 	    manager->process_filter = &om_quest_process;
 	    manager->free_filter = &om_quest_free;
+
+            // initialization of the nonlinear filter
+	    manager->initialization_filter(manager,(omNonLinearFilter_QUEST*)filter);
+
    	    break;
 
 	// REcursive QUaternion ESTimator
@@ -317,6 +332,10 @@ void init_manager(omSensorFusionManager *manager,void* filter, MethodType type){
 	    manager->initialization_filter = &om_request_initialization;
 	    manager->process_filter = &om_request_process;
 	    manager->free_filter = &om_request_free;
+
+            // initialization of the nonlinear filter
+	    manager->initialization_filter(manager,(omNonLinearFilter_REQUEST*)filter);
+
    	    break;
 
 	// Constant Gain Observer
@@ -325,6 +344,10 @@ void init_manager(omSensorFusionManager *manager,void* filter, MethodType type){
 	    manager->initialization_filter = &om_cgo_initialization;
 	    manager->process_filter = &om_cgo_process;
 	    manager->free_filter = &om_cgo_free;
+
+            // initialization of the nonlinear filter
+	    manager->initialization_filter(manager,(omNonLinearFilter_CGO*)filter);
+
    	    break;
 
 	// Complementary Filter Algorithm
@@ -333,6 +356,10 @@ void init_manager(omSensorFusionManager *manager,void* filter, MethodType type){
 	    manager->initialization_filter = &om_cfa_initialization;
 	    manager->process_filter = &om_cfa_process;
 	    manager->free_filter = &om_cfa_free;
+
+            // initialization of the nonlinear filter
+	    manager->initialization_filter(manager,(omNonLinearFilter_CFA*)filter);
+
    	    break;
 
 	// Gradient Descent Orientation Filter
@@ -341,14 +368,22 @@ void init_manager(omSensorFusionManager *manager,void* filter, MethodType type){
 	    manager->initialization_filter = &om_gdof_initialization;
 	    manager->process_filter = &om_gdof_process;
 	    manager->free_filter = &om_gdof_free;
+
+            // initialization of the nonlinear filter
+	    manager->initialization_filter(manager,(omNonLinearFilter_GDOF*)filter);
+
    	    break;
 
 	// Particle Filter
 	// (ref : Y. CHENG and J. L. CRASSIDIS, “Particle filtering for attitude estimation using  a  minimal  local-error  representation" 2010)
 	case PF:
-	    manager->initialization_filter = &om_gdof_initialization;
-	    manager->process_filter = &om_gdof_process;
-	    manager->free_filter = &om_gdof_free;
+	    manager->initialization_filter = &om_pf_initialization;
+	    manager->process_filter = &om_pf_process;
+	    manager->free_filter = &om_pf_free;
+
+            // initialization of the nonlinear filter
+	    manager->initialization_filter(manager,(omNonLinearFilter_PF*)filter);
+
    	    break;
 
     }// switch
@@ -356,8 +391,7 @@ void init_manager(omSensorFusionManager *manager,void* filter, MethodType type){
     // initialization of the quaternion
     om_quat_create(&manager->output.quaternion,1.0,0.0,0.0,0.0);
 
-    // initialization of the nonlinear filter
-    manager->initialization_filter(manager,(omNonLinearFilter_USQUE*)filter);
+
 }
 
 
@@ -461,7 +495,6 @@ int main(int argc,char** argv){
 	
 		// Stop timer
 		gettimeofday(&tend,NULL);
-
 
 		// Compute execution time
 		texec=((double)(1000.0*(tend.tv_sec-tbegin.tv_sec)+((tend.tv_usec-tbegin.tv_usec)/1000.0)))/1000.0;
