@@ -276,6 +276,9 @@ void init_manager(omSensorFusionManager *manager,void* filter, MethodType type){
     om_vector_create(&manager->imu_data.data_magnetometer,3);
     om_vector_create(&manager->imu_data.data_gyroscope,3);
 
+   // initialization of the quaternion
+    om_quat_create(&manager->output.quaternion,1.0,0.0,0.0,0.0);
+
     // set the appropriate function according to the type of sensor fusion algorithm chosen
     switch(type){
 
@@ -388,9 +391,7 @@ void init_manager(omSensorFusionManager *manager,void* filter, MethodType type){
 
     }// switch
     
-    // initialization of the quaternion
-    om_quat_create(&manager->output.quaternion,1.0,0.0,0.0,0.0);
-
+ 
 
 }
 
@@ -513,7 +514,6 @@ int main(int argc,char** argv){
 
 	    	// send values to the sensor fusion manager
 	        om_vector_setValues(&manager.imu_data.data_gyroscope,3,(double)gyroX, (double)gyroY, (double)gyroZ);
-
 	    }
 
 	    // free tokens
