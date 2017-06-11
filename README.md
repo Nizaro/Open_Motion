@@ -74,7 +74,7 @@ Then use homebrew to install cmake:
 	
 Once cmake is installed, go into the corresponding folder and create a build repository :
 
-	cd OpenMotion/Fusion_Algorithms/Classic_algos
+	cd Open_Motion/Fusion_Algorithms/Classic_algos
     mkdir build
 
 Then execute the "build.sh"	script which will make use of cmake in odrer to create the OpenMotion library.
