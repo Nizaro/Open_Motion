@@ -545,7 +545,7 @@ int main(int argc,char** argv){
 	printf("Total Time : %f sec\n\n",texec_tot);
 	printf("PERFORMANCE METHOD:\n");
 	printf("\t mean attitude error = %.*f\n",10,mean_error);
-	printf("\t mean computation time = %.*f\n\n",10,mean_time);
+	printf("\t mean computation time per sample = %.*f\n\n",10,mean_time);
 
 
 	if (!feof(f)) {

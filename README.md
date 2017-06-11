@@ -11,9 +11,9 @@ The implemented algorithms use the output of an IMU composed by a 3D gyroscope, 
 Motivation
 ==========
 
-This opensource project aims to provide a simple and usefull way for scientists ans users to implement data fusion algorithms and to test them.
-An other feature is to provide a tool for benchmarking as far as data fusion algorithms are concerned. Thus, scientists and industrials have now the possibility to achieve a scientificaly reliable performance comparison between diferent algorithms. 
-On the contary of must 3D libraries, OpenMotion library has been written in C language in order to enable better portability and easier bindings like with MatLab for instance in order to run simulations.
+This opensource project aims to provide a simple and usefull way for scientists and users to test and implement data fusion algorithms.
+This software can also be benchmarking tool for attitude estimation. Thus, scientists and industrials have now the possibility to achieve a scientificaly reliable performance comparison between diferent algorithms. 
+OpenMotion library has been written in C language in order to enable better portability and to ease the bindings with MatLab or Android.
 
 Installation
 ============
@@ -29,9 +29,10 @@ Clone the GitHub OpenMotion repository :
 
 Get into the corresponding folder and create a build repository :
 	
-	cd OpenMotion/Fusion_Algorithms/Classic_algos
+	cd Open_Motion/Fusion_Algorithms/Classic_algos
+    mkdir build
 
-Then execute the "build.sh"	script which will make use of cmake in odrer to create the OpenMotion library.
+Then execute the "build.sh"	script which will make use of cmake in order to create the OpenMotion library.
 
 	./build.sh
 	
@@ -47,7 +48,6 @@ In order to use OpenMotion as a linux library use this command after the build i
 	
 	sudo ldconfig -v
 	
-
 Windows
 -------
 
@@ -75,9 +75,11 @@ Then use homebrew to install cmake:
 Once cmake is installed, go into the corresponding folder and create a build repository :
 
 	cd OpenMotion/Fusion_Algorithms/Classic_algos
+    mkdir build
 
 Then execute the "build.sh"	script which will make use of cmake in odrer to create the OpenMotion library.
-
+    
+    cd Open_Motion/Fusion_Algorithms/C_code
 	./build.sh
 
 
@@ -89,7 +91,7 @@ API Reference
 Code Example
 ============
 
-An sample of usage is available here in the folder ./OpenMotion/Fusion_Algorithms/samples/.
+An sample of usage is available here in the folder ./Open_Motion/Fusion_Algorithms/samples/.
 A makefile is provided. But you can compile by yourself with the command :
 	
 	gcc -o om_sample om_sample.c -std=c99 -lopenmotion -lm -D_BSD_SOURCE
@@ -98,8 +100,8 @@ And execute with
 
 	./om_sample -i imu_data.csv	
 
-The file imu_data.csv contains simulated and noisy values of a IMU such as we have access to the ground truth too.
-However, you can use the library in a real situation.
+The file imu_data.csv contains noisy simulated values of an IMU such. The ground truth is accessible because the data are generated.
+However, you can use the library  with real data by making your fork of om_sample.c.
 
 Android Example
 ============
