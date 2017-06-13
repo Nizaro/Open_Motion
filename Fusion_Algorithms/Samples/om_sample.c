@@ -72,11 +72,9 @@ int main(int argc,char** argv){
     I_P.bias_accel[0]=0.0;I_P.bias_accel[1]=0.0;I_P.bias_accel[2]=0.0;
     I_P.bias_magn[0]=0.0;I_P.bias_magn[1]=0.0;I_P.bias_magn[2]=0.0;
     I_P.bias_gyro[0]=0.000031623;I_P.bias_gyro[1]=0.0000316230;I_P.bias_gyro[2]=0.00003162;
-    //double bias_gyro[3]={0.000031623,0.000031623,0.000031623};
-    //I_P.bias_gyro=bias_gyro;
+    
     
     // this value depends of your initial orientation
-    double init_quat[4]={1.0,0.0,0.0,0.0};
     I_P.init_quat[0]=1.0;I_P.init_quat[1]=0.0;I_P.init_quat[2]=0.0;I_P.init_quat[3]=0.0;
     
     /***** End Initialisation of the parameters *****/
@@ -104,82 +102,75 @@ int main(int argc,char** argv){
 	gettimeofday(&tbegin_tot,NULL);
 
 	// for each line of the csv file
-	while ( (line = next_line(&lr, &len))) {
+    // index is beginning at 1
+    while ((line = next_line(&lr, &len))) {
 
 		// get the values
 		char** tokens;
 	    tokens = str_split(line, ',');
-
-	    // if t=0 we set the gyroscope values
-	    if(index == 1){
-
-	    	// get gyroscope values from csv file
-	    	double gyroX = atof(tokens[8]);
-	    	double gyroY = atof(tokens[9]);
-	    	double gyroZ = atof(tokens[10]);
-
-	    	// send values to the sensor fusion manager
-	        om_vector_setValues(&manager.imu_data.data_gyroscope,3,(double)gyroX, (double)gyroY, (double)gyroZ);
-	    }
-	    // for the rest
-	    else if (index > 1 && tokens)
+        
+	   
+	    if ((index>0) && tokens)
 	    {
 
-	    	// get ground truth
-	    	om_vector_setValues(&gt.position,3,atof(tokens[1]),atof(tokens[2]),atof(tokens[3]));
-	    	om_quat_create(&gt.q_true,atof(tokens[4]),atof(tokens[5]),atof(tokens[6]),atof(tokens[7]));
+            // get ground truth
+            om_vector_setValues(&gt.position,3,atof(tokens[1]),atof(tokens[2]),atof(tokens[3]));
+            om_quat_create(&gt.q_true,atof(tokens[4]),atof(tokens[5]),atof(tokens[6]),atof(tokens[7]));
 
-	    	// get magnetometer values from csv file
-	    	double accX = atof(tokens[11]);
-	    	double accY = atof(tokens[12]);
-	    	double accZ = atof(tokens[13]);
+            // get magnetometer values from csv file
+            double accX = atof(tokens[11]);
+            double accY = atof(tokens[12]);
+            double accZ = atof(tokens[13]);
 
-	    	// set accelerometer data
-	    	om_vector_setValues(&manager.imu_data.data_accelerometer,3,(double)accX,(double)accY,(double)accZ);
+            // set accelerometer data
+            om_vector_setValues(&manager.imu_data.data_accelerometer,3,(double)accX,(double)accY,(double)accZ);
 
-	    	// get magnetometer values from csv file
-	    	double magX = atof(tokens[14]);
-	    	double magY = atof(tokens[15]);
-	    	double magZ = atof(tokens[16]);
+            // get magnetometer values from csv file
+            double magX = atof(tokens[14]);
+            double magY = atof(tokens[15]);
+            double magZ = atof(tokens[16]);
 
-		// set magnetometer data
-		om_vector_setValues(&manager.imu_data.data_magnetometer,3,(double)magX,(double)magY,(double)magZ);
+            // set magnetometer data
+            om_vector_setValues(&manager.imu_data.data_magnetometer,3,(double)magX,(double)magY,(double)magZ);
+                
+                
+            // get gyroscope values from csv file
+            double gyroX = atof(tokens[8]);
+            double gyroY = atof(tokens[9]);
+            double gyroZ = atof(tokens[10]);
+            
+            // send values to the sensor fusion manager
+            om_vector_setValues(&manager.imu_data.data_gyroscope,3,(double)gyroX, (double)gyroY, (double)gyroZ);
 
-		// Chronometer variables
-		double texec=0.0;
-		struct timeval tbegin,tend;
+            // Chronometer variables
+            double texec=0.0;
+            struct timeval tbegin,tend;
 
-		// Start timer
-		gettimeofday(&tbegin,NULL);
+            // Start timer
+            gettimeofday(&tbegin,NULL);
 
-		// process filtering
-		manager.process_filter(&manager,&filter);
-	
-		// Stop timer
-		gettimeofday(&tend,NULL);
+            // process filtering
+            manager.process_filter(&manager,&filter);
+        
+            // Stop timer
+            gettimeofday(&tend,NULL);
 
-		// Compute execution time
-		texec=((double)(1000.0*(tend.tv_sec-tbegin.tv_sec)+((tend.tv_usec-tbegin.tv_usec)/1000.0)))/1000.0;
+            // Compute execution time
+            texec=((double)(1000.0*(tend.tv_sec-tbegin.tv_sec)+((tend.tv_usec-tbegin.tv_usec)/1000.0)))/1000.0;
 
-		// Compute error attitude
-		double error = calculErrorOrientation(&gt.q_true,&manager.output.quaternion);
+            // Compute error attitude
+            double error = calculErrorOrientation(&gt.q_true,&manager.output.quaternion);
+                
+            // Compute mean error and mean time
+            mean_error += error;
+            mean_time += texec;
 
-		// Compute mean error and mean time
-		mean_error += error;
-		mean_time += texec;
-
-	    	// get gyroscope values from csv file
-	    	double gyroX = atof(tokens[8]);
-    		double gyroY = atof(tokens[9]);
-	    	double gyroZ = atof(tokens[10]);
-
-	    	// send values to the sensor fusion manager
-	        om_vector_setValues(&manager.imu_data.data_gyroscope,3,(double)gyroX, (double)gyroY, (double)gyroZ);
 	    }
 
 	    // free tokens
-	    for (int i = 0; *(tokens + i); i++)
+        for (int i = 0; *(tokens + i); i++){
 	    	free(*(tokens + i));
+        }
 	    free(tokens);
 
 	    // increase the index
@@ -191,8 +182,8 @@ int main(int argc,char** argv){
 	}
 
 	// compute performances
-	mean_error /= (double)(index - 2);
-	mean_time /= (double)(index - 2);
+	mean_error /= (double)(index +1);
+	mean_time /= (double)(index +1);
 
 	// Stop timer
 	gettimeofday(&tend_tot,NULL);
