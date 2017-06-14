@@ -110,7 +110,7 @@ int main(int argc,char** argv){
 	    tokens = str_split(line, ',');
         
 	   
-	    if ((index>0) && tokens)
+	    if ((index>0) && tokens)//first line with the text
 	    {
 
             // get ground truth
