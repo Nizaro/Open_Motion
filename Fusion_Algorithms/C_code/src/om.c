@@ -2,7 +2,7 @@
  * om.c
  *
  *  Created on: 25 May, 2016
- *      Author: thomas
+ *      Author: Thomas BRAUD, Nizar OUARTI
  */
 
 #include "om.h"
@@ -12,6 +12,45 @@ omVector ned_gravity;
 omVector ned_magnetic_field;
 omVector ned_gravity_normalized;
 omVector ned_magnetic_field_normalized;
+
+
+
+// This function is done to set the initial orientation where "pseudonorth" is chosen as the initial heading orientation. It is done to suit to many Ground Truth dataset
+//@ author Nizar Ouarti
+void init_frame (double *data){
+        
+    omVector acc;
+    omVector magn;
+    omVector magnXacc;
+    omVector pseudonorth;
+    om_vector_create(&acc,3);
+    om_vector_create(&magn,3);
+    om_vector_create(&magnXacc,3);
+    om_vector_create(&pseudonorth,3);
+
+    //First sample t0
+    om_vector_setValues(&acc,3,data[0], data[1], data[2]);
+    om_vector_setValues(&magn,3,data[3], data[4], data[5]);
+    om_vector_setValues(&magnXacc,3,0.0, 0.0, 0.0);
+    om_vector_setValues(&pseudonorth,3,0.0, 0.0, 0.0);
+
+    //normalization
+    om_vector_normalize(&magn);
+    om_vector_normalize(&acc);
+
+    //compute the initial "pseudonorth"
+
+    om_vector_crossProduct(&magn,&acc,&magnXacc);
+    om_vector_normalize(&magnXacc);
+    om_vector_crossProduct(&acc,&magnXacc,&pseudonorth);
+
+    ned_gravity_normalized._values[0]=(double)pseudonorth._values[0];
+    ned_gravity_normalized._values[1]=(double)pseudonorth._values[1];
+    ned_gravity_normalized._values[2]=(double)pseudonorth._values[2];
+
+}
+
+
 
 
 

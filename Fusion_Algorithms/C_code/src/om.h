@@ -79,7 +79,9 @@ typedef struct omSensorFusionManager{
 
 }omSensorFusionManager;
 
-
+// This function is done to set the initial orientation where "pseudonorth" is chosen as the initial heading orientation. It adapted to many Ground Truth datasets that don't use NED for orientation
+//@ author Nizar Ouarti
+void init_frame (double *data){
 
 
 ///////////////////////////////////////////////////////
