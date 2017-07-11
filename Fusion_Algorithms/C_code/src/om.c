@@ -44,9 +44,9 @@ void init_frame (double *data){
     om_vector_normalize(&magnXacc);
     om_vector_crossProduct(&acc,&magnXacc,&pseudonorth);
 
-    ned_gravity_normalized._values[0]=(double)pseudonorth._values[0];
-    ned_gravity_normalized._values[1]=(double)pseudonorth._values[1];
-    ned_gravity_normalized._values[2]=(double)pseudonorth._values[2];
+    ned_magnetic_field_normalized._values[0]=(double)pseudonorth._values[0];
+    ned_magnetic_field_normalized._values[1]=(double)pseudonorth._values[1];
+    ned_magnetic_field_normalized._values[2]=(double)pseudonorth._values[2];
 
 }
 
