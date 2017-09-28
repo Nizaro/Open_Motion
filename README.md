@@ -1,18 +1,18 @@
-# OpenMotion : Inertial fusion Library
+# OpenMotion : Inertial Fusion Library
 
 Synopsis
 ========
 
 OpenMotion is an open source library written in C providing data fusion and attitude estimation algorithms. OpenMotion was designed for computational efficiency and with a strong focus on real-time applications.
-A set of functions are provided in order to help one implementing its own algortithms and to compare its results.
-The implemented algorithms use the output of an IMU composed by a 3D gyroscope, a 3D accelerometer and a 3D magnetometer and can be used in real-time applications on embedded systems.
+A set of functions are provided in order to facilitate the implementation of original algorithms and to compare the results with state-of-the-art algorithms already implemented.
+The implemented algorithms combines the output of an IMU composed by a 3D gyroscope, a 3D accelerometer and a 3D magnetometer and can be used in real-time applications for embedded systems.
 
 
 Motivation
 ==========
 
-This opensource project aims to provide a simple and usefull way for scientists and users to test and implement data fusion algorithms.
-This software can also be benchmarking tool for attitude estimation. Thus, scientists and industrials have now the possibility to achieve a scientificaly reliable performance comparison between diferent algorithms. 
+This open source project aims to provide a simple and useful way for scientists and users to test and implement data fusion algorithms. It can be also useful for non-experts to learn how to implement these kinds of algorithms.
+This software can also be a benchmarking tool for attitude estimation. Thus, scientists and industrials have now the possibility to achieve a scientifically reliable performance comparison between different algorithms. 
 OpenMotion library has been written in C language in order to enable better portability and to ease the bindings with MatLab or Android.
 
 Installation
@@ -77,7 +77,7 @@ Once cmake is installed, go into the corresponding folder and create a build rep
 	cd Open_Motion/Fusion_Algorithms/Classic_algos
     mkdir build
 
-Then execute the "build.sh"	script which will make use of cmake in odrer to create the OpenMotion library.
+Then execute the "build.sh"	script which will make use of cmake in order to create the OpenMotion library.
     
     cd Open_Motion/Fusion_Algorithms/C_code
 	./build.sh
@@ -100,8 +100,12 @@ And execute with
 
 	./om_sample -i imu_data.csv	
 
-The file imu_data.csv contains noisy simulated values of an IMU such. The ground truth is accessible because the data are generated.
-However, you can use the library  with real data by making your fork of om_sample.c.
+The file imu_data.csv contains noisy simulated values of an IMU. Because the data are here generated, the ground truth is accessible.
+However, you can use the library with real data by making your fork of om_sample.c.
+
+Matlab Example
+============
+A Matlab version is under development.
 
 Android Example
 ============
@@ -112,9 +116,9 @@ However, in order to use the code properly, several modifications must be done b
 - A compilation with ndk-build is required of the Library. Go to android-native and launch the command.
 - In the file OpenMotionAndroidExample/app/build.gradle, please replace the path to the OpenMotion library at line 19,39 and 41. Also in files Android.mk and Application.mk
 - The Library works only if all the component of the IMU (gyroscope, accelerometer and magnetometer) belong to the same reference frame. 
-Then, please check if the IMU of your smartphone or tablet verify this constraint. Do not hesite to change the axis if require.
+Then, please check if the IMU of your smartphone or tablet verify this constraint. Do not hesitate to change the axis frame if required.
 - The Library will transform the magnetic field (output of the magnetometer) into the geographic north. 
-This transformation is based on the declinaison and the inclinaison of the magnetic fiel. This values depends on your location.
+This transformation is based on the declination and the inclinaison of the magnetic fiel. This values depends on your location.
 Go see http://www.ngdc.noaa.gov/geomag-web/#igrfwmm for more information
 - The Library need an estimate of the sensors biases and variances, this values provided here are not optimal for every systems
 
@@ -128,7 +132,7 @@ This tool aims to compare the performance of the algorithm on several aspect. No
 Preliminary
 ------
 
-In order to use the framework, few intallation is required. The framework had been developped under Linux environment. Thus, the following description concern only Linux user. Windows and Mac OS adaptation will come in future version.
+In order to use the framework, few installation is required. The framework had been developed under Linux environment. Thus, the following description concern only Linux user. Windows and Mac OS adaptation will come in future version.
 Here the required package:
 
 - csvkit 1.0.2(or newer) http://csvkit.readthedocs.io/en/1.0.2/index.html
@@ -173,11 +177,11 @@ This application can also be used "as is" in others applications or projects.
 Contributors
 ============
 
-OpenMotion library is an opensource project. 
+OpenMotion library is an open source project. 
 
 All people who want to improve, discuss or implement new functionalities are welcomed.
 
-Here are some usefull links fot those who want to study or understand deeper the implemented algorithms :
+Here are some useful links for those who want to study or understand deeper the implemented algorithms :
 
 - 3D geometry : http://sedris.org/wg8home/Documents/WG80485.pdf
 - Kalman filters : https://cse.sc.edu/~terejanu/files/tutorialKF.pdf
@@ -193,7 +197,7 @@ License
 
 OpenMotion is released under a BSD license and hence it’s free for both academic and commercial use :
 
-Copyright (c) <2016>, <OUARTI Nizar, BRAUD Thomas, BILLAUD Vivien>
+Copyright (c) <2017>, <OUARTI Nizar, BRAUD Thomas>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -205,3 +209,7 @@ Redistribution and use in source and binary forms, with or without modification,
 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+
+
