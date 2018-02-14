@@ -2203,7 +2203,7 @@ void om_matrix_clone(struct omMatrix *in,struct omMatrix *out){
 /* display the matrix values in a terminal */
 void om_matrix_display(struct omMatrix *matrix){
 
-	int numberofdecimals = 10;
+	int numberofdecimals = 20;
 
 	for (int i = 0; i < matrix->_rows; i++) {
 
@@ -2587,10 +2587,10 @@ double om_quat_dotProduct(struct omQuaternion *a,struct omQuaternion *b){
 
 	double dot = 0.0;
 
-	dot += a->_qw*b->_qw;
-	dot += a->_qx*b->_qx;
-	dot += a->_qy*b->_qy;
-	dot += a->_qz*b->_qz;
+	dot += a->_qw * b->_qw;
+	dot += a->_qx * b->_qx;
+	dot += a->_qy * b->_qy;
+	dot += a->_qz * b->_qz;
 
 	return dot;
 

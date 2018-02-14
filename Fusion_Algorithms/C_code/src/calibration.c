@@ -500,12 +500,12 @@ void om_calibration_noise_estimation(omMatrix* X,omVector* v){
 
 
 
-	for(int p=0;p<3;p++){
+	for(int k=0;k<3;k++){
 
 		omMatrix Xp;
 		om_matrix_create(&Xp, 1, X->_columns);
 		for(int i=0;i<X->_columns;i++)
-			om_matrix_setValue(&Xp, 0, i, om_matrix_getValue(X, p, i));
+			om_matrix_setValue(&Xp, 0, i, om_matrix_getValue(X, k, i));
 
 		omVector sigmaest;
 		om_vector_create(&sigmaest,6);
@@ -569,7 +569,7 @@ void om_calibration_noise_estimation(omMatrix* X,omVector* v){
 		var *= var;
 		var /= 1.0 + (15.0 * pow((double)(X->_columns) + 1.225,-1.245));
 
-		om_vector_setValue(v, p, var);
+		om_vector_setValue(v, k, var);
 
 		om_vector_free(&sigmaest);
 		om_matrix_free(&Xp);

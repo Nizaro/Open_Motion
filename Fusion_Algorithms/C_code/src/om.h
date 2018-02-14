@@ -81,7 +81,7 @@ typedef struct omSensorFusionManager{
 
 // This function is done to set the initial orientation where "pseudonorth" is chosen as the initial heading orientation. It adapted to many Ground Truth datasets that don't use NED for orientation
 //@ author Nizar Ouarti
-void init_frame (double *data){
+void init_frame (double *data);
 
 
 ///////////////////////////////////////////////////////
@@ -294,7 +294,7 @@ typedef struct omNonLinearFilter_PF{
 	int _resample;
 
 	omMatrix _R;
-	omMatrix _L;
+	omMatrix _cov_L;
 
 	omVector _x_k;
 
@@ -435,7 +435,7 @@ typedef struct omNonLinearFilter_EnKPF{
 	int _resample;
 
 	omMatrix _R;
-	omMatrix _L;
+	omMatrix _cov_L;
 
 	omVector _x_k;
 

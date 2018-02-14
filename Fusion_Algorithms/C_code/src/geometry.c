@@ -4,14 +4,11 @@
  *  Created on: 17 May, 2016
  *      Author: thomas
  */
-
-
 #include "geometry.h"
 
 ///////////////////////////////////////////////////////
 /////           Kinematics - Rotation             /////
 ///////////////////////////////////////////////////////
-
 
 /* proceed a rotation of a 3D vector define in a reference frame A into a reference frame B with a quaternion q representing the orentation of B relative to A */
 void om_rotate_vector_quaternion(struct omQuaternion *q,struct omVector *in,struct omVector *out){
