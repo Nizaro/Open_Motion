@@ -64,9 +64,9 @@ int main(int argc,char** argv){
     I_P.local_magn[0]=40.8101;I_P.local_magn[1]=0.1609;I_P.local_magn[2]=10.2636;
     
     // these values depends of your hardware: variance and bias
-    I_P.var_accel=0.75;
-    I_P.var_magn=0.075;
-    I_P.var_gyro=0.031623;
+    I_P.var_accel=0.5;
+    I_P.var_magn=0.15;
+    I_P.var_gyro=0.00031623;
     
     
     I_P.bias_accel[0]=0.0;I_P.bias_accel[1]=0.0;I_P.bias_accel[2]=0.0;
@@ -78,8 +78,6 @@ int main(int argc,char** argv){
     I_P.init_quat[0]=1.0;I_P.init_quat[1]=0.0;I_P.init_quat[2]=0.0;I_P.init_quat[3]=0.0;
     
     /***** End Initialisation of the parameters *****/
-    
-    
 
 	// initialization of the sensor fusion manager and the nonlinear filter
 	init_manager(&manager,&filter,USQUE, &I_P);
